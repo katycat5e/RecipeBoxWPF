@@ -35,6 +35,9 @@
   <PropertyGroup>
     <StartupObject>RecipeBox3.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\fox.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -57,6 +60,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DBChecker.cs" />
+    <Compile Include="SplashDialog.xaml.cs">
+      <DependentUpon>SplashDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UnitManager.cs" />
+    <Page Include="EditSettingsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RecipeListView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -65,10 +77,24 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CookbookAdapter.cs" />
+    <Compile Include="CookbookDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CookbookDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="CookbookQueriesConnection.cs" />
+    <Compile Include="EditSettingsDialog.xaml.cs">
+      <DependentUpon>EditSettingsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RecipeListView.xaml.cs">
       <DependentUpon>RecipeListView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SplashDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -88,6 +114,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="CookbookDataSet.xsc">
+      <DependentUpon>CookbookDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="CookbookDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>CookbookDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="CookbookDataSet.xss">
+      <DependentUpon>CookbookDataSet.xsd</DependentUpon>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -123,5 +160,6 @@
   <ItemGroup>
     <None Include="Resources\refresh_16xLG.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

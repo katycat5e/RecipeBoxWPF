@@ -5,8 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RecipeBox3"
         mc:Ignorable="d"
-        Title="RecipeBox" Height="350" Width="525" WindowStartupLocation="CenterScreen" Icon="pack://siteoforigin:,,,/Resources/fox.ico">
+        Title="RecipeBox" Height="800" Width="1400"
+        WindowStartupLocation="CenterScreen"
+        Icon="{DynamicResource FoxIcon}" Closed="RecipeListView_Closed">
     <Grid>
-        
+        <DockPanel LastChildFill="True">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_Edit" >
+                    <MenuItem Header="Database">
+                        <MenuItem Header="Categories" ></MenuItem>
+                        <MenuItem Header="Units" ></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Recipe">
+                        <MenuItem Header="New" />
+                        <MenuItem Header="Edit" IsEnabled="False" />
+                        <MenuItem Header="Delete" IsEnabled="False" />
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
+                </MenuItem>
+                <MenuItem Header="_View" >
+                    <MenuItem Header="Refresh" Click="ReloadTable"/>
+
+                </MenuItem>
+            </Menu>
+            <DataGrid x:Name="RecipeGrid" ItemsSource="{Binding SimpleRecipeView}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" DataContext="{Binding DataSet}" RowHeaderWidth="0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding R_Name}" SortDirection="Ascending" Width="2*"/>
+                    <DataGridTextColumn Header="Description" Binding="{Binding R_Description}" Width="3*"/>
+                    <DataGridTextColumn Header="Category" Binding="{Binding C_Name}" Width="1*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
     </Grid>
+
+    <Window.Resources>
+        
+    </Window.Resources>
 </Window>
+

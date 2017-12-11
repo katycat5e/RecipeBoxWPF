@@ -1,9 +1,12 @@
-﻿<Application x:Class="RecipeBox3.App"
+﻿<Application x:Name="Program" x:Class="RecipeBox3.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:RecipeBox3"
-             StartupUri="MainWindow.xaml">
+             Startup="Program_Startup"
+             ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
-         
+
+        <BitmapImage x:Key="FoxIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="C:\Users\wfoxiii\Source\Repos\RecipeBoxWPF\RecipeBox3\Resources\fox.ico"/>
+
     </Application.Resources>
 </Application>

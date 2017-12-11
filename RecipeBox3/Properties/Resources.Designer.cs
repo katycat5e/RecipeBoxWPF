@@ -105,9 +105,9 @@ namespace RecipeBox3.Properties {
         ///GO
         ///IF (1 = FULLTEXTSERVIC [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string createDB {
+        internal static string DBCreateScript {
             get {
-                return ResourceManager.GetString("createDB", resourceCulture);
+                return ResourceManager.GetString("DBCreateScript", resourceCulture);
             }
         }
         
