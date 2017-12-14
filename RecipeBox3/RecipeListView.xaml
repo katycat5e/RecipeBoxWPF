@@ -4,17 +4,86 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RecipeBox3"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="RecipeBox" Height="800" Width="1400"
         WindowStartupLocation="CenterScreen"
-        Icon="{DynamicResource FoxIcon}" Closed="RecipeListView_Closed">
+        Closed="RecipeListView_Closed">
+
+    <Window.Resources>
+        <ControlTemplate x:Key="FlatButtonTemplate" TargetType="Button">
+            <Border Background="{TemplateBinding Background}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                <ContentPresenter
+                    Margin="{TemplateBinding Control.Padding}"
+                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                    VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"
+                    ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                    RecognizesAccessKey="True"
+                    Content="{TemplateBinding ContentControl.Content}"/>
+            </Border>
+        </ControlTemplate>
+
+        <Style TargetType="Control" x:Key="ClickableStyle">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <SolidColorBrush Color="{StaticResource ColorPrimaryDark}"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{StaticResource ColorSecondary2Dark}"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource ClickableStyle}">
+            <Setter Property="Padding" Value="0,5"/>
+        </Style>
+        <Style x:Key="MenuClickableStyle" TargetType="MenuItem" BasedOn="{StaticResource ClickableStyle}"/>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="LightSlateGray"/>
+            <Setter Property="AlternatingRowBackground" Value="LightGray"/>
+        </Style>
+
+        <Style x:Key="GridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="Padding" Value="0,5"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="1,0">
+                        <GradientStop Color="{StaticResource ColorPrimary}"/>
+                        <GradientStop Offset="1" Color="{StaticResource ColorPrimaryMidDark}"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <DockPanel LastChildFill="True">
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="_Edit" >
+                <Menu.Background>
+                    <SolidColorBrush Color="{StaticResource ColorPrimaryDark}"/>
+                </Menu.Background>
+                <MenuItem x:Name="RBItem" Header="_RecipeBox" Style="{StaticResource MenuClickableStyle}">
+                    <MenuItem x:Name="QuitMenuItem" Header="_Quit" Click="QuitMenuItem_Click"/>
+                </MenuItem>
+                <MenuItem Header="_Edit" Style="{StaticResource MenuClickableStyle}">
                     <MenuItem Header="Database">
-                        <MenuItem Header="Categories" ></MenuItem>
-                        <MenuItem Header="Units" ></MenuItem>
+                        <MenuItem Header="Categories" />
+                        <MenuItem Header="Units" />
                     </MenuItem>
                     <MenuItem Header="Recipe">
                         <MenuItem Header="New" />
@@ -24,23 +93,71 @@
                     <Separator />
                     <MenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
                 </MenuItem>
-                <MenuItem Header="_View" >
-                    <MenuItem Header="Refresh" Click="ReloadTable"/>
-
+                <MenuItem Header="_View" Style="{StaticResource MenuClickableStyle}">
+                    <MenuItem Header="Refresh" Click="ReloadTable">
+                        <MenuItem.Icon>
+                            <Image Source="{DynamicResource RefreshIcon}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="ReloadImagesMenuItem" Header="Reload Images" Click="ImgReload_Click">
+                        <MenuItem.Icon>
+                            <Image Source="{DynamicResource RefreshIcon}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
             </Menu>
-            <DataGrid x:Name="RecipeGrid" ItemsSource="{Binding SimpleRecipeView}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" DataContext="{Binding DataSet}" RowHeaderWidth="0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{Binding R_Name}" SortDirection="Ascending" Width="2*"/>
-                    <DataGridTextColumn Header="Description" Binding="{Binding R_Description}" Width="3*"/>
-                    <DataGridTextColumn Header="Category" Binding="{Binding C_Name}" Width="1*"/>
-                </DataGrid.Columns>
-            </DataGrid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="9*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <DataGrid x:Name="RecipeGrid" ItemsSource="{Binding SimpleRecipeView}" CanUserAddRows="False"
+                          CanUserDeleteRows="False" AutoGenerateColumns="False"
+                          DataContext="{Binding DataSet}" RowHeaderWidth="0" SelectionMode="Single"
+                          ColumnHeaderStyle="{Binding Mode=OneWay, Source={StaticResource GridHeaderStyle}}"
+                          Grid.Column="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding R_Name}" SortDirection="Ascending" Width="3*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding R_Description}" Width="4*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Last Modified" Binding="{Binding R_Modified}" Width="2*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Prep Time" Binding="{Binding R_PrepTime}" Width="1*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Cook Time" Binding="{Binding R_CookTime}" Width="1*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Category" Binding="{Binding C_Name}" Width="2*" IsReadOnly="True"/>
+                        <DataGridTemplateColumn x:Name="IMG_Preview" Header="Preview Image" Width="1*" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Stretch="UniformToFill"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <DockPanel x:Name="SearchPanel" LastChildFill="False" Grid.Column="1"  >
+                    <DockPanel.Background>
+                        <SolidColorBrush Color="{StaticResource ColorPrimary}"/>
+                    </DockPanel.Background>
+                    <DockPanel.DataContext>
+                        <local:SearchItems/>
+                    </DockPanel.DataContext>
+                    <Label Content="Search Options" DockPanel.Dock="Top" Height="Auto" FontSize="16 pt" HorizontalAlignment="Center"/>
+                    <Label Content="Name:" DockPanel.Dock="Top"/>
+                    <TextBox x:Name="NameInput" DockPanel.Dock="Top" Text="{Binding SearchName}"/>
+                    <Label Content="Ingredients:" DockPanel.Dock="Top"/>
+                    <TextBox x:Name="IngredientsInput" DockPanel.Dock="Top"/>
+                    <Label Content="Max Time:" DockPanel.Dock="Top"/>
+                    <xctk:ShortUpDown x:Name="MaxTimeInput" DockPanel.Dock="Top"/>
+                    <Label Content="Category:" DockPanel.Dock="Top"/>
+                    <ComboBox x:Name="CategorySelect" DockPanel.Dock="Top" ItemsSource="{Binding CategoryOptions}" SelectedValuePath="Value" SelectedValue="{Binding SearchCategory}" DisplayMemberPath="Key"/>
+                    <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10" Template="{StaticResource FlatButtonTemplate}" />
+                    <Button x:Name="ClearSearchButton" Content="Clear Search" DockPanel.Dock="Top" Margin="0,10,0,0" Template="{StaticResource FlatButtonTemplate}"/>
+                </DockPanel>
+            </Grid>
         </DockPanel>
     </Grid>
 
-    <Window.Resources>
-        
-    </Window.Resources>
+
 </Window>
 

@@ -7,6 +7,28 @@
     <Application.Resources>
 
         <BitmapImage x:Key="FoxIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="C:\Users\wfoxiii\Source\Repos\RecipeBoxWPF\RecipeBox3\Resources\fox.ico"/>
+        <BitmapImage x:Key="RefreshIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="C:\Users\wfoxiii\Source\Repos\RecipeBoxWPF\RecipeBox3\Resources\refresh_16xLG.png"/>
 
+
+        <!-- Main Primary Color -->
+        <Color x:Key="ColorPrimary" A="#FF" R="#A7" G="#B6" B="#CA"/>
+        <Color x:Key="ColorPrimaryLight" A="#FF" R="#B4" G="#C6" B="#DC"/>
+        <Color x:Key="ColorPrimaryMidLight" A="#FF" R="#AE" G="#BE" B="#D3"/>
+        <Color x:Key="ColorPrimaryMidDark" A="#FF" R="#8F" G="#A7" B="#C7"/>
+        <Color x:Key="ColorPrimaryDark" A="#FF" R="#6B" G="#8C" B="#B5"/>
+
+        <!-- Main Secondary Color (1) -->
+        <Color x:Key="ColorSecondary1" A="#FF" R="#B2" G="#AE" B="#D0"/>
+        <Color x:Key="ColorSecondary1Light" A="#FF" R="#BE" G="#B9" B="#E0"/>
+        <Color x:Key="ColorSecondary1MidLight" A="#FF" R="#B8" G="#B4" B="#D8"/>
+        <Color x:Key="ColorSecondary1MidDark" A="#FF" R="#9D" G="#96" B="#CD"/>
+        <Color x:Key="ColorSecondary1Dark" A="#FF" R="#7D" G="#74" B="#BD"/>
+
+        <!-- Main Secondary Color (2) -->
+        <Color x:Key="ColorSecondary2" A="#FF" R="#A3" G="#C9" B="#C0"/>
+        <Color x:Key="ColorSecondary2Light" A="#FF" R="#B0" G="#DB" B="#D1"/>
+        <Color x:Key="ColorSecondary2MidLight" A="#FF" R="#AA" G="#D3" B="#C8"/>
+        <Color x:Key="ColorSecondary2MidDark" A="#FF" R="#89" G="#C6" B="#B7"/>
+        <Color x:Key="ColorSecondary2Dark" A="#FF" R="#64" G="#B4" B="#A0"/>
     </Application.Resources>
 </Application>
