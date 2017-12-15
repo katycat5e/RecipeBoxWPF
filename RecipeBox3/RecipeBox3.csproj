@@ -79,16 +79,20 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DBChecker.cs" />
+    <Compile Include="ViewRecipeModel.cs" />
     <Compile Include="SearchItems.cs" />
     <Compile Include="SplashDialog.xaml.cs">
       <DependentUpon>SplashDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="UnitManager.cs" />
+    <Compile Include="ViewRecipeWindow.xaml.cs">
+      <DependentUpon>ViewRecipeWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="EditSettingsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RecipeListView.xaml">
+    <Page Include="RecipeListWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -106,13 +110,17 @@
     <Compile Include="EditSettingsDialog.xaml.cs">
       <DependentUpon>EditSettingsDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RecipeListView.xaml.cs">
-      <DependentUpon>RecipeListView.xaml</DependentUpon>
+    <Compile Include="RecipeListWindow.xaml.cs">
+      <DependentUpon>RecipeListWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SplashDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewRecipeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

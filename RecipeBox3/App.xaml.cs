@@ -16,7 +16,7 @@ namespace RecipeBox3
     public partial class App : Application
     {
         public static CookbookAdapter Adapter;
-        public static MainWindow RecipeListView;
+        public static RecipeListWindow RecipeListView;
         public static UnitManager UnitManager;
 
         private static SplashDialog SplashPage;
@@ -31,7 +31,7 @@ namespace RecipeBox3
             Adapter = new CookbookAdapter();
             UnitManager = new UnitManager();
 
-            RecipeListView = new MainWindow();
+            RecipeListView = new RecipeListWindow();
             RecipeListView.ReloadTable(null, null);
 
             Current.MainWindow = RecipeListView;

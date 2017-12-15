@@ -25,12 +25,12 @@ namespace RecipeBox3
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RecipeListWindow : Window
     {
         public CookbookDataSet DataSet { get; set; }
         private CookbookAdapter CookbookAdapter { get { return App.Adapter; } }
 
-        public MainWindow()
+        public RecipeListWindow()
         {
             InitializeComponent();
             DataSet = new CookbookDataSet();
