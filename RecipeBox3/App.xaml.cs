@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 
 namespace RecipeBox3
@@ -15,7 +8,7 @@ namespace RecipeBox3
     /// </summary>
     public partial class App : Application
     {
-        public static CookbookAdapter Adapter;
+        public static CookbookModel GlobalCookbookModel;
         public static RecipeListWindow RecipeListView;
         public static UnitManager UnitManager;
 
@@ -28,7 +21,7 @@ namespace RecipeBox3
 
             if (!EnsureDBExists()) Shutdown();
             
-            Adapter = new CookbookAdapter();
+            GlobalCookbookModel = new CookbookModel(RecipeBox3.Properties.Settings.Default.CookbookConnectionString);
             UnitManager = new UnitManager();
 
             RecipeListView = new RecipeListWindow();

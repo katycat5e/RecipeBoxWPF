@@ -1,24 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RecipeBox3
 {
@@ -28,7 +19,21 @@ namespace RecipeBox3
     public partial class RecipeListWindow : Window
     {
         public CookbookDataSet DataSet { get; set; }
-        private CookbookAdapter CookbookAdapter { get { return App.Adapter; } }
+        private CookbookModel CookbookAdapter { get { return App.GlobalCookbookModel; } }
+
+
+
+        public object SelectedGridItem
+        {
+            get { return (object)GetValue(SelectedGridItemProperty); }
+            set { SetValue(SelectedGridItemProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedGridItem.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedGridItemProperty =
+            DependencyProperty.Register("SelectedGridItem", typeof(object), typeof(RecipeListWindow), new PropertyMetadata(null));
+
+
 
         public RecipeListWindow()
         {
@@ -180,6 +185,20 @@ namespace RecipeBox3
         private void QuitMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void RecipeGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (SelectedGridItem is DataRowView drv)
+            {
+                var viewRecipeWindow = new ViewRecipeWindow();
+                if (viewRecipeWindow.DataContext is RecipeViewModel viewModel)
+                {
+                    viewModel.RecipeID = (drv.Row as CookbookDataSet.SimpleRecipeViewRow)?.R_ID;
+                }
+                viewRecipeWindow.Show();
+                viewRecipeWindow.Focus();
+            }
         }
     }
 }

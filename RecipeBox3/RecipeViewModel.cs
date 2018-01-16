@@ -8,9 +8,47 @@ using System.Drawing;
 
 namespace RecipeBox3
 {
-    class ViewRecipeModel : DependencyObject
+    class RecipeViewModel : DependencyObject
     {
+        private CookbookModel CookbookAdapter { get { return App.GlobalCookbookModel; } }
+        private CookbookDataSet.RecipesRow RecipesRow;
+        
+        public void AssignRecipe(CookbookDataSet.RecipesRow row, string category)
+        {
+            RecipesRow = row;
+            RecipeName = row.R_Name;
+            
+            RecipeModified = (row.IsR_ModifiedNull()) ? null : row.R_Modified.ToShortTimeString() + " " + row.R_Modified.ToShortDateString();
 
+            PrepTime = (row.IsR_PrepTimeNull()) ? 0 : row.R_PrepTime;
+            CookTime = (row.IsR_CookTimeNull()) ? 0 : row.R_CookTime;
+
+            RecipeSteps = (row.IsR_StepsNull()) ? "" : row.R_Steps;
+        }
+
+        public void AssignPreview(Image preview)
+        {
+            RecipePreview = preview;
+        }
+
+        public int? RecipeID
+        {
+            get { return RecipesRow?.R_ID; }
+            set
+            {
+                RecipesRow = null;
+                RecipePreview = null;
+
+                if (value == null) return;
+                var getDataThread = new System.Threading.Thread(CookbookAdapter.GetDetailedRecipeData);
+
+                var recipeDelegate = new CookbookModel.AssignRecipeDelegate(AssignRecipe);
+                var imageDelegate = new CookbookModel.AssignImageDelegate(AssignPreview);
+                object[] args = { value, recipeDelegate, imageDelegate };
+
+                getDataThread.Start(args);
+            }
+        }
 
         public string RecipeName
         {
@@ -20,7 +58,7 @@ namespace RecipeBox3
 
         // Using a DependencyProperty as the backing store for RecipeName.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RecipeNameProperty =
-            DependencyProperty.Register("RecipeName", typeof(string), typeof(ViewRecipeModel), new PropertyMetadata("Recipe"));
+            DependencyProperty.Register("RecipeName", typeof(string), typeof(RecipeViewModel), new PropertyMetadata("Recipe"));
 
 
 
@@ -32,7 +70,7 @@ namespace RecipeBox3
 
         // Using a DependencyProperty as the backing store for RecipeCategory.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RecipeCategoryProperty =
-            DependencyProperty.Register("RecipeCategory", typeof(string), typeof(ViewRecipeModel), new PropertyMetadata("Category"));
+            DependencyProperty.Register("RecipeCategory", typeof(string), typeof(RecipeViewModel), new PropertyMetadata("Category"));
 
 
 
@@ -44,7 +82,7 @@ namespace RecipeBox3
 
         // Using a DependencyProperty as the backing store for RecipeModified.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RecipeModifiedProperty =
-            DependencyProperty.Register("RecipeModified", typeof(string), typeof(ViewRecipeModel), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register("RecipeModified", typeof(string), typeof(RecipeViewModel), new PropertyMetadata(string.Empty));
 
 
 
@@ -56,7 +94,7 @@ namespace RecipeBox3
 
         // Using a DependencyProperty as the backing store for PrepTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PrepTimeProperty =
-            DependencyProperty.Register("PrepTime", typeof(int), typeof(ViewRecipeModel), new PropertyMetadata(0));
+            DependencyProperty.Register("PrepTime", typeof(int), typeof(RecipeViewModel), new PropertyMetadata(0));
 
 
 
@@ -68,7 +106,7 @@ namespace RecipeBox3
 
         // Using a DependencyProperty as the backing store for CookTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CookTimeProperty =
-            DependencyProperty.Register("CookTime", typeof(int), typeof(ViewRecipeModel), new PropertyMetadata(0));
+            DependencyProperty.Register("CookTime", typeof(int), typeof(RecipeViewModel), new PropertyMetadata(0));
 
 
 
@@ -80,7 +118,7 @@ namespace RecipeBox3
 
         // Using a DependencyProperty as the backing store for RecipeSteps.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RecipeStepsProperty =
-            DependencyProperty.Register("RecipeSteps", typeof(string), typeof(ViewRecipeModel), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register("RecipeSteps", typeof(string), typeof(RecipeViewModel), new PropertyMetadata(string.Empty));
 
 
 
@@ -92,7 +130,7 @@ namespace RecipeBox3
 
         // Using a DependencyProperty as the backing store for RecipePreview.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RecipePreviewProperty =
-            DependencyProperty.Register("RecipePreview", typeof(Image), typeof(ViewRecipeModel), new PropertyMetadata(null));
+            DependencyProperty.Register("RecipePreview", typeof(Image), typeof(RecipeViewModel), new PropertyMetadata(null));
 
 
     }

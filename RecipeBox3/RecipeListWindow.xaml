@@ -117,7 +117,7 @@
                           CanUserDeleteRows="False" AutoGenerateColumns="False"
                           DataContext="{Binding DataSet}" RowHeaderWidth="0" SelectionMode="Single"
                           ColumnHeaderStyle="{Binding Mode=OneWay, Source={StaticResource GridHeaderStyle}}"
-                          Grid.Column="0">
+                          Grid.Column="0" CurrentItem="{Binding SelectedGridItem, ElementName=RecipeListView, Mode=OneWayToSource}" MouseDoubleClick="RecipeGrid_MouseDoubleClick">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding R_Name}" SortDirection="Ascending" Width="3*" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Description" Binding="{Binding R_Description}" Width="4*" IsReadOnly="True"/>

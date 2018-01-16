@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="{Binding RecipeName}" Height="600" Width="1000">
     <Window.DataContext>
-        <local:ViewRecipeModel/>
+        <local:RecipeViewModel/>
     </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Label">

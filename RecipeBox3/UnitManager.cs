@@ -9,7 +9,7 @@ namespace RecipeBox3
 {
     public class UnitManager
     {
-        private CookbookAdapter GlobalCookbookAdapter { get { return App.Adapter; } }
+        private CookbookModel GlobalCookbookAdapter { get { return App.GlobalCookbookModel; } }
         private CookbookDataSet.UnitsDataTable _UnitsTable;
         public CookbookDataSet.UnitsDataTable UnitsTable => _UnitsTable;
 

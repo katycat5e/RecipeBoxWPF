@@ -79,7 +79,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DBChecker.cs" />
-    <Compile Include="ViewRecipeModel.cs" />
+    <Compile Include="RecipeViewModel.cs" />
     <Compile Include="SearchItems.cs" />
     <Compile Include="SplashDialog.xaml.cs">
       <DependentUpon>SplashDialog.xaml</DependentUpon>
@@ -100,7 +100,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CookbookAdapter.cs" />
+    <Compile Include="CookbookModel.cs" />
     <Compile Include="CookbookDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
