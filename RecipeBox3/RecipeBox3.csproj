@@ -79,6 +79,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DBChecker.cs" />
+    <Compile Include="DBTableEditorView.xaml.cs">
+      <DependentUpon>DBTableEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RecipeViewModel.cs" />
     <Compile Include="SearchItems.cs" />
     <Compile Include="SplashDialog.xaml.cs">
@@ -88,6 +91,10 @@
     <Compile Include="ViewRecipeWindow.xaml.cs">
       <DependentUpon>ViewRecipeWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="DBTableEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="EditSettingsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -188,6 +195,9 @@
   <ItemGroup>
     <None Include="Resources\refresh_16xLG.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DataStore\DataStore\" />
+    <Folder Include="SampleData\SampleDataSource\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

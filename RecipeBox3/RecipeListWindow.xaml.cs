@@ -238,20 +238,25 @@ namespace RecipeBox3
         {
             if (!(sender is MenuItem item)) return;
 
-            if (SelectedGridItem is DataRowView drv &&
-                drv.Row is CookbookDataSet.SimpleRecipeViewRow selectedRow)
+            if (SelectedGridItem is DataRowView drv && drv.Row is CookbookDataSet.SimpleRecipeViewRow selectedRow)
             {
                 switch (item.Name)
                 {
+                    case "ViewRecipeMenuItem":
                     case "ViewRecipeContextItem":
                         ShowRecipeDetails(selectedRow.R_ID);
                         return;
+
+                    case "EditRecipeMenuItem":
                     case "EditRecipeContextItem":
                         ShowRecipeEditor(selectedRow.R_ID);
                         return;
+
+                    case "DeleteRecipeMenuItem":
                     case "DeleteRecipeContextItem":
                         DeleteRecipe(selectedRow.R_ID);
                         return;
+
                     default:
                         return;
                 }
