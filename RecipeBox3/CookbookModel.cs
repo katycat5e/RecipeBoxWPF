@@ -102,7 +102,7 @@ namespace RecipeBox3
 
         public delegate void AssignRecipeDelegate(CookbookDataSet.RecipesRow row, string category);
 
-        public delegate void AssignImageDelegate(Image image);
+        public delegate void AssignBitmapDelegate(Bitmap image);
 
         public void GetDetailedRecipeData(object args)
         {
@@ -132,7 +132,7 @@ namespace RecipeBox3
             
             Application.Current.Dispatcher.BeginInvoke(assignRecipeDelegate, row, category);
 
-            if ((argsArray.Length < 3) || !(argsArray[2] is AssignImageDelegate assignImageDelegate)) return;
+            if ((argsArray.Length < 3) || !(argsArray[2] is AssignBitmapDelegate assignImageDelegate)) return;
 
             // pull image preview from db
             Image image = null;

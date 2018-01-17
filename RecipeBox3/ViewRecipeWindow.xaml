@@ -40,15 +40,15 @@
             <Label FontSize="18" FontWeight="Bold" Content="{Binding RecipeName}" Grid.Row="0" Grid.ColumnSpan="2"/>
             <Label Content="{Binding RecipeCategory}" Grid.Row="1" Grid.ColumnSpan="2"/>
             <Label Content="Modified:" HorizontalContentAlignment="Right" Grid.Row="2" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="2" Grid.Column="1"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="2" Grid.Column="1" Content="{Binding RecipeModified}"/>
             <Label Content="Prep Time:" HorizontalContentAlignment="Right" Grid.Row="3" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="1"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="1" Content="{Binding PrepTimeString}"/>
             <Label Content="Cook Time:" HorizontalContentAlignment="Right" Grid.Row="4" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="4" Grid.Column="1"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="4" Grid.Column="1" Content="{Binding CookTimeString}"/>
         </Grid>
         <DataGrid Grid.Row="1" Grid.Column="0">
             
         </DataGrid>
-        <TextBlock Grid.Row="1" Grid.Column="1"/>
+        <TextBlock x:Name="StepsText" Grid.Row="1" Grid.Column="1" Text="{Binding RecipeSteps}"/>
     </Grid>
 </Window>

@@ -117,7 +117,8 @@
                           CanUserDeleteRows="False" AutoGenerateColumns="False"
                           DataContext="{Binding DataSet}" RowHeaderWidth="0" SelectionMode="Single"
                           ColumnHeaderStyle="{Binding Mode=OneWay, Source={StaticResource GridHeaderStyle}}"
-                          Grid.Column="0" CurrentItem="{Binding SelectedGridItem, ElementName=RecipeListView, Mode=OneWayToSource}" MouseDoubleClick="RecipeGrid_MouseDoubleClick">
+                          Grid.Column="0" CurrentItem="{Binding SelectedGridItem, ElementName=RecipeListView, Mode=OneWayToSource}"
+                          MouseDoubleClick="RecipeGrid_MouseDoubleClick" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding R_Name}" SortDirection="Ascending" Width="3*" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Description" Binding="{Binding R_Description}" Width="4*" IsReadOnly="True"/>
@@ -133,6 +134,14 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
+
+                    <DataGrid.ContextMenu>
+                        <ContextMenu Focusable="False">
+                            <MenuItem x:Name="ViewRecipeContextItem" Header="View" Click="MenuItem_Click" Focusable="False"/>
+                            <MenuItem x:Name="EditRecipeContextItem" Header="Edit" Click="MenuItem_Click" Focusable="False"/>
+                            <MenuItem x:Name="DeleteRecipeContextItem" Header="Delete" Click="MenuItem_Click" Focusable="False"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                 </DataGrid>
 
                 <DockPanel x:Name="SearchPanel" LastChildFill="False" Grid.Column="1"  >

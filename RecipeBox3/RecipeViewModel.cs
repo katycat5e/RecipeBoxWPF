@@ -5,18 +5,37 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Drawing;
+using System.Windows.Media;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace RecipeBox3
 {
-    class RecipeViewModel : DependencyObject
+    class RecipeViewModel : INotifyPropertyChanged
     {
         private CookbookModel CookbookAdapter { get { return App.GlobalCookbookModel; } }
         private CookbookDataSet.RecipesRow RecipesRow;
-        
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            if (propertyName != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+
         public void AssignRecipe(CookbookDataSet.RecipesRow row, string category)
         {
             RecipesRow = row;
             RecipeName = row.R_Name;
+
+            RecipeCategory = category;
             
             RecipeModified = (row.IsR_ModifiedNull()) ? null : row.R_Modified.ToShortTimeString() + " " + row.R_Modified.ToShortDateString();
 
@@ -26,9 +45,9 @@ namespace RecipeBox3
             RecipeSteps = (row.IsR_StepsNull()) ? "" : row.R_Steps;
         }
 
-        public void AssignPreview(Image preview)
+        public void AssignPreview(Bitmap preview)
         {
-            RecipePreview = preview;
+            RecipePreview = Imaging.CreateBitmapSourceFromHBitmap(preview.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
         }
 
         public int? RecipeID
@@ -43,95 +62,121 @@ namespace RecipeBox3
                 var getDataThread = new System.Threading.Thread(CookbookAdapter.GetDetailedRecipeData);
 
                 var recipeDelegate = new CookbookModel.AssignRecipeDelegate(AssignRecipe);
-                var imageDelegate = new CookbookModel.AssignImageDelegate(AssignPreview);
+                var imageDelegate = new CookbookModel.AssignBitmapDelegate(AssignPreview);
                 object[] args = { value, recipeDelegate, imageDelegate };
 
                 getDataThread.Start(args);
             }
         }
 
+        private string _RecipeName = "Recipe Name";
         public string RecipeName
         {
-            get { return (string)GetValue(RecipeNameProperty); }
-            set { SetValue(RecipeNameProperty, value); }
+            get { return _RecipeName; }
+            set
+            {
+                if (value != _RecipeName)
+                {
+                    _RecipeName = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
-        // Using a DependencyProperty as the backing store for RecipeName.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RecipeNameProperty =
-            DependencyProperty.Register("RecipeName", typeof(string), typeof(RecipeViewModel), new PropertyMetadata("Recipe"));
-
-
-
+        private string _RecipeCategory = "Category";
         public string RecipeCategory
         {
-            get { return (string)GetValue(RecipeCategoryProperty); }
-            set { SetValue(RecipeCategoryProperty, value); }
+            get { return _RecipeCategory; }
+            set
+            {
+                if (value != _RecipeCategory)
+                {
+                    _RecipeCategory = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
-        // Using a DependencyProperty as the backing store for RecipeCategory.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RecipeCategoryProperty =
-            DependencyProperty.Register("RecipeCategory", typeof(string), typeof(RecipeViewModel), new PropertyMetadata("Category"));
-
-
-
+        private string _RecipeModified = null;
         public string RecipeModified
         {
-            get { return (string)GetValue(RecipeModifiedProperty); }
-            set { SetValue(RecipeModifiedProperty, value); }
+            get { return _RecipeModified; }
+            set
+            {
+                if (value != _RecipeModified)
+                {
+                    _RecipeModified = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
-        // Using a DependencyProperty as the backing store for RecipeModified.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RecipeModifiedProperty =
-            DependencyProperty.Register("RecipeModified", typeof(string), typeof(RecipeViewModel), new PropertyMetadata(string.Empty));
-
-
+        private int _PrepTime = 0;
+        public string PrepTimeString
+        {
+            get { return String.Format("{0} min", _PrepTime); }
+        }
 
         public int PrepTime
         {
-            get { return (int)GetValue(PrepTimeProperty); }
-            set { SetValue(PrepTimeProperty, value); }
+            get { return _PrepTime; }
+            set
+            {
+                if (value != _PrepTime)
+                {
+                    _PrepTime = value;
+                    NotifyPropertyChanged();
+                    NotifyPropertyChanged("PrepTimeString");
+                }
+            }
         }
 
-        // Using a DependencyProperty as the backing store for PrepTime.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PrepTimeProperty =
-            DependencyProperty.Register("PrepTime", typeof(int), typeof(RecipeViewModel), new PropertyMetadata(0));
-
-
+        private int _CookTime = 0;
+        public string CookTimeString
+        {
+            get { return String.Format("{0} min", _CookTime); }
+        }
 
         public int CookTime
         {
-            get { return (int)GetValue(CookTimeProperty); }
-            set { SetValue(CookTimeProperty, value); }
+            get { return _CookTime; }
+            set
+            {
+                if (value != _CookTime)
+                {
+                    _CookTime = value;
+                    NotifyPropertyChanged();
+                    NotifyPropertyChanged("CookTimeString");
+                }
+            }
         }
 
-        // Using a DependencyProperty as the backing store for CookTime.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CookTimeProperty =
-            DependencyProperty.Register("CookTime", typeof(int), typeof(RecipeViewModel), new PropertyMetadata(0));
-
-
-
+        private string _RecipeSteps = null;
         public string RecipeSteps
         {
-            get { return (string)GetValue(RecipeStepsProperty); }
-            set { SetValue(RecipeStepsProperty, value); }
+            get { return _RecipeSteps; }
+            set
+            {
+                if (value != _RecipeSteps)
+                {
+                    _RecipeSteps = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
-        // Using a DependencyProperty as the backing store for RecipeSteps.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RecipeStepsProperty =
-            DependencyProperty.Register("RecipeSteps", typeof(string), typeof(RecipeViewModel), new PropertyMetadata(string.Empty));
-
-
-
-        public Image RecipePreview
+        private ImageSource _RecipePreview = null;
+        public ImageSource RecipePreview
         {
-            get { return (Image)GetValue(RecipePreviewProperty); }
-            set { SetValue(RecipePreviewProperty, value); }
+            get { return _RecipePreview; }
+            set
+            {
+                if (value != _RecipePreview)
+                {
+                    _RecipePreview = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
-
-        // Using a DependencyProperty as the backing store for RecipePreview.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RecipePreviewProperty =
-            DependencyProperty.Register("RecipePreview", typeof(Image), typeof(RecipeViewModel), new PropertyMetadata(null));
-
-
     }
 }

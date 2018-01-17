@@ -10,6 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using Xceed.Wpf.DataGrid;
 
 namespace RecipeBox3
 {
@@ -19,8 +20,7 @@ namespace RecipeBox3
     public partial class RecipeListWindow : Window
     {
         public CookbookDataSet DataSet { get; set; }
-        private CookbookModel CookbookAdapter { get { return App.GlobalCookbookModel; } }
-
+        private static CookbookModel CookbookAdapter { get { return App.GlobalCookbookModel; } }
 
 
         public object SelectedGridItem
@@ -177,6 +177,9 @@ namespace RecipeBox3
             return result;
         }
 
+        // Event Handlers
+        //--------------------------------------------------------------------------------------------------------
+
         private void ImgReload_Click(object sender, RoutedEventArgs e)
         {
             UpdateImages();
@@ -187,17 +190,71 @@ namespace RecipeBox3
             Close();
         }
 
+        private static void ShowRecipeDetails(int recipeID)
+        {
+            var viewRecipeWindow = new ViewRecipeWindow();
+            if (viewRecipeWindow.DataContext is RecipeViewModel viewModel)
+            {
+                viewModel.RecipeID = recipeID;
+            }
+
+            viewRecipeWindow.Show();
+            viewRecipeWindow.Focus();
+        }
+
+        private static void ShowRecipeEditor(int recipeID)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void DeleteRecipe(int recipeID)
+        {
+            var adapter = CookbookAdapter.RecipesTableAdapter;
+            var recipes = adapter.GetDataByID(recipeID);
+
+            if (recipes.Count > 0)
+            {
+                foreach (CookbookDataSet.RecipesRow row in recipes)
+                {
+                    row.Delete();
+                }
+
+                adapter.Update(recipes);
+            }
+
+            adapter.Dispose();
+        }
+
+
         private void RecipeGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (SelectedGridItem is DataRowView drv)
+            if (SelectedGridItem is DataRowView drv && drv.Row is CookbookDataSet.SimpleRecipeViewRow row)
             {
-                var viewRecipeWindow = new ViewRecipeWindow();
-                if (viewRecipeWindow.DataContext is RecipeViewModel viewModel)
+                ShowRecipeDetails(row.R_ID);
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is MenuItem item)) return;
+
+            if (SelectedGridItem is DataRowView drv &&
+                drv.Row is CookbookDataSet.SimpleRecipeViewRow selectedRow)
+            {
+                switch (item.Name)
                 {
-                    viewModel.RecipeID = (drv.Row as CookbookDataSet.SimpleRecipeViewRow)?.R_ID;
+                    case "ViewRecipeContextItem":
+                        ShowRecipeDetails(selectedRow.R_ID);
+                        return;
+                    case "EditRecipeContextItem":
+                        ShowRecipeEditor(selectedRow.R_ID);
+                        return;
+                    case "DeleteRecipeContextItem":
+                        DeleteRecipe(selectedRow.R_ID);
+                        return;
+                    default:
+                        return;
                 }
-                viewRecipeWindow.Show();
-                viewRecipeWindow.Focus();
             }
         }
     }
