@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecipeBox3.SQLiteModel
+namespace RecipeBox3.SQLiteModel.Adapters
 {
     class CategoriesAdapter : SQLiteAdapter
     {
