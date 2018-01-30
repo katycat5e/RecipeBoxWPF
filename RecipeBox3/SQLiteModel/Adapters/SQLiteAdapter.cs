@@ -57,6 +57,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
         protected SQLiteAdapter(string connectionString)
         {
+            connectionString = Environment.ExpandEnvironmentVariables(connectionString);
             Initialize(connectionString);
         }
 
@@ -72,16 +73,37 @@ namespace RecipeBox3.SQLiteModel.Adapters
             Connection = new SQLiteConnection(_connectionString);
         }
 
-        public abstract List<T> Select();
+        public abstract IEnumerable<T> SelectAll();
 
         public abstract T Select(int id);
+        
+        public abstract bool Modify(T row);
+        
+        public abstract bool Insert(T row);
 
-        /// <summary>
-        /// Update a <see cref="CookbookRow"/>
-        /// </summary>
-        /// <param name="row">Row to update</param>
-        /// <returns>True if the row was updated, otherwise false</returns>
-        public abstract bool Update(T row);
+        public abstract bool Delete(int id);
+
+        public abstract bool Delete(T row);
+
+
+        public bool Update(T row)
+        {
+            switch (row.Status)
+            {
+                case RowStatus.New:
+                    return Insert(row);
+
+                case RowStatus.Modified:
+                    return Modify(row);
+
+                case RowStatus.Deleted:
+                    return Delete(row);
+
+                case RowStatus.Unchanged:
+                default:
+                    return false;
+            }
+        }
 
         /// <summary>
         /// Update each <see cref="CookbookRow"/> in an enumerable set
@@ -100,38 +122,27 @@ namespace RecipeBox3.SQLiteModel.Adapters
         }
 
         /// <summary>
-        /// Insert a new <see cref="CookbookRow"/> into the database
+        /// Execute a non-reader <see cref="SQLiteCommand"/>, returning the number of rows affected
         /// </summary>
-        /// <param name="row">Row containing values to insert</param>
-        /// <returns>True if the row was successfully inserted</returns>
-        public abstract bool Insert(T row);
-
-        public int Insert(IEnumerable<T> rows)
+        /// <param name="command">Command to execute</param>
+        /// <returns>Number of rows affected</returns>
+        protected int ExecuteCommandNonQuery(SQLiteCommand command)
         {
-            int rowsInserted = 0;
-
-            foreach (T row in rows)
-            {
-                if (Insert(row)) rowsInserted += 1;
-            }
-
-            return rowsInserted;
+            command.Connection.Open();
+            int rowsAffected = command.ExecuteNonQuery();
+            command.Connection.Close();
+            return rowsAffected;
         }
 
-        public abstract bool Delete(int id);
-
-        public abstract bool Delete(T row);
-
-        public int Delete(IEnumerable<T> rows)
+        /// <summary>
+        /// Execute a <see cref="SQLiteCommand"/> and return a reader
+        /// </summary>
+        /// <param name="command">Command to execute</param>
+        /// <returns>DataReader containing results for the query</returns>
+        protected SQLiteDataReader ExecuteCommandReader(SQLiteCommand command)
         {
-            int rowsDeleted = 0;
-
-            foreach (T row in rows)
-            {
-                if (Delete(row)) rowsDeleted += 1;
-            }
-
-            return rowsDeleted;
+            command.Connection.Open();
+            return command.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
         }
     }
 }

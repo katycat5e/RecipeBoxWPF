@@ -234,10 +234,11 @@ namespace RecipeBox3
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void RecipeMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (!(sender is MenuItem item)) return;
 
+            // Recipe Options
             if (SelectedGridItem is DataRowView drv && drv.Row is CookbookDataSet.SimpleRecipeViewRow selectedRow)
             {
                 switch (item.Name)
@@ -261,6 +262,12 @@ namespace RecipeBox3
                         return;
                 }
             }
+        }
+
+        private void EditCategoriesMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var categoriesEditor = new CategoriesView();
+            categoriesEditor.ShowDialog();
         }
     }
 }

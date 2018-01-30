@@ -82,14 +82,14 @@
                 </MenuItem>
                 <MenuItem Header="_Edit" Style="{StaticResource MenuClickableStyle}">
                     <MenuItem Header="Database">
-                        <MenuItem Header="Categories" x:Name="EditCategoriesMenuItem" Click="MenuItem_Click"/>
-                        <MenuItem Header="Units" x:Name="EditUnitsMenuItem" Click="MenuItem_Click"/>
+                        <MenuItem Header="Categories" x:Name="EditCategoriesMenuItem" Click="EditCategoriesMenuItem_Click"/>
+                        <MenuItem Header="Units" x:Name="EditUnitsMenuItem" Click="RecipeMenuItem_Click"/>
                     </MenuItem>
                     <MenuItem Header="Recipe">
-                        <MenuItem Header="New" x:Name="NewRecipeMenuItem" Click="MenuItem_Click"/>
-                        <MenuItem Header="View" x:Name="ViewRecipeMenuItem" IsEnabled="False" Click="MenuItem_Click"/>
-                        <MenuItem Header="Edit" x:Name="EditRecipeMenuItem" IsEnabled="False" Click="MenuItem_Click"/>
-                        <MenuItem Header="Delete" x:Name="DeleteRecipeMenuItem" IsEnabled="False" Click="MenuItem_Click"/>
+                        <MenuItem Header="New" x:Name="NewRecipeMenuItem" Click="RecipeMenuItem_Click"/>
+                        <MenuItem Header="View" x:Name="ViewRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
+                        <MenuItem Header="Edit" x:Name="EditRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
+                        <MenuItem Header="Delete" x:Name="DeleteRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
                     </MenuItem>
                     <Separator />
                     <MenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
@@ -138,9 +138,9 @@
 
                     <DataGrid.ContextMenu>
                         <ContextMenu Focusable="False">
-                            <MenuItem x:Name="ViewRecipeContextItem" Header="View" Click="MenuItem_Click" Focusable="False"/>
-                            <MenuItem x:Name="EditRecipeContextItem" Header="Edit" Click="MenuItem_Click" Focusable="False"/>
-                            <MenuItem x:Name="DeleteRecipeContextItem" Header="Delete" Click="MenuItem_Click" Focusable="False"/>
+                            <MenuItem x:Name="ViewRecipeContextItem" Header="View" Click="RecipeMenuItem_Click" Focusable="False"/>
+                            <MenuItem x:Name="EditRecipeContextItem" Header="Edit" Click="RecipeMenuItem_Click" Focusable="False"/>
+                            <MenuItem x:Name="DeleteRecipeContextItem" Header="Delete" Click="RecipeMenuItem_Click" Focusable="False"/>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                 </DataGrid>

@@ -6,14 +6,18 @@ using System.Threading.Tasks;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
+    /// <summary>
+    /// Enumeration for possible row states
+    /// </summary>
     public enum RowStatus
     {
         Unchanged,
         New,
         Modified,
+        Deleted
     }
 
-    public abstract class CookbookRow
+    public abstract class CookbookRow : IEquatable<CookbookRow>
     {
         public RowStatus Status = RowStatus.Unchanged;
 
@@ -21,7 +25,13 @@ namespace RecipeBox3.SQLiteModel.Data
 
         protected virtual void OnRowChanged()
         {
-            Status = RowStatus.Modified;
+            if (Status == RowStatus.Unchanged) Status = RowStatus.Modified;
         }
+
+        public abstract bool Equals(CookbookRow row);
+
+        public override abstract bool Equals(object obj);
+
+        public override abstract int GetHashCode();
     }
 }

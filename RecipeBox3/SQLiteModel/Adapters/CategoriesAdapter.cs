@@ -52,7 +52,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
         /// <summary>Retrieve a list of <see cref="Category"/> objects from the Categories table</summary>
         /// <returns>List containing data from database or null if there is no connection</returns>
-        public override List<Category> Select()
+        public override IEnumerable<Category> SelectAll()
         {
             if (SelectCommand?.Connection == null) return null;
             else
@@ -60,7 +60,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 List<Category> results = new List<Category>();
                 idParameter.Value = null;
 
-                using (var reader = SelectCommand.ExecuteReader())
+                using (var reader = ExecuteCommandReader(SelectCommand))
                 {
                     if (reader.HasRows)
                     {
@@ -95,7 +95,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 idParameter.Value = id;
                 Category row = null;
 
-                using (var reader = SelectCommand.ExecuteReader())
+                using (var reader = ExecuteCommandReader(SelectCommand))
                 {
                     if (reader.HasRows)
                     {
@@ -118,12 +118,12 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// </summary>
         /// <param name="row"><see cref="Category"/> to update</param>
         /// <returns>True if the row was updated successfully</returns>
-        public override bool Update(Category row)
+        public override bool Modify(Category row)
         {
             idParameter.Value = row.C_ID;
             nameParameter.Value = row.C_Name;
             
-            return (UpdateCommand.ExecuteNonQuery() > 0);
+            return (ExecuteCommandNonQuery(UpdateCommand) > 0);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         {
             nameParameter.Value = row.C_Name;
 
-            return (InsertCommand.ExecuteNonQuery() > 0);
+            return (ExecuteCommandNonQuery(InsertCommand) > 0);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         {
             idParameter.Value = row.C_ID;
 
-            return (DeleteCommand.ExecuteNonQuery() > 0);
+            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         {
             idParameter.Value = id;
 
-            return (DeleteCommand.ExecuteNonQuery() > 0);
+            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
         }
     }
 }

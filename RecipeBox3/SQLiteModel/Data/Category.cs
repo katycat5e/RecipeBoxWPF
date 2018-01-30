@@ -43,5 +43,30 @@ namespace RecipeBox3.SQLiteModel.Data
             C_Name = name;
             Status = status;
         }
+
+        public override bool Equals(CookbookRow row)
+        {
+            if (row is Category c)
+            {
+                return (c.C_ID == C_ID && c.C_Name == C_Name);
+            }
+            else return false;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as CookbookRow);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 13;
+                hash = (hash * 7) + C_ID;
+                hash = (hash * 7) + ((C_Name == null) ? 0 : C_Name.GetHashCode());
+                return hash;
+            }
+        }
     }
 }
