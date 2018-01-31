@@ -114,16 +114,20 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <DataGrid x:Name="RecipeGrid" ItemsSource="{Binding SimpleRecipeView}" CanUserAddRows="False"
+                <DataGrid x:Name="RecipeGrid" ItemsSource="{Binding Recipes}" CanUserAddRows="False"
                           CanUserDeleteRows="False" AutoGenerateColumns="False"
-                          DataContext="{Binding DataSet}" RowHeaderWidth="0" SelectionMode="Single"
+                          RowHeaderWidth="0" SelectionMode="Single"
                           ColumnHeaderStyle="{Binding Mode=OneWay, Source={StaticResource GridHeaderStyle}}"
                           Grid.Column="0" CurrentItem="{Binding SelectedGridItem, ElementName=RecipeListView, Mode=OneWayToSource}"
                           MouseDoubleClick="RecipeGrid_MouseDoubleClick" IsReadOnly="True">
+                    <DataGrid.DataContext>
+                        <local:RecipeListViewModel/>
+                    </DataGrid.DataContext>
+                    
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding R_Name}" SortDirection="Ascending" Width="3*" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Description" Binding="{Binding R_Description}" Width="4*" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Last Modified" Binding="{Binding R_Modified}" Width="2*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Last Modified" Binding="{Binding ModifiedDateTime}" Width="2*" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Prep Time" Binding="{Binding R_PrepTime}" Width="1*" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Cook Time" Binding="{Binding R_CookTime}" Width="1*" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Category" Binding="{Binding C_Name}" Width="2*" IsReadOnly="True"/>

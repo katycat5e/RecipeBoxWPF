@@ -11,8 +11,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
 {
     public sealed class CategoriesAdapter : SQLiteAdapter<Category>
     {
-        private SQLiteParameter idParameter;
-        private SQLiteParameter nameParameter;
+        private SQLiteParameter idParameter     = new SQLiteParameter("@id", DbType.Int32);
+        private SQLiteParameter nameParameter   = new SQLiteParameter("@name", DbType.String);
 
         /// <summary>
         /// Create a new adapter with the application default connection string
@@ -32,9 +32,6 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected override void Initialize(string connectionString)
         {
             base.Initialize(connectionString);
-
-            idParameter = new SQLiteParameter("@id", DbType.Int32);
-            nameParameter = new SQLiteParameter("@name", DbType.String);
 
             SelectCommand.CommandText = "SELECT `C_ID`, `C_Name` FROM `Categories` WHERE (@id IS NULL) OR (`C_ID`=@id)";
             SelectCommand.Parameters.Add(idParameter);

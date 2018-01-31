@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,7 +9,7 @@ using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    public class Recipe : CookbookRow<Recipe>
+    public class DetailRecipe : CookbookRow<DetailRecipe>
     {
         public int R_ID
         {
@@ -17,7 +19,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_ID.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_IDProperty =
-            DependencyProperty.Register("R_ID", typeof(int), typeof(Recipe), new PropertyMetadata(-1, OnRowChanged));
+            DependencyProperty.Register("R_ID", typeof(int), typeof(DetailRecipe), new PropertyMetadata(-1, OnRowChanged));
 
 
 
@@ -29,7 +31,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Name.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_NameProperty =
-            DependencyProperty.Register("R_Name", typeof(string), typeof(Recipe), new PropertyMetadata("NewRecipe", OnRowChanged));
+            DependencyProperty.Register("R_Name", typeof(string), typeof(DetailRecipe), new PropertyMetadata("NewRecipe", OnRowChanged));
 
 
 
@@ -41,7 +43,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Description.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_DescriptionProperty =
-            DependencyProperty.Register("R_Description", typeof(string), typeof(Recipe), new PropertyMetadata("", OnRowChanged));
+            DependencyProperty.Register("R_Description", typeof(string), typeof(DetailRecipe), new PropertyMetadata("", OnRowChanged));
 
 
 
@@ -71,7 +73,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Modified.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_ModifiedProperty =
-            DependencyProperty.Register("R_Modified", typeof(long?), typeof(Recipe), new PropertyMetadata(null, OnRowChanged));
+            DependencyProperty.Register("R_Modified", typeof(long?), typeof(DetailRecipe), new PropertyMetadata(null, OnRowChanged));
 
 
 
@@ -83,7 +85,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_PrepTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_PrepTimeProperty =
-            DependencyProperty.Register("R_PrepTime", typeof(int), typeof(Recipe), new PropertyMetadata(0, OnRowChanged));
+            DependencyProperty.Register("R_PrepTime", typeof(int), typeof(DetailRecipe), new PropertyMetadata(0, OnRowChanged));
 
 
 
@@ -95,7 +97,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_CookTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_CookTimeProperty =
-            DependencyProperty.Register("R_CookTime", typeof(int), typeof(Recipe), new PropertyMetadata(0, OnRowChanged));
+            DependencyProperty.Register("R_CookTime", typeof(int), typeof(DetailRecipe), new PropertyMetadata(0, OnRowChanged));
 
 
 
@@ -107,7 +109,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Steps.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_StepsProperty =
-            DependencyProperty.Register("R_Steps", typeof(string), typeof(Recipe), new PropertyMetadata("", OnRowChanged));
+            DependencyProperty.Register("R_Steps", typeof(string), typeof(DetailRecipe), new PropertyMetadata("", OnRowChanged));
 
 
 
@@ -119,17 +121,37 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Category.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_CategoryProperty =
-            DependencyProperty.Register("R_Category", typeof(int), typeof(Recipe), new PropertyMetadata(1, OnRowChanged));
-        
-        
+            DependencyProperty.Register("R_Category", typeof(int), typeof(DetailRecipe), new PropertyMetadata(1, OnRowChanged));
 
-        public Recipe()
+
+
+        public string C_Name
         {
-            R_Modified = DateTime.Now.ToFileTime();
-            Status = RowStatus.New;
+            get { return (string)GetValue(C_NameProperty); }
+            set { SetValue(C_NameProperty, value); }
         }
 
-        public Recipe(Recipe source)
+        // Using a DependencyProperty as the backing store for C_Name.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty C_NameProperty =
+            DependencyProperty.Register("C_Name", typeof(string), typeof(DetailRecipe), new PropertyMetadata(""));
+
+
+
+        public Image Preview
+        {
+            get { return (Image)GetValue(PreviewProperty); }
+            set { SetValue(PreviewProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Preview.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PreviewProperty =
+            DependencyProperty.Register("Preview", typeof(Image), typeof(DetailRecipe), new PropertyMetadata(null));
+
+
+
+        public DetailRecipe() : base() { }
+
+        public DetailRecipe(Recipe source)
         {
             R_ID = source.R_ID;
             R_Name = source.R_Name;
@@ -139,10 +161,14 @@ namespace RecipeBox3.SQLiteModel.Data
             R_CookTime = source.R_CookTime;
             R_Steps = source.R_Steps;
             R_Category = source.R_Category;
+
+            C_Name = null;
+            Preview = null;
+
             Status = source.Status;
         }
 
-        public Recipe(DetailRecipe source)
+        public DetailRecipe(DetailRecipe source)
         {
             R_ID = source.R_ID;
             R_Name = source.R_Name;
@@ -152,6 +178,10 @@ namespace RecipeBox3.SQLiteModel.Data
             R_CookTime = source.R_CookTime;
             R_Steps = source.R_Steps;
             R_Category = source.R_Category;
+
+            C_Name = source.C_Name;
+            Preview = source.Preview;
+
             Status = source.Status;
         }
     }

@@ -9,16 +9,16 @@ using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
-    class RecipesAdapter : SQLiteAdapter<Recipe>
+    public class RecipesAdapter : SQLiteAdapter<Recipe>
     {
-        private SQLiteParameter idParameter;
-        private SQLiteParameter nameParameter;
-        private SQLiteParameter descParameter;
-        private SQLiteParameter modParameter;
-        private SQLiteParameter prepParameter;
-        private SQLiteParameter cookParameter;
-        private SQLiteParameter stepsParameter;
-        private SQLiteParameter categoryParameter;
+        protected SQLiteParameter idParameter         = new SQLiteParameter("@id", DbType.Int32);
+        protected SQLiteParameter nameParameter       = new SQLiteParameter("@name", DbType.String, 50);
+        protected SQLiteParameter descParameter       = new SQLiteParameter("@desc", DbType.String, 254);
+        protected SQLiteParameter modParameter        = new SQLiteParameter("@modified", DbType.Int64);
+        protected SQLiteParameter prepParameter       = new SQLiteParameter("@prep", DbType.Int32);
+        protected SQLiteParameter cookParameter       = new SQLiteParameter("@cook", DbType.Int32);
+        protected SQLiteParameter stepsParameter      = new SQLiteParameter("@steps", DbType.String);
+        protected SQLiteParameter categoryParameter   = new SQLiteParameter("@category", DbType.Int32);
 
         public RecipesAdapter() : base() { }
 
@@ -27,16 +27,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected override void Initialize(string connectionString)
         {
             base.Initialize(connectionString);
-
-            idParameter = new SQLiteParameter("@id", DbType.Int32);
-            nameParameter = new SQLiteParameter("@name", DbType.String, 50);
-            descParameter = new SQLiteParameter("@desc", DbType.String, 254);
-            modParameter = new SQLiteParameter("@modified", DbType.Int64);
-            prepParameter = new SQLiteParameter("@prep", DbType.Int32);
-            cookParameter = new SQLiteParameter("@cook", DbType.Int32);
-            stepsParameter = new SQLiteParameter("@steps", DbType.String);
-            categoryParameter = new SQLiteParameter("@category", DbType.Int32);
-
+            
             var allFields = new SQLiteParameter[]
             {
                 nameParameter, descParameter, modParameter,
@@ -63,32 +54,111 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
         public override bool Delete(int id)
         {
-            throw new NotImplementedException();
+            idParameter.Value = id;
+            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
         }
 
         public override bool Delete(Recipe row)
         {
-            throw new NotImplementedException();
+            idParameter.Value = row.R_ID;
+            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
         }
 
         public override bool Insert(Recipe row)
         {
-            throw new NotImplementedException();
+            SetParametersFromRecipe(row);
+            return (ExecuteCommandNonQuery(InsertCommand) > 0);
         }
 
         public override bool Modify(Recipe row)
         {
-            throw new NotImplementedException();
+            SetParametersFromRecipe(row);
+            return (ExecuteCommandNonQuery(UpdateCommand) > 0);
+        }
+
+        private void SetParametersFromRecipe(Recipe recipe)
+        {
+            idParameter.Value = recipe.R_ID;
+            nameParameter.Value = recipe.R_Name;
+            descParameter.Value = recipe.R_Description;
+            modParameter.Value = recipe.R_Modified;
+            prepParameter.Value = recipe.R_PrepTime;
+            cookParameter.Value = recipe.R_CookTime;
+            stepsParameter.Value = recipe.R_Steps;
+            categoryParameter.Value = recipe.R_Category;
         }
 
         public override Recipe Select(int id)
         {
-            throw new NotImplementedException();
+            if (SelectCommand.Connection == null) return null;
+            else
+            {
+                idParameter.Value = id;
+                Recipe row = null;
+
+                using (var reader = ExecuteCommandReader(SelectCommand))
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+
+                        row = GetRecipe(reader);
+                    }
+                }
+
+                return row;
+            }
         }
 
         public override IEnumerable<Recipe> SelectAll()
         {
-            throw new NotImplementedException();
+            if (SelectCommand.Connection == null) return null;
+            else
+            {
+                List<Recipe> results = new List<Recipe>();
+                idParameter.Value = null;
+
+                using (var reader = ExecuteCommandReader(SelectCommand))
+                {
+                    if (reader.HasRows)
+                    {
+                        Recipe nextRow;
+
+                        while (reader.Read())
+                        {
+                            nextRow = GetRecipe(reader);
+                            if (nextRow != null) results.Add(nextRow);
+                        }
+                    }
+                }
+
+                return results;
+            }
+        }
+
+        private static Recipe GetRecipe(SQLiteDataReader reader)
+        {
+            try
+            {
+                Recipe nextRow = new Recipe()
+                {
+                    R_ID = reader.GetInt32(0),
+                    R_Name = reader.GetString(1),
+                    R_Description = reader.GetString(2),
+                    R_Modified = reader.GetValue(3) as long?,
+                    R_PrepTime = reader.GetInt32(4),
+                    R_CookTime = reader.GetInt32(5),
+                    R_Steps = reader.GetString(6),
+                    R_Category = reader.GetInt32(7),
+                    Status = RowStatus.Unchanged
+                };
+
+                return nextRow;
+            }
+            catch (InvalidCastException)
+            {
+                return null;
+            }
         }
     }
 }

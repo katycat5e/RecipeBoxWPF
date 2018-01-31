@@ -132,8 +132,8 @@ namespace RecipeBox3
             }
             else previewImage = null;
 
-            if (Dispatcher != null)
-                Dispatcher.BeginInvoke(new SetPreviewImageDelegate(SetPreviewImage), new object[] { previewImage, rowNum });
+            //if (Dispatcher != null)
+            //    Dispatcher.BeginInvoke(new SetPreviewImageDelegate(SetPreviewImage), new object[] { previewImage, rowNum });
 
         }
 

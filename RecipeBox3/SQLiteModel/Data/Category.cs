@@ -3,37 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    public class Category : CookbookRow
+    public class Category : CookbookRow<Category>
     {
-        private int _C_ID;
         public int C_ID
         {
-            get { return _C_ID; }
-            set
-            {
-                _C_ID = value;
-                OnRowChanged();
-            }
+            get { return (int)GetValue(C_IDProperty); }
+            set { SetValue(C_IDProperty, value); }
         }
 
-        public string _C_Name;
+        // Using a DependencyProperty as the backing store for C_ID.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty C_IDProperty =
+            DependencyProperty.Register("C_ID", typeof(int), typeof(Category),
+                new PropertyMetadata(-1, OnRowChanged));
+
+
+        
         public string C_Name
         {
-            get { return _C_Name; }
-            set
-            {
-                _C_Name = value;
-                OnRowChanged();
-            }
+            get { return (string)GetValue(C_NameProperty); }
+            set { SetValue(C_NameProperty, value); }
         }
 
+        // Using a DependencyProperty as the backing store for C_Name.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty C_NameProperty =
+            DependencyProperty.Register("C_Name", typeof(string), typeof(Category),
+                new PropertyMetadata("NewCategory", OnRowChanged));
+
+        
         public Category()
         {
-            C_ID = -1;
-            C_Name = null;
             Status = RowStatus.New;
         }
 
@@ -44,29 +46,11 @@ namespace RecipeBox3.SQLiteModel.Data
             Status = status;
         }
 
-        public override bool Equals(CookbookRow row)
+        public Category(Category source)
         {
-            if (row is Category c)
-            {
-                return (c.C_ID == C_ID && c.C_Name == C_Name);
-            }
-            else return false;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as CookbookRow);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 13;
-                hash = (hash * 7) + C_ID;
-                hash = (hash * 7) + ((C_Name == null) ? 0 : C_Name.GetHashCode());
-                return hash;
-            }
+            C_ID = source.C_ID;
+            C_Name = source.C_Name;
+            Status = source.Status;
         }
     }
 }
