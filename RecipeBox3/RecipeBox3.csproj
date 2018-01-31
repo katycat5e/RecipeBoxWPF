@@ -138,6 +138,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ByteImageConverter.cs" />
     <Compile Include="DBChecker.cs" />
     <Compile Include="CategoriesEditorView.xaml.cs">
       <DependentUpon>CategoriesEditorView.xaml</DependentUpon>
@@ -150,11 +151,13 @@
     </Compile>
     <Compile Include="SQLiteModel\Adapters\CategoriesAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\DetailRecipesAdapter.cs" />
+    <Compile Include="SQLiteModel\Adapters\ImagesAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\RecipesAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\SQLiteAdapter.cs" />
     <Compile Include="SQLiteModel\Data\Category.cs" />
     <Compile Include="SQLiteModel\Data\CookbookRow.cs" />
     <Compile Include="SQLiteModel\Data\DetailRecipe.cs" />
+    <Compile Include="SQLiteModel\Data\ImageRow.cs" />
     <Compile Include="SQLiteModel\Data\Recipe.cs" />
     <Compile Include="UnitManager.cs" />
     <Compile Include="ViewRecipeWindow.xaml.cs">

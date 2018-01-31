@@ -20,6 +20,8 @@ namespace RecipeBox3.SQLiteModel.Data
 
     public abstract class CookbookRow<T> : DependencyObject where T : CookbookRow<T>
     {
+        public abstract int ID { get; set; }
+
         public RowStatus Status = RowStatus.Unchanged;
         
         protected static void OnRowChanged()

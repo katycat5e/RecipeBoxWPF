@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         }
 
         protected SQLiteConnection _connection;
-        protected SQLiteConnection Connection
+        protected virtual SQLiteConnection Connection
         {
             get
             {
@@ -42,6 +43,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 }
             }
         }
+
+        protected SQLiteParameter idParameter = new SQLiteParameter("@id", DbType.Int32);
 
         protected SQLiteCommand SelectCommand;
         protected SQLiteCommand InsertCommand;
@@ -73,17 +76,81 @@ namespace RecipeBox3.SQLiteModel.Adapters
             Connection = new SQLiteConnection(_connectionString);
         }
 
-        public abstract IEnumerable<T> SelectAll();
+        public virtual IEnumerable<T> SelectAll()
+        {
+            if (SelectCommand.Connection == null) return null;
+            else
+            {
+                List<T> results = new List<T>();
+                idParameter.Value = null;
 
-        public abstract T Select(int id);
+                using (var reader = ExecuteCommandReader(SelectCommand))
+                {
+                    if (reader.HasRows)
+                    {
+                        T nextRow;
+
+                        while (reader.Read())
+                        {
+                            nextRow = GetRowFromReader(reader);
+                            if (nextRow != null) results.Add(nextRow);
+                        }
+                    }
+                }
+
+                return results;
+            }
+        }
+
+        public virtual T Select(int id)
+        {
+            if (SelectCommand.Connection == null) return null;
+            else
+            {
+                idParameter.Value = id;
+                T row = null;
+
+                using (var reader = ExecuteCommandReader(SelectCommand))
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        row = GetRowFromReader(reader);
+                    }
+                }
+
+                return row;
+            }
+        }
+
+        protected abstract T GetRowFromReader(SQLiteDataReader reader);
+
+        protected abstract void SetDataParametersFromRow(T row);
         
-        public abstract bool Modify(T row);
+        public virtual bool Modify(T row)
+        {
+            idParameter.Value = row.ID;
+            SetDataParametersFromRow(row);
+            return (ExecuteCommandNonQuery(UpdateCommand) > 0);
+        }
         
-        public abstract bool Insert(T row);
+        public virtual bool Insert(T row)
+        {
+            SetDataParametersFromRow(row);
+            return (ExecuteCommandNonQuery(InsertCommand) > 0);
+        }
 
-        public abstract bool Delete(int id);
+        public virtual bool Delete(int id)
+        {
+            idParameter.Value = id;
+            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
+        }
 
-        public abstract bool Delete(T row);
+        public virtual bool Delete(T row)
+        {
+            idParameter.Value = row.ID;
+            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
+        }
 
 
         public bool Update(T row)
@@ -142,7 +209,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected SQLiteDataReader ExecuteCommandReader(SQLiteCommand command)
         {
             command.Connection.Open();
-            return command.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
+            return command.ExecuteReader(CommandBehavior.CloseConnection);
         }
     }
 }

@@ -11,7 +11,6 @@ namespace RecipeBox3.SQLiteModel.Adapters
 {
     public class RecipesAdapter : SQLiteAdapter<Recipe>
     {
-        protected SQLiteParameter idParameter         = new SQLiteParameter("@id", DbType.Int32);
         protected SQLiteParameter nameParameter       = new SQLiteParameter("@name", DbType.String, 50);
         protected SQLiteParameter descParameter       = new SQLiteParameter("@desc", DbType.String, 254);
         protected SQLiteParameter modParameter        = new SQLiteParameter("@modified", DbType.Int64);
@@ -28,7 +27,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         {
             base.Initialize(connectionString);
             
-            var allFields = new SQLiteParameter[]
+            var dataParams = new SQLiteParameter[]
             {
                 nameParameter, descParameter, modParameter,
                 prepParameter, cookParameter, stepsParameter, categoryParameter
@@ -40,45 +39,20 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
             UpdateCommand.CommandText = "UPDATE Recipes SET R_Name=@name, R_Description=@desc, R_Modified=@modified " +
                 "R_PrepTime=@prep, R_CookTime=@cook, R_Steps=@steps, R_Category=@category WHERE R_ID=@id";
-            UpdateCommand.Parameters.AddRange(allFields);
+            UpdateCommand.Parameters.AddRange(dataParams);
             UpdateCommand.Parameters.Add(idParameter);
 
             InsertCommand.CommandText = "INSERT INTO Recipes (R_Name, R_Description, R_Modified, " +
                 "R_PrepTime, R_CookTime, R_Steps, R_Category) " +
                 "VALUES (@name, @desc, @modified, @prep, @cook, @steps, @category)";
-            InsertCommand.Parameters.AddRange(allFields);
+            InsertCommand.Parameters.AddRange(dataParams);
 
             DeleteCommand.CommandText = "DELETE FROM Recipes WHERE R_ID=@id";
             DeleteCommand.Parameters.Add(idParameter);
         }
 
-        public override bool Delete(int id)
+        protected override void SetDataParametersFromRow(Recipe recipe)
         {
-            idParameter.Value = id;
-            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
-        }
-
-        public override bool Delete(Recipe row)
-        {
-            idParameter.Value = row.R_ID;
-            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
-        }
-
-        public override bool Insert(Recipe row)
-        {
-            SetParametersFromRecipe(row);
-            return (ExecuteCommandNonQuery(InsertCommand) > 0);
-        }
-
-        public override bool Modify(Recipe row)
-        {
-            SetParametersFromRecipe(row);
-            return (ExecuteCommandNonQuery(UpdateCommand) > 0);
-        }
-
-        private void SetParametersFromRecipe(Recipe recipe)
-        {
-            idParameter.Value = recipe.R_ID;
             nameParameter.Value = recipe.R_Name;
             descParameter.Value = recipe.R_Description;
             modParameter.Value = recipe.R_Modified;
@@ -88,55 +62,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             categoryParameter.Value = recipe.R_Category;
         }
 
-        public override Recipe Select(int id)
-        {
-            if (SelectCommand.Connection == null) return null;
-            else
-            {
-                idParameter.Value = id;
-                Recipe row = null;
-
-                using (var reader = ExecuteCommandReader(SelectCommand))
-                {
-                    if (reader.HasRows)
-                    {
-                        reader.Read();
-
-                        row = GetRecipe(reader);
-                    }
-                }
-
-                return row;
-            }
-        }
-
-        public override IEnumerable<Recipe> SelectAll()
-        {
-            if (SelectCommand.Connection == null) return null;
-            else
-            {
-                List<Recipe> results = new List<Recipe>();
-                idParameter.Value = null;
-
-                using (var reader = ExecuteCommandReader(SelectCommand))
-                {
-                    if (reader.HasRows)
-                    {
-                        Recipe nextRow;
-
-                        while (reader.Read())
-                        {
-                            nextRow = GetRecipe(reader);
-                            if (nextRow != null) results.Add(nextRow);
-                        }
-                    }
-                }
-
-                return results;
-            }
-        }
-
-        private static Recipe GetRecipe(SQLiteDataReader reader)
+        protected override Recipe GetRowFromReader(SQLiteDataReader reader)
         {
             try
             {
@@ -155,8 +81,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
                 return nextRow;
             }
-            catch (InvalidCastException)
+            catch (InvalidCastException e)
             {
+                Console.WriteLine(e.Message + " at " + e.TargetSite);
                 return null;
             }
         }

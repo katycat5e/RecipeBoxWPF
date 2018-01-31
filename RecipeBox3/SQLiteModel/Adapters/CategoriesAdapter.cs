@@ -11,7 +11,6 @@ namespace RecipeBox3.SQLiteModel.Adapters
 {
     public sealed class CategoriesAdapter : SQLiteAdapter<Category>
     {
-        private SQLiteParameter idParameter     = new SQLiteParameter("@id", DbType.Int32);
         private SQLiteParameter nameParameter   = new SQLiteParameter("@name", DbType.String);
 
         /// <summary>
@@ -143,18 +142,6 @@ namespace RecipeBox3.SQLiteModel.Adapters
         public override bool Delete(Category row)
         {
             idParameter.Value = row.C_ID;
-
-            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
-        }
-
-        /// <summary>
-        /// Delete a <see cref="Category"/> by id
-        /// </summary>
-        /// <param name="id">C_ID of <see cref="Category"/> to delete</param>
-        /// <returns>True if the row was deleted successfully</returns>
-        public override bool Delete(int id)
-        {
-            idParameter.Value = id;
 
             return (ExecuteCommandNonQuery(DeleteCommand) > 0);
         }
