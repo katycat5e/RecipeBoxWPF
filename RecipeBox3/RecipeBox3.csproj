@@ -148,9 +148,11 @@
       <DependentUpon>SplashDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SQLiteModel\Adapters\CategoriesAdapter.cs" />
+    <Compile Include="SQLiteModel\Adapters\RecipesAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\SQLiteAdapter.cs" />
     <Compile Include="SQLiteModel\Data\Category.cs" />
     <Compile Include="SQLiteModel\Data\CookbookRow.cs" />
+    <Compile Include="SQLiteModel\Data\Recipe.cs" />
     <Compile Include="UnitManager.cs" />
     <Compile Include="ViewRecipeWindow.xaml.cs">
       <DependentUpon>ViewRecipeWindow.xaml</DependentUpon>
@@ -212,6 +214,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="cookbook.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="CookbookDataSet.xsc">
       <DependentUpon>CookbookDataSet.xsd</DependentUpon>
     </None>
