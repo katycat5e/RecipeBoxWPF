@@ -46,104 +46,28 @@ namespace RecipeBox3.SQLiteModel.Adapters
             DeleteCommand.Parameters.Add(idParameter);
         }
 
-        /// <summary>Retrieve a list of <see cref="Category"/> objects from the Categories table</summary>
-        /// <returns>List containing data from database or null if there is no connection</returns>
-        public override IEnumerable<Category> SelectAll()
-        {
-            if (SelectCommand?.Connection == null) return null;
-            else
-            {
-                List<Category> results = new List<Category>();
-                idParameter.Value = null;
-
-                using (var reader = ExecuteCommandReader(SelectCommand))
-                {
-                    if (reader.HasRows)
-                    {
-                        Category nextRow;
-
-                        while (reader.Read())
-                        {
-                            try
-                            {
-                                nextRow = new Category(reader.GetInt32(0), reader.GetString(1));
-                                results.Add(nextRow);
-                            }
-                            catch (InvalidCastException) { }
-                        }
-                    }
-                }
-
-                return results;
-            }
-        }
-
-        /// <summary>
-        /// Get a specific <see cref="Category"/> by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public override Category Select(int id)
-        {
-            if (SelectCommand?.Connection == null) return null;
-            else
-            {
-                idParameter.Value = id;
-                Category row = null;
-
-                using (var reader = ExecuteCommandReader(SelectCommand))
-                {
-                    if (reader.HasRows)
-                    {
-                        reader.Read();
-
-                        try
-                        {
-                            row = new Category(reader.GetInt32(0), reader.GetString(1));
-                        }
-                        catch (InvalidCastException) { }
-                    }
-                }
-
-                return row;
-            }
-        }
-
-        /// <summary>
-        /// Update a <see cref="Category"/> in the database
-        /// </summary>
-        /// <param name="row"><see cref="Category"/> to update</param>
-        /// <returns>True if the row was updated successfully</returns>
-        public override bool Modify(Category row)
-        {
-            idParameter.Value = row.C_ID;
-            nameParameter.Value = row.C_Name;
-            
-            return (ExecuteCommandNonQuery(UpdateCommand) > 0);
-        }
-
-        /// <summary>
-        /// Insert a new <see cref="Category"/> into the database
-        /// </summary>
-        /// <param name="row"><see cref="Category"/> containing values to insert</param>
-        /// <returns>True if the row was inserted successfully</returns>
-        public override bool Insert(Category row)
+        protected override void SetDataParametersFromRow(Category row)
         {
             nameParameter.Value = row.C_Name;
-
-            return (ExecuteCommandNonQuery(InsertCommand) > 0);
         }
 
-        /// <summary>
-        /// Delete a <see cref="Category"/> from the database
-        /// </summary>
-        /// <param name="row"><see cref="Category"/> to delete</param>
-        /// <returns>True if the row was deleted successfully</returns>
-        public override bool Delete(Category row)
+        protected override Category GetRowFromReader(SQLiteDataReader reader)
         {
-            idParameter.Value = row.C_ID;
+            try
+            {
+                Category newCategory = new Category()
+                {
+                    C_ID = reader.GetInt32(0),
+                    C_Name = reader.GetString(1)
+                };
 
-            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
+                return newCategory;
+            }
+            catch (InvalidCastException e)
+            {
+                Console.WriteLine(e.Message + " at " + e.TargetSite);
+                return null;
+            }
         }
     }
 }

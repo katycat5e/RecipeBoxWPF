@@ -39,13 +39,6 @@ namespace RecipeBox3.SQLiteModel.Data
             Status = RowStatus.New;
         }
 
-        public Category(int id, string name, RowStatus status = RowStatus.Unchanged)
-        {
-            C_ID = id;
-            C_Name = name;
-            Status = status;
-        }
-
         public Category(Category source)
         {
             C_ID = source.C_ID;
