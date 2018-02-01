@@ -11,8 +11,14 @@ namespace RecipeBox3.SQLiteModel.Adapters
 {
     public class ImagesAdapter : SQLiteAdapter<ImageRow>
     {
-        private SQLiteParameter recipeParameter = new SQLiteParameter("@recipe", DbType.Int32);
-        private SQLiteParameter dataParameter   = new SQLiteParameter("@data", DbType.Binary);
+        private static SQLiteParameter recipeParameter = new SQLiteParameter("@recipe", DbType.Int32, "IMG_RecipeID");
+        private static SQLiteParameter dataParameter   = new SQLiteParameter("@data", DbType.Binary, "IMG_Data");
+        
+        /// <inheritdoc/>
+        protected override SQLiteParameter[] DataParameters => new SQLiteParameter[] { recipeParameter, dataParameter };
+
+        protected override string TableName => "Images";
+        protected override string IDColumn => "IMG_ID";
 
         private SQLiteCommand SelectByRecipeCommand;
 
@@ -34,34 +40,19 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
         public ImagesAdapter(string connectionString) : base(connectionString) { }
 
+        /// <inheritdoc/>
         protected override void Initialize(string connectionString)
         {
             base.Initialize(connectionString);
-
-            SelectCommand.CommandText = "SELECT IMG_ID, IMG_RecipeID, IMG_Data FROM Images " +
-                "WHERE (@id IS NULL) OR (IMG_ID = @id)";
-            SelectCommand.Parameters.Add(idParameter);
-            SelectCommand.Parameters.Add(dataParameter);
-
+            
             SelectByRecipeCommand = new SQLiteCommand(
                 "SELECT IMG_ID, IMG_RecipeID, IMG_Data FROM IMAGES WHERE IMG_RecipeID=@recipe",
                 Connection);
+
             SelectByRecipeCommand.Parameters.Add(recipeParameter);
-
-            UpdateCommand.CommandText = "UPDATE Images SET IMG_RecipeID=@recipe, IMG_Data=@data " +
-                "WHERE IMG_ID=@id";
-            UpdateCommand.Parameters.Add(idParameter);
-            UpdateCommand.Parameters.Add(recipeParameter);
-            UpdateCommand.Parameters.Add(dataParameter);
-
-            InsertCommand.CommandText = "INSERT INTO Images (IMG_RecipeID, IMG_Data) VALUES (@recipe, @data)";
-            InsertCommand.Parameters.Add(recipeParameter);
-            InsertCommand.Parameters.Add(dataParameter);
-
-            DeleteCommand.CommandText = "DELETE FROM Images WHERE IMG_ID=@id";
-            DeleteCommand.Parameters.Add(idParameter);
         }
 
+        /// <inheritdoc/>
         public ImageRow SelectByRecipe(int recipeID)
         {
             if (SelectByRecipeCommand.Connection == null) return null;
@@ -83,6 +74,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <inheritdoc/>
         protected override ImageRow GetRowFromReader(SQLiteDataReader reader)
         {
             try
@@ -93,17 +85,52 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     IMG_RecipeID = reader.GetValue(1) as int?
                 };
 
-                //TODO: get image stream
+                row.IMG_Data = GetIMG_DataFromReader(reader, 2);
 
                 return row;
             }
             catch (InvalidCastException e)
             {
-                Console.WriteLine(e.Message + " at " + e.TargetSite);
+                App.LogException(e);
                 return null;
             }
         }
 
+        /// <summary>
+        /// Pull binary image data from the datareader
+        /// </summary>
+        /// <param name="reader">
+        /// <see cref="SQLiteDataReader"/> returned by a select command to read data from
+        /// </param>
+        /// <returns>Array of bytes containing the image data</returns>
+        public static byte[] GetIMG_DataFromReader(SQLiteDataReader reader, int columnIndex)
+        {
+            const int BUFFER_SIZE = 2048;
+            byte[] buffer = new byte[BUFFER_SIZE];
+            long bytesRead;
+            long currentOffset = 0;
+
+            try
+            {
+                using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
+                {
+                    while ((bytesRead = reader.GetBytes(columnIndex, currentOffset, buffer, 0, buffer.Length)) > 0)
+                    {
+                        stream.Write(buffer, 0, (int)bytesRead);
+                        currentOffset += bytesRead;
+                    }
+
+                    return stream.ToArray();
+                }
+            }
+            catch (Exception e)
+            {
+                App.LogException(e);
+                return null;
+            }
+        }
+        
+        /// <inheritdoc/>
         protected override void SetDataParametersFromRow(ImageRow row)
         {
             recipeParameter.Value = row.IMG_RecipeID;

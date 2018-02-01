@@ -9,6 +9,12 @@ namespace RecipeBox3.SQLiteModel.Data
 {
     public class Category : CookbookRow<Category>
     {
+        public override int ID
+        {
+            get => C_ID;
+            set => C_ID = value;
+        }
+
         public int C_ID
         {
             get { return (int)GetValue(C_IDProperty); }

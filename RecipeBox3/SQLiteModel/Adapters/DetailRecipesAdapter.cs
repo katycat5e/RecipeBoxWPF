@@ -1,6 +1,7 @@
 ﻿using RecipeBox3.SQLiteModel.Data;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -8,69 +9,136 @@ using System.Threading.Tasks;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
-    class DetailRecipesAdapter : SQLiteAdapter<DetailRecipe>
+    class DetailRecipesAdapter : RecipesBaseAdapter<DetailRecipe>
     {
-        private RecipesAdapter recipesAdapter;
-        private CategoriesAdapter categoriesAdapter;
+        public bool RetrieveImages { get; set; }
 
-        public bool RetrieveImages = false;
+        protected override string TableName => "Recipes LEFT JOIN Categories ON R_Category=C_ID";
+        
+        protected override IEnumerable<string> DataColumns =>
+            base.DataColumns.Union(new string[] { "C_Name" });
 
+        private SQLiteCommand SelectWithImageCommand;
+
+        /// <inheritdoc/>
         protected override void Initialize(string connectionString)
         {
             base.Initialize(connectionString);
 
-            recipesAdapter = new RecipesAdapter();
-            categoriesAdapter = new CategoriesAdapter();
-        }
-
-        public override DetailRecipe Select(int id)
-        {
-            var recipe = recipesAdapter.Select(id);
-            if (recipe == null) return null;
-
-            var tmpCategory = categoriesAdapter.Select(recipe.R_Category);
-            return new DetailRecipe(recipe)
+            SelectWithImageCommand = new SQLiteCommand(Connection)
             {
-                C_Name = tmpCategory?.C_Name
+                CommandText = String.Format(
+                    "SELECT {0}, {1}, IMG_Data FROM {2} WHERE (@id IS NULL) OR ({0}=@id)",
+                    IDColumn,
+                    DataColumns,
+                    TableName)
             };
         }
 
+        /// <inheritdoc/>
+        public override DetailRecipe Select(int id)
+        {
+            if (RetrieveImages)
+            {
+                if (SelectWithImageCommand.Connection == null) return null;
+                else
+                {
+                    IDParameter.Value = id;
+                    DetailRecipe row = null;
+
+                    using (var reader = ExecuteCommandReader(SelectWithImageCommand))
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            row = GetRowFromReaderWithImage(reader);
+                        }
+                    }
+
+                    return row;
+                }
+            }
+            else
+            {
+                return base.Select(id);
+            }
+        }
+
+        /// <inheritdoc/>
         public override IEnumerable<DetailRecipe> SelectAll()
         {
-            var recipes = recipesAdapter.SelectAll();
-
-            var results = recipes.Select(p => new DetailRecipe(p)).ToList();
-
-            Category tmpCategory;
-            foreach (DetailRecipe recipe in results)
+            if (RetrieveImages)
             {
-                tmpCategory = categoriesAdapter.Select(recipe.R_Category);
-                recipe.C_Name = tmpCategory?.C_Name;
+                if (SelectWithImageCommand.Connection == null) return null;
+                else
+                {
+                    var results = new List<DetailRecipe>();
+                    IDParameter.Value = null;
+
+                    using (var reader = ExecuteCommandReader(SelectWithImageCommand))
+                    {
+                        if (reader.HasRows)
+                        {
+                            DetailRecipe nextRow;
+
+                            while (reader.Read())
+                            {
+                                nextRow = GetRowFromReaderWithImage(reader);
+                                if (nextRow != null) results.Add(nextRow);
+                            }
+                        }
+                    }
+
+                    return results;
+                }
             }
-
-            return results;
+            else
+            {
+                return base.SelectAll();
+            }
         }
 
-        public override bool Modify(DetailRecipe row)
+        /// <inheritdoc/>
+        protected override DetailRecipe GetRowFromReader(SQLiteDataReader reader)
         {
-            return recipesAdapter.Modify(new Recipe(row));
+            try
+            {
+                var nextRow = new DetailRecipe()
+                {
+                    R_ID = reader.GetInt32(0),
+                    R_Name = reader.GetString(1),
+                    R_Description = reader.GetString(2),
+                    R_Modified = reader.GetValue(3) as long?,
+                    R_PrepTime = reader.GetInt32(4),
+                    R_CookTime = reader.GetInt32(5),
+                    R_Steps = reader.GetString(6),
+                    R_Category = reader.GetInt32(7),
+                    C_Name = reader.GetString(8),
+                    IMG_Data = null,
+                    Status = RowStatus.Unchanged,
+                };
+
+                return nextRow;
+            }
+            catch (InvalidCastException e)
+            {
+                App.LogException(e);
+                return null;
+            }
         }
 
-        public override bool Insert(DetailRecipe row)
+        protected DetailRecipe GetRowFromReaderWithImage(SQLiteDataReader reader)
         {
-            var newRow = new Recipe(row);
+            var nextRow = GetRowFromReader(reader);
+            nextRow.IMG_Data = ImagesAdapter.GetIMG_DataFromReader(reader, 9);
 
-            return recipesAdapter.Insert(newRow);
+            return nextRow;
         }
 
-        public override bool Delete(int id)
+        /// <inheritdoc/>
+        protected override void SetDataParametersFromRow(DetailRecipe row)
         {
-            return recipesAdapter.Delete(id);
-        }
-
-        public override bool Delete(DetailRecipe row)
-        {
-            return recipesAdapter.Delete(new Recipe(row));
+            base.SetDataParametersFromRow(row);
         }
     }
 }

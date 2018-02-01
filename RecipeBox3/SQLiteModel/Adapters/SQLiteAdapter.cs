@@ -44,19 +44,26 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
-        protected SQLiteParameter idParameter = new SQLiteParameter("@id", DbType.Int32);
+        protected SQLiteParameter IDParameter = new SQLiteParameter("@id", DbType.Int32);
+        /// <summary>An array of non-identity parameters for insert and update queries</summary>
+        protected abstract SQLiteParameter[] DataParameters { get; }
 
         protected SQLiteCommand SelectCommand;
         protected SQLiteCommand InsertCommand;
         protected SQLiteCommand UpdateCommand;
         protected SQLiteCommand DeleteCommand;
 
-        public bool ClearBeforeFill { get; set; }
+        protected abstract string TableName { get; }
 
-        protected SQLiteAdapter() : this(Properties.Settings.Default.SQLiteConnectionString)
-        {
-            
-        }
+        protected virtual string IDColumn => IDParameter.SourceColumn;
+
+        protected virtual IEnumerable<string> DataColumns =>
+            DataParameters.Select(p => p.SourceColumn).ToList();
+
+        protected virtual IEnumerable<string> DataParamNames =>
+            DataParameters.Select(p => p.ParameterName).ToList();
+
+        protected SQLiteAdapter() : this(Properties.Settings.Default.SQLiteConnectionString) { }
 
         protected SQLiteAdapter(string connectionString)
         {
@@ -64,14 +71,62 @@ namespace RecipeBox3.SQLiteModel.Adapters
             Initialize(connectionString);
         }
 
+        /// <summary>
+        /// Setup the basic table commands
+        /// </summary>
+        /// <param name="connectionString">Connection string to be used for the connection</param>
         protected virtual void Initialize(string connectionString)
         {
             _connectionString = connectionString;
 
-            SelectCommand = new SQLiteCommand();
-            InsertCommand = new SQLiteCommand();
+            // Setup Select command
+            SelectCommand = new SQLiteCommand()
+            {
+                CommandText = String.Format(
+                    "SELECT {0}, {1} FROM {2} WHERE (@id IS NULL) OR ({0} = @id)",
+                    IDColumn,
+                    String.Join(", ", DataColumns),
+                    TableName)
+            };
+
+            SelectCommand.Parameters.Add(IDParameter);
+
+            // Setup Insert command
+            InsertCommand = new SQLiteCommand()
+            {
+                CommandText = String.Format(
+                    "INSERT INTO {0} ({1}) VALUES ({2})",
+                    TableName,
+                    String.Join(", ", DataColumns),
+                    String.Join(", ", DataParamNames))
+            };
+
+            InsertCommand.Parameters.Add(IDParameter);
+            InsertCommand.Parameters.AddRange(DataParameters);
+
+            // Setup Update command
             UpdateCommand = new SQLiteCommand();
-            DeleteCommand = new SQLiteCommand();
+
+            var columnAssignments = DataParameters.Select(p => String.Format("{0}={1}", p.SourceColumn, p.ParameterName));
+            
+            UpdateCommand.CommandText = String.Format("UPDATE {0} SET {1} WHERE ({2}=@id)",
+                TableName,
+                String.Join(", ", columnAssignments),
+                IDColumn);
+
+            UpdateCommand.Parameters.Add(IDParameter);
+            UpdateCommand.Parameters.AddRange(DataParameters);
+
+            // Setup Delete Command
+            DeleteCommand = new SQLiteCommand()
+            {
+                CommandText = String.Format(
+                    "DELETE FROM {0} WHERE ({1} = @id)",
+                    TableName,
+                    IDColumn)
+            };
+
+            DeleteCommand.Parameters.Add(IDParameter);
 
             Connection = new SQLiteConnection(_connectionString);
         }
@@ -82,7 +137,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             else
             {
                 List<T> results = new List<T>();
-                idParameter.Value = null;
+                IDParameter.Value = null;
 
                 using (var reader = ExecuteCommandReader(SelectCommand))
                 {
@@ -107,7 +162,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             if (SelectCommand.Connection == null) return null;
             else
             {
-                idParameter.Value = id;
+                IDParameter.Value = id;
                 T row = null;
 
                 using (var reader = ExecuteCommandReader(SelectCommand))
@@ -125,11 +180,15 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
         protected abstract T GetRowFromReader(SQLiteDataReader reader);
 
+        /// <summary>
+        /// Set all fields other than the row ID
+        /// </summary>
+        /// <param name="row"></param>
         protected abstract void SetDataParametersFromRow(T row);
         
         public virtual bool Modify(T row)
         {
-            idParameter.Value = row.ID;
+            IDParameter.Value = row.ID;
             SetDataParametersFromRow(row);
             return (ExecuteCommandNonQuery(UpdateCommand) > 0);
         }
@@ -142,13 +201,13 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
         public virtual bool Delete(int id)
         {
-            idParameter.Value = id;
+            IDParameter.Value = id;
             return (ExecuteCommandNonQuery(DeleteCommand) > 0);
         }
 
         public virtual bool Delete(T row)
         {
-            idParameter.Value = row.ID;
+            IDParameter.Value = row.ID;
             return (ExecuteCommandNonQuery(DeleteCommand) > 0);
         }
 
@@ -193,7 +252,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// </summary>
         /// <param name="command">Command to execute</param>
         /// <returns>Number of rows affected</returns>
-        protected int ExecuteCommandNonQuery(SQLiteCommand command)
+        protected static int ExecuteCommandNonQuery(SQLiteCommand command)
         {
             command.Connection.Open();
             int rowsAffected = command.ExecuteNonQuery();
@@ -206,7 +265,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// </summary>
         /// <param name="command">Command to execute</param>
         /// <returns>DataReader containing results for the query</returns>
-        protected SQLiteDataReader ExecuteCommandReader(SQLiteCommand command)
+        protected static SQLiteDataReader ExecuteCommandReader(SQLiteCommand command)
         {
             command.Connection.Open();
             return command.ExecuteReader(CommandBehavior.CloseConnection);

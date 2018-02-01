@@ -11,7 +11,11 @@ namespace RecipeBox3.SQLiteModel.Adapters
 {
     public sealed class CategoriesAdapter : SQLiteAdapter<Category>
     {
-        private SQLiteParameter nameParameter   = new SQLiteParameter("@name", DbType.String);
+        private static SQLiteParameter nameParameter   = new SQLiteParameter("@name", DbType.String, "C_Name");
+
+        protected override string TableName => "Categories";
+
+        protected override SQLiteParameter[] DataParameters => new SQLiteParameter[] { nameParameter };
 
         /// <summary>
         /// Create a new adapter with the application default connection string
@@ -24,33 +28,13 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <param name="connectionString"></param>
         public CategoriesAdapter(string connectionString) : base(connectionString) { }
 
-        /// <summary>
-        /// Called from base constructor
-        /// </summary>
-        /// <param name="connectionString"></param>
-        protected override void Initialize(string connectionString)
-        {
-            base.Initialize(connectionString);
-
-            SelectCommand.CommandText = "SELECT `C_ID`, `C_Name` FROM `Categories` WHERE (@id IS NULL) OR (`C_ID`=@id)";
-            SelectCommand.Parameters.Add(idParameter);
-
-            UpdateCommand.CommandText = "UPDATE `Categories` SET `C_Name`=@name WHERE `C_ID`=@id";
-            UpdateCommand.Parameters.Add(idParameter);
-            UpdateCommand.Parameters.Add(nameParameter);
-
-            InsertCommand.CommandText = "INSERT INTO `Categories` (`C_Name`) VALUES (@name)";
-            InsertCommand.Parameters.Add(nameParameter);
-
-            DeleteCommand.CommandText = "DELETE FROM `Categories` WHERE `C_ID`=@id";
-            DeleteCommand.Parameters.Add(idParameter);
-        }
-
+        /// <inheritdoc/>
         protected override void SetDataParametersFromRow(Category row)
         {
             nameParameter.Value = row.C_Name;
         }
 
+        /// <inheritdoc/>
         protected override Category GetRowFromReader(SQLiteDataReader reader)
         {
             try
@@ -65,7 +49,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
             catch (InvalidCastException e)
             {
-                Console.WriteLine(e.Message + " at " + e.TargetSite);
+                App.LogException(e);
                 return null;
             }
         }

@@ -7,7 +7,13 @@ using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    public class Recipe : CookbookRow<Recipe>
+    public class Recipe : RecipeBase<Recipe> { }
+
+    /// <summary>
+    /// Abstract class for creating joins using the Recipes table
+    /// </summary>
+    /// <typeparam name="U"></typeparam>
+    public abstract class RecipeBase<U> : CookbookRow<U> where U : RecipeBase<U>
     {
         public override int ID
         {
@@ -129,26 +135,13 @@ namespace RecipeBox3.SQLiteModel.Data
         
         
 
-        public Recipe()
+        public RecipeBase()
         {
             R_Modified = DateTime.Now.ToFileTime();
             Status = RowStatus.New;
         }
 
-        public Recipe(Recipe source)
-        {
-            R_ID = source.R_ID;
-            R_Name = source.R_Name;
-            R_Description = source.R_Description;
-            R_Modified = source.R_Modified;
-            R_PrepTime = source.R_PrepTime;
-            R_CookTime = source.R_CookTime;
-            R_Steps = source.R_Steps;
-            R_Category = source.R_Category;
-            Status = source.Status;
-        }
-
-        public Recipe(DetailRecipe source)
+        public RecipeBase(RecipeBase<U> source)
         {
             R_ID = source.R_ID;
             R_Name = source.R_Name;

@@ -9,59 +9,9 @@ using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
-    public class RecipesAdapter : SQLiteAdapter<Recipe>
+    public class RecipesAdapter : RecipesBaseAdapter<Recipe>
     {
-        protected SQLiteParameter nameParameter       = new SQLiteParameter("@name", DbType.String, 50);
-        protected SQLiteParameter descParameter       = new SQLiteParameter("@desc", DbType.String, 254);
-        protected SQLiteParameter modParameter        = new SQLiteParameter("@modified", DbType.Int64);
-        protected SQLiteParameter prepParameter       = new SQLiteParameter("@prep", DbType.Int32);
-        protected SQLiteParameter cookParameter       = new SQLiteParameter("@cook", DbType.Int32);
-        protected SQLiteParameter stepsParameter      = new SQLiteParameter("@steps", DbType.String);
-        protected SQLiteParameter categoryParameter   = new SQLiteParameter("@category", DbType.Int32);
-
-        public RecipesAdapter() : base() { }
-
-        public RecipesAdapter(string connectionString) : base(connectionString) { }
-
-        protected override void Initialize(string connectionString)
-        {
-            base.Initialize(connectionString);
-            
-            var dataParams = new SQLiteParameter[]
-            {
-                nameParameter, descParameter, modParameter,
-                prepParameter, cookParameter, stepsParameter, categoryParameter
-            };
-
-            SelectCommand.CommandText = "SELECT R_ID, R_Name, R_Description, R_Modified, " +
-                "R_PrepTime, R_CookTime, R_Steps, R_Category FROM Recipes WHERE (@id IS NULL) OR (R_ID=@id)";
-            SelectCommand.Parameters.Add(idParameter);
-
-            UpdateCommand.CommandText = "UPDATE Recipes SET R_Name=@name, R_Description=@desc, R_Modified=@modified " +
-                "R_PrepTime=@prep, R_CookTime=@cook, R_Steps=@steps, R_Category=@category WHERE R_ID=@id";
-            UpdateCommand.Parameters.AddRange(dataParams);
-            UpdateCommand.Parameters.Add(idParameter);
-
-            InsertCommand.CommandText = "INSERT INTO Recipes (R_Name, R_Description, R_Modified, " +
-                "R_PrepTime, R_CookTime, R_Steps, R_Category) " +
-                "VALUES (@name, @desc, @modified, @prep, @cook, @steps, @category)";
-            InsertCommand.Parameters.AddRange(dataParams);
-
-            DeleteCommand.CommandText = "DELETE FROM Recipes WHERE R_ID=@id";
-            DeleteCommand.Parameters.Add(idParameter);
-        }
-
-        protected override void SetDataParametersFromRow(Recipe recipe)
-        {
-            nameParameter.Value = recipe.R_Name;
-            descParameter.Value = recipe.R_Description;
-            modParameter.Value = recipe.R_Modified;
-            prepParameter.Value = recipe.R_PrepTime;
-            cookParameter.Value = recipe.R_CookTime;
-            stepsParameter.Value = recipe.R_Steps;
-            categoryParameter.Value = recipe.R_Category;
-        }
-
+        /// <inheritdoc/>
         protected override Recipe GetRowFromReader(SQLiteDataReader reader)
         {
             try
@@ -83,9 +33,47 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
             catch (InvalidCastException e)
             {
-                Console.WriteLine(e.Message + " at " + e.TargetSite);
+                App.LogException(e);
                 return null;
             }
+        }
+    }
+
+    public abstract class RecipesBaseAdapter<U> : SQLiteAdapter<U> where U : RecipeBase<U>
+    {
+        protected static SQLiteParameter nameParameter       = new SQLiteParameter("@name", DbType.String, 50, "R_Name");
+        protected static SQLiteParameter descParameter       = new SQLiteParameter("@desc", DbType.String, 254, "R_Description");
+        protected static SQLiteParameter modParameter        = new SQLiteParameter("@modified", DbType.Int64, "R_Modified");
+        protected static SQLiteParameter prepParameter       = new SQLiteParameter("@prep", DbType.Int32, "R_PrepTime");
+        protected static SQLiteParameter cookParameter       = new SQLiteParameter("@cook", DbType.Int32, "R_CookTime");
+        protected static SQLiteParameter stepsParameter      = new SQLiteParameter("@steps", DbType.String, "R_Steps");
+        protected static SQLiteParameter categoryParameter   = new SQLiteParameter("@category", DbType.Int32, "R_Category");
+
+        protected override SQLiteParameter[] DataParameters =>
+            new SQLiteParameter[]
+            {
+                nameParameter, descParameter, modParameter,
+                prepParameter, cookParameter, stepsParameter,
+                categoryParameter
+            };
+
+        protected override string TableName => "Recipes";
+        protected override string IDColumn => "R_ID";
+
+        public RecipesBaseAdapter() : base() { }
+
+        public RecipesBaseAdapter(string connectionString) : base(connectionString) { }
+
+        /// <inheritdoc/>
+        protected override void SetDataParametersFromRow(U recipe)
+        {
+            nameParameter.Value = recipe.R_Name;
+            descParameter.Value = recipe.R_Description;
+            modParameter.Value = recipe.R_Modified;
+            prepParameter.Value = recipe.R_PrepTime;
+            cookParameter.Value = recipe.R_CookTime;
+            stepsParameter.Value = recipe.R_Steps;
+            categoryParameter.Value = recipe.R_Category;
         }
     }
 }

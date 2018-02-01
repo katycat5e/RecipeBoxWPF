@@ -51,5 +51,15 @@ namespace RecipeBox3
             }
             return child;
         }
+
+        public static void LogMessage(string message)
+        {
+            System.Console.WriteLine(message);
+        }
+
+        public static void LogException(System.Exception e)
+        {
+            LogMessage(e.ToString());
+        }
     }
 }
