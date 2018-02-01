@@ -13,7 +13,6 @@ namespace RecipeBox3
     public class RecipeListViewModel : DependencyObject
     {
         private DetailRecipesAdapter recipesAdapter;
-        private CategoriesAdapter categoriesAdapter;
 
         public ObservableCollection<DetailRecipe> Recipes
         {
@@ -26,16 +25,47 @@ namespace RecipeBox3
             DependencyProperty.Register("Recipes", typeof(ObservableCollection<DetailRecipe>), typeof(RecipeListViewModel), new PropertyMetadata(null));
 
 
+        public object SelectedGridItem
+        {
+            get { return (object)GetValue(SelectedGridItemProperty); }
+            set { SetValue(SelectedGridItemProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedGridItem.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedGridItemProperty =
+            DependencyProperty.Register("SelectedGridItem", typeof(object), typeof(RecipeListViewModel), new PropertyMetadata(null));
+
+        
+        public bool ShowImages
+        {
+            get { return (bool)GetValue(ShowImagesProperty); }
+            set
+            {
+                SetValue(ShowImagesProperty, value);
+                recipesAdapter.RetrieveImages = value;
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for ShowImages.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowImagesProperty =
+            DependencyProperty.Register("ShowImages", typeof(bool), typeof(RecipeListViewModel), new PropertyMetadata(true));
+
+
+
         public RecipeListViewModel()
         {
             recipesAdapter = new DetailRecipesAdapter();
-            categoriesAdapter = new CategoriesAdapter();
             GetAllRecipes();
         }
 
         public void GetAllRecipes()
         {
             Recipes = new ObservableCollection<DetailRecipe>(recipesAdapter.SelectAll());
+        }
+
+        public void DeleteRecipe(int id)
+        {
+            recipesAdapter.Delete(id);
         }
     }
 }

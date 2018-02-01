@@ -10,6 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using RecipeBox3.SQLiteModel.Data;
 using Xceed.Wpf.DataGrid;
 
 namespace RecipeBox3
@@ -22,43 +23,20 @@ namespace RecipeBox3
         public CookbookDataSet DataSet { get; set; }
         private static CookbookModel CookbookAdapter { get { return App.GlobalCookbookModel; } }
 
-
-        public object SelectedGridItem
-        {
-            get { return (object)GetValue(SelectedGridItemProperty); }
-            set { SetValue(SelectedGridItemProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for SelectedGridItem.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedGridItemProperty =
-            DependencyProperty.Register("SelectedGridItem", typeof(object), typeof(RecipeListWindow), new PropertyMetadata(null));
-
-
-
+        private RecipeListViewModel ViewModel => DataContext as RecipeListViewModel;
+        
         public RecipeListWindow()
         {
             InitializeComponent();
             DataSet = new CookbookDataSet();
-            DataContext = this;
+            ShowImagesMenuItem.IsChecked = true;
         }
 
         public void ReloadTable(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.Wait;
 
-            try
-            {
-                CookbookAdapter.SimpleRecipeViewTableAdapter.Fill(DataSet.SimpleRecipeView);
-            }
-            catch (SqlException ex)
-            {
-                DataSet.SimpleRecipeView.Clear();
-
-                MessageBox.Show("An error occurred while downloading the data:\n\n" + ex.Message,
-                    "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            if (Properties.Settings.Default.ShowPreviewImages) UpdateImages();
+            if (ViewModel != null) ViewModel.GetAllRecipes();
 
             Cursor = Cursors.Arrow;
         }
@@ -206,29 +184,10 @@ namespace RecipeBox3
         {
             throw new NotImplementedException();
         }
-
-        private static void DeleteRecipe(int recipeID)
-        {
-            var adapter = CookbookAdapter.RecipesTableAdapter;
-            var recipes = adapter.GetDataByID(recipeID);
-
-            if (recipes.Count > 0)
-            {
-                foreach (CookbookDataSet.RecipesRow row in recipes)
-                {
-                    row.Delete();
-                }
-
-                adapter.Update(recipes);
-            }
-
-            adapter.Dispose();
-        }
-
-
+        
         private void RecipeGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (SelectedGridItem is DataRowView drv && drv.Row is CookbookDataSet.SimpleRecipeViewRow row)
+            if (ViewModel?.SelectedGridItem is DetailRecipe row)
             {
                 ShowRecipeDetails(row.R_ID);
             }
@@ -239,23 +198,23 @@ namespace RecipeBox3
             if (!(sender is MenuItem item)) return;
 
             // Recipe Options
-            if (SelectedGridItem is DataRowView drv && drv.Row is CookbookDataSet.SimpleRecipeViewRow selectedRow)
+            if (ViewModel?.SelectedGridItem is DetailRecipe selectedRow)
             {
                 switch (item.Name)
                 {
                     case "ViewRecipeMenuItem":
                     case "ViewRecipeContextItem":
-                        ShowRecipeDetails(selectedRow.R_ID);
+                        ShowRecipeDetails(selectedRow.ID);
                         return;
 
                     case "EditRecipeMenuItem":
                     case "EditRecipeContextItem":
-                        ShowRecipeEditor(selectedRow.R_ID);
+                        ShowRecipeEditor(selectedRow.ID);
                         return;
 
                     case "DeleteRecipeMenuItem":
                     case "DeleteRecipeContextItem":
-                        DeleteRecipe(selectedRow.R_ID);
+                        if (ViewModel != null) ViewModel.DeleteRecipe(selectedRow.ID);
                         return;
 
                     default:
@@ -268,6 +227,16 @@ namespace RecipeBox3
         {
             var categoriesEditor = new CategoriesView();
             categoriesEditor.ShowDialog();
+        }
+
+        private void ShowImagesMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            if (IMG_Preview != null) IMG_Preview.Visibility = Visibility.Visible;
+        }
+
+        private void ShowImagesMenuItem_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (IMG_Preview != null) IMG_Preview.Visibility = Visibility.Collapsed;
         }
     }
 }

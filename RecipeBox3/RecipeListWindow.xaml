@@ -11,47 +11,48 @@
         Closed="RecipeListView_Closed">
 
     <Window.Resources>
-        <ControlTemplate x:Key="FlatButtonTemplate" TargetType="Button">
+        <local:ByteImageConverter x:Key="ByteImageConverter"/>
+        <ControlTemplate x:Key="FlatButtonTemplate" TargetType="{x:Type Button}">
             <Border Background="{TemplateBinding Background}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
                 <ContentPresenter
-                    Margin="{TemplateBinding Control.Padding}"
-                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                    VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"
-                    ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                    Margin="{TemplateBinding Padding}"
+                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}"
                     RecognizesAccessKey="True"
-                    Content="{TemplateBinding ContentControl.Content}"/>
+                    Content="{TemplateBinding Content}"/>
             </Border>
         </ControlTemplate>
 
-        <Style TargetType="Control" x:Key="ClickableStyle">
+        <Style TargetType="{x:Type Control}" x:Key="ClickableStyle">
             <Setter Property="Background">
                 <Setter.Value>
-                    <SolidColorBrush Color="{StaticResource ColorPrimaryDark}"/>
+                    <SolidColorBrush Color="{StaticResource ColorPrimaryMidDark}"/>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background">
                         <Setter.Value>
-                            <SolidColorBrush Color="{StaticResource ColorSecondary2Dark}"/>
+                            <SolidColorBrush Color="{StaticResource ColorPrimaryDark}"/>
                         </Setter.Value>
                     </Setter>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="ButtonClickableStyle" TargetType="Button" BasedOn="{StaticResource ClickableStyle}">
+        <Style x:Key="ButtonClickableStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource ClickableStyle}">
             <Setter Property="Padding" Value="0,5"/>
         </Style>
-        <Style x:Key="MenuClickableStyle" TargetType="MenuItem" BasedOn="{StaticResource ClickableStyle}"/>
+        <Style x:Key="MenuClickableStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource ClickableStyle}"/>
 
-        <Style TargetType="DataGrid">
+        <Style TargetType="{x:Type DataGrid}">
             <Setter Property="Background" Value="LightSlateGray"/>
             <Setter Property="AlternatingRowBackground" Value="LightGray"/>
         </Style>
 
-        <Style x:Key="GridHeaderStyle" TargetType="DataGridColumnHeader">
+        <Style x:Key="GridHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
             <Setter Property="Height" Value="Auto"/>
             <Setter Property="Padding" Value="0,5"/>
             <Setter Property="Background">
@@ -63,19 +64,23 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style TargetType="Label">
+        <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
-        <Style TargetType="TextBox">
+        <Style TargetType="{x:Type TextBox}">
             <Setter Property="Background" Value="White"/>
         </Style>
     </Window.Resources>
 
+    <Window.DataContext>
+        <local:RecipeListViewModel/>
+    </Window.DataContext>
+
     <Grid>
         <DockPanel LastChildFill="True">
-            <Menu DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Top" BorderThickness="0">
                 <Menu.Background>
-                    <SolidColorBrush Color="{StaticResource ColorPrimaryDark}"/>
+                    <SolidColorBrush Color="{StaticResource ColorPrimaryMidDark}"/>
                 </Menu.Background>
                 <MenuItem x:Name="RBItem" Header="_RecipeBox" Style="{StaticResource MenuClickableStyle}">
                     <MenuItem x:Name="QuitMenuItem" Header="_Quit" Click="QuitMenuItem_Click"/>
@@ -94,17 +99,14 @@
                     <Separator />
                     <MenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
                 </MenuItem>
-                <MenuItem Header="_View" Style="{StaticResource MenuClickableStyle}">
+                <MenuItem x:Name="ViewOptionsMenuItem" Header="_View" Style="{StaticResource MenuClickableStyle}">
                     <MenuItem Header="Refresh" Click="ReloadTable">
                         <MenuItem.Icon>
                             <Image Source="{DynamicResource RefreshIcon}"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="ReloadImagesMenuItem" Header="Reload Images" Click="ImgReload_Click">
-                        <MenuItem.Icon>
-                            <Image Source="{DynamicResource RefreshIcon}"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
+                    <MenuItem x:Name="ShowImagesMenuItem" Header="Show Images" IsCheckable="True" IsChecked="{Binding ShowImages, Mode=OneWayToSource}"
+                              Checked="ShowImagesMenuItem_Checked" Unchecked="ShowImagesMenuItem_Unchecked"/>
                 </MenuItem>
             </Menu>
 
@@ -118,12 +120,9 @@
                           CanUserDeleteRows="False" AutoGenerateColumns="False"
                           RowHeaderWidth="0" SelectionMode="Single"
                           ColumnHeaderStyle="{Binding Mode=OneWay, Source={StaticResource GridHeaderStyle}}"
-                          Grid.Column="0" CurrentItem="{Binding SelectedGridItem, ElementName=RecipeListView, Mode=OneWayToSource}"
+                          Grid.Column="0" CurrentItem="{Binding SelectedGridItem, Mode=OneWayToSource}"
                           MouseDoubleClick="RecipeGrid_MouseDoubleClick" IsReadOnly="True">
-                    <DataGrid.DataContext>
-                        <local:RecipeListViewModel/>
-                    </DataGrid.DataContext>
-                    
+
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding R_Name}" SortDirection="Ascending" Width="3*" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Description" Binding="{Binding R_Description}" Width="4*" IsReadOnly="True"/>
@@ -134,7 +133,7 @@
                         <DataGridTemplateColumn x:Name="IMG_Preview" Header="Preview Image" Width="1*" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Image Stretch="UniformToFill"/>
+                                    <Image Stretch="UniformToFill" Source="{Binding IMG_Data, Converter={StaticResource ByteImageConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
