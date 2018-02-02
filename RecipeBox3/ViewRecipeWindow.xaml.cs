@@ -23,5 +23,13 @@ namespace RecipeBox3
         {
             InitializeComponent();
         }
+
+        public ViewRecipeWindow(int recipeID) : this()
+        {
+            if (DataContext is RecipeViewModel viewModel)
+            {
+                viewModel.RecipeID = recipeID;
+            }
+        }
     }
 }

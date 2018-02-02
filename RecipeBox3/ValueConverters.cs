@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace RecipeBox3
 {
-    class ByteImageConverter : IValueConverter
+    public class ByteImageConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -31,6 +31,32 @@ namespace RecipeBox3
             }
 
             return output;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class TimeStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int timeMin)
+            {
+                if (timeMin > 60)
+                {
+                    int timeHr = timeMin / 60;
+                    timeMin = timeMin % 60;
+                    return String.Format("{0} hrs {1} min", timeHr, timeMin);
+                }
+                else
+                {
+                    return String.Format("{0} min", timeMin);
+                }
+            }
+            else return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

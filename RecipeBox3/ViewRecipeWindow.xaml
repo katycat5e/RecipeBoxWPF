@@ -1,19 +1,23 @@
-﻿<Window x:Class="RecipeBox3.ViewRecipeWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RecipeBox3"
+        xmlns:Data="clr-namespace:RecipeBox3.SQLiteModel.Data" x:Class="RecipeBox3.ViewRecipeWindow"
         mc:Ignorable="d"
-        Title="{Binding RecipeName}" Height="600" Width="1000">
-    <Window.DataContext>
-        <local:RecipeViewModel/>
-    </Window.DataContext>
+        Title="{Binding MyRecipe.R_Name}" Height="600" Width="1000">
     <Window.Resources>
-        <Style TargetType="Label">
+        <local:TimeStringConverter x:Key="TimeStringConverter"/>
+        <local:ByteImageConverter x:Key="ByteImageConverter"/>
+        <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
+
+    <Window.DataContext>
+        <local:RecipeViewModel/>
+    </Window.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -24,7 +28,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <Image Grid.Row="0" Grid.Column="0" Source="{Binding RecipePreview}"/>
+        <Image Grid.Row="0" Grid.Column="0" Source="{Binding MyRecipe.IMG_Data, Converter={StaticResource ByteImageConverter}}"/>
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1.5*"/>
@@ -37,18 +41,29 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Label FontSize="18" FontWeight="Bold" Content="{Binding RecipeName}" Grid.Row="0" Grid.ColumnSpan="2"/>
-            <Label Content="{Binding RecipeCategory}" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <Label FontSize="18" FontWeight="Bold" Content="{Binding MyRecipe.R_Name}" Grid.Row="0" Grid.ColumnSpan="2"/>
+            <Label Content="{Binding MyRecipe.C_Name}" Grid.Row="1" Grid.ColumnSpan="2"/>
             <Label Content="Modified:" HorizontalContentAlignment="Right" Grid.Row="2" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="2" Grid.Column="1" Content="{Binding RecipeModified}"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="2" Grid.Column="1" Content="{Binding MyRecipe.ModifiedDateTime}"/>
             <Label Content="Prep Time:" HorizontalContentAlignment="Right" Grid.Row="3" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="1" Content="{Binding PrepTimeString}"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="1" Content="{Binding MyRecipe.R_PrepTime, Converter={StaticResource TimeStringConverter}}"/>
             <Label Content="Cook Time:" HorizontalContentAlignment="Right" Grid.Row="4" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="4" Grid.Column="1" Content="{Binding CookTimeString}"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="4" Grid.Column="1" Content="{Binding MyRecipe.R_CookTime, Converter={StaticResource TimeStringConverter}}"/>
         </Grid>
-        <DataGrid Grid.Row="1" Grid.Column="0">
+        <DataGrid Grid.Row="1" Grid.Column="0"/>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.5*"/>
+                <ColumnDefinition Width="90*"/>
+                <ColumnDefinition Width="2.5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2.5*"/>
+                <RowDefinition Height="90*"/>
+                <RowDefinition Height="2.5*"/>
+            </Grid.RowDefinitions>
             
-        </DataGrid>
-        <TextBlock x:Name="StepsText" Grid.Row="1" Grid.Column="1" Text="{Binding RecipeSteps}"/>
+            <TextBlock x:Name="StepsText" Grid.Row="1" Grid.Column="1" Text="{Binding MyRecipe.R_Steps}"/>
+        </Grid>
     </Grid>
 </Window>

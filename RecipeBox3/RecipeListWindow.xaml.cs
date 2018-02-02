@@ -109,11 +109,7 @@ namespace RecipeBox3
 
         private static void ShowRecipeDetails(int recipeID)
         {
-            var viewRecipeWindow = new ViewRecipeWindow();
-            if (viewRecipeWindow.DataContext is RecipeViewModel viewModel)
-            {
-                viewModel.RecipeID = recipeID;
-            }
+            var viewRecipeWindow = new ViewRecipeWindow(recipeID);
 
             viewRecipeWindow.Show();
             viewRecipeWindow.Focus();
