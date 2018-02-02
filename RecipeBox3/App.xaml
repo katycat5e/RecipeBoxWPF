@@ -6,8 +6,8 @@
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
 
-        <BitmapImage x:Key="FoxIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="C:\Users\wfoxiii\Source\Repos\RecipeBoxWPF\RecipeBox3\Resources\fox.ico"/>
-        <BitmapImage x:Key="RefreshIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="C:\Users\wfoxiii\Source\Repos\RecipeBoxWPF\RecipeBox3\Resources\refresh_16xLG.png"/>
+        <BitmapImage x:Key="FoxIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/fox.ico"/>
+        <BitmapImage x:Key="RefreshIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/refresh_16xLG.png"/>
 
 
         <!-- Main Primary Color -->

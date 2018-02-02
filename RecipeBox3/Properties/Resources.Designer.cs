@@ -61,36 +61,6 @@ namespace RecipeBox3.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap action_add_16xLG {
-            get {
-                object obj = ResourceManager.GetObject("action_add_16xLG", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap action_add_16xMD {
-            get {
-                object obj = ResourceManager.GetObject("action_add_16xMD", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap action_Cancel_16xLG {
-            get {
-                object obj = ResourceManager.GetObject("action_Cancel_16xLG", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to USE [master]
         ///GO
         ////****** Object:  Database [Cookbook]    Script Date: 6/12/2017 9:30:21 AM ******/
@@ -108,56 +78,6 @@ namespace RecipeBox3.Properties {
         internal static string DBCreateScript {
             get {
                 return ResourceManager.GetString("DBCreateScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap document_16xLG {
-            get {
-                object obj = ResourceManager.GetObject("document_16xLG", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon fox {
-            get {
-                object obj = ResourceManager.GetObject("fox", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap magnifier_16xLG {
-            get {
-                object obj = ResourceManager.GetObject("magnifier_16xLG", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap pencil_005_16xLG {
-            get {
-                object obj = ResourceManager.GetObject("pencil_005_16xLG", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap refresh_16xLG {
-            get {
-                object obj = ResourceManager.GetObject("refresh_16xLG", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

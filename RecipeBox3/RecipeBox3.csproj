@@ -259,7 +259,7 @@
     <None Include="Resources\document_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\fox.ico" />
+    <Resource Include="Resources\fox.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\magnifier_16xLG.png" />
@@ -268,7 +268,7 @@
     <None Include="Resources\pencil_005_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\refresh_16xLG.png" />
+    <Resource Include="Resources\refresh_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQLite.Interop.dll">

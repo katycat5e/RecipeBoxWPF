@@ -29,7 +29,7 @@ namespace RecipeBox3
         {
             InitializeComponent();
             DataSet = new CookbookDataSet();
-            ShowImagesMenuItem.IsChecked = true;
+            ShowImagesMenuItem.IsChecked = Properties.Settings.Default.ShowPreviewImages;
         }
 
         public void ReloadTable(object sender, RoutedEventArgs e)
@@ -52,68 +52,7 @@ namespace RecipeBox3
             Application.Current.Shutdown();
         }
 
-        private void UpdateImages()
-        {
-            if (!Properties.Settings.Default.ShowPreviewImages) return;
-
-            //int visibleRowCount = RecipeGrid.vis;
-            //int firstDisplayedRowNumber = RecipeGrid.FirstDisplayedCell.RowIndex;
-
-            //DataGridViewRow row;
-            //for (int i = firstDisplayedRowNumber; i < (firstDisplayedRowNumber + visibleRowCount); i++)
-            for (int i = 0; i < DataSet.SimpleRecipeView.Rows.Count; i++)
-            {
-                //var row = DataSet.SimpleRecipeView.Rows[i];
-                var getImageThread = new Thread(GetRecipeImageAsync);
-                getImageThread.Start(i);
-            }
-        }
-
-        private Mutex ImageConnectorLock = new Mutex();
-
-        private void GetRecipeImageAsync(object rowIndex)
-        {
-            CookbookDataSet.ImagesDataTable images = null;
-            if (!(rowIndex is int rowNum)) return;
-
-            try
-            {
-                if (CookbookAdapter.ImagesTableAdapter == null) return;
-                //if (!(dataRow.Cells["R_ID"] is DataGridViewTextBoxCell idCell)) return;
-                int? id = (DataSet.SimpleRecipeView.Rows[rowNum] as CookbookDataSet.SimpleRecipeViewRow)?.R_ID;
-                if (id == null) return;
-
-                ImageConnectorLock.WaitOne();
-                images = CookbookAdapter.ImagesTableAdapter.GetDataByRecipe(id);
-                ImageConnectorLock.ReleaseMutex();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred while downloading the preview image:\n\n" + ex.Message,
-                    "Error loading image", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                return;
-            }
-
-            Bitmap previewImage;
-
-            if (images.Count > 0)
-            {
-                if (!images[0].IsIMG_DataNull())
-                {
-                    using (var imgStream = new MemoryStream(images[0].IMG_Data))
-                    {
-                        previewImage = new Bitmap(System.Drawing.Image.FromStream(imgStream));
-                    }
-                }
-                else previewImage = null;
-            }
-            else previewImage = null;
-
-            //if (Dispatcher != null)
-            //    Dispatcher.BeginInvoke(new SetPreviewImageDelegate(SetPreviewImage), new object[] { previewImage, rowNum });
-
-        }
+        
 
         private delegate void SetPreviewImageDelegate(Bitmap image, int rowNum);
         private void SetPreviewImage(Bitmap image, int rowNum)
@@ -160,7 +99,7 @@ namespace RecipeBox3
 
         private void ImgReload_Click(object sender, RoutedEventArgs e)
         {
-            UpdateImages();
+            ViewModel?.UpdateImages();
         }
 
         private void QuitMenuItem_Click(object sender, RoutedEventArgs e)
