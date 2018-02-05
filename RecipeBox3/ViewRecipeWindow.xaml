@@ -16,7 +16,7 @@
     </Window.Resources>
 
     <Window.DataContext>
-        <local:RecipeViewModel/>
+        <local:ViewRecipeViewModel/>
     </Window.DataContext>
 
     <Grid>

@@ -138,13 +138,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ChooseImageDialog.xaml.cs">
+      <DependentUpon>ChooseImageDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditRecipeDialog.xaml.cs">
+      <DependentUpon>EditRecipeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditRecipeViewModel.cs" />
     <Compile Include="ValueConverters.cs" />
     <Compile Include="DBChecker.cs" />
     <Compile Include="CategoriesEditorView.xaml.cs">
       <DependentUpon>CategoriesEditorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="RecipeListViewModel.cs" />
-    <Compile Include="RecipeViewModel.cs" />
+    <Compile Include="ViewRecipeViewModel.cs" />
     <Compile Include="SearchItems.cs" />
     <Compile Include="SplashDialog.xaml.cs">
       <DependentUpon>SplashDialog.xaml</DependentUpon>
@@ -164,6 +171,14 @@
       <DependentUpon>ViewRecipeWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="CategoriesEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ChooseImageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditRecipeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

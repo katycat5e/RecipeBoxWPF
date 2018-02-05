@@ -15,7 +15,7 @@ using RecipeBox3.SQLiteModel.Adapters;
 
 namespace RecipeBox3
 {
-    class RecipeViewModel : DependencyObject
+    public class ViewRecipeViewModel : DependencyObject
     {
         private DetailRecipesAdapter recipesAdapter;
 
@@ -42,9 +42,9 @@ namespace RecipeBox3
 
         // Using a DependencyProperty as the backing store for MyRecipe.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MyRecipeProperty =
-            DependencyProperty.Register("MyRecipe", typeof(DetailRecipe), typeof(RecipeViewModel), new PropertyMetadata(null));
+            DependencyProperty.Register("MyRecipe", typeof(DetailRecipe), typeof(ViewRecipeViewModel), new PropertyMetadata(null));
 
-        public RecipeViewModel()
+        public ViewRecipeViewModel()
         {
             recipesAdapter = new DetailRecipesAdapter();
         }

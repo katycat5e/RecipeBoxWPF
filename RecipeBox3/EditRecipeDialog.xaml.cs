@@ -15,21 +15,26 @@ using System.Windows.Shapes;
 namespace RecipeBox3
 {
     /// <summary>
-    /// Interaction logic for ViewRecipeWindow.xaml
+    /// Interaction logic for EditRecipeDialog.xaml
     /// </summary>
-    public partial class ViewRecipeWindow : Window
+    public partial class EditRecipeDialog : Window
     {
-        public ViewRecipeWindow()
+        public EditRecipeDialog()
         {
             InitializeComponent();
         }
 
-        public ViewRecipeWindow(int recipeID) : this()
+        public EditRecipeDialog(int recipeID)
         {
             if (DataContext is ViewRecipeViewModel viewModel)
             {
                 viewModel.RecipeID = recipeID;
             }
+        }
+
+        private void ChooseImageButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
