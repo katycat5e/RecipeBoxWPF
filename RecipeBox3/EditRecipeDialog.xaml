@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:RecipeBox3"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="Editing Recipe" Height="600" Width="1000">
+        Title="Editing Recipe" Height="600" Width="1000"
+        Style="{StaticResource DefaultWindowStyle}">
+    
     <Window.Resources>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
     </Window.Resources>
@@ -56,8 +58,8 @@
 
                 <Label Content="Category:" Grid.Column="0" Grid.Row="1"/>
                 <ComboBox Grid.Column="1" Grid.Row="1"
-                          ItemsSource="{Binding CategoryList}" DisplayMemberPath="{Binding /C_Name}"
-                          SelectedValuePath="{Binding C_ID}" SelectedValue="{Binding MyRecipe.R_Category}"/>
+                          ItemsSource="{Binding CategoryList}" DisplayMemberPath="C_Name"
+                          SelectedValuePath="C_ID" SelectedValue="{Binding MyRecipe.R_Category}"/>
 
                 <Label Content="Description:" Grid.Column="0" Grid.Row="2"/>
                 <TextBox SpellCheck.IsEnabled="True" Text="{Binding MyRecipe.R_Description}" Grid.Column="1" Grid.Row="2"/>
@@ -69,12 +71,18 @@
                 <xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="4" Value="{Binding MyRecipe.R_CookTime}"/>
             </Grid>
 
-            <DockPanel Grid.Column="1">
-                <Image x:Name="PreviewImage" Stretch="UniformToFill"
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <Image x:Name="PreviewImage" Grid.Row="0" Margin="0,6,0,0"
                        Source="{Binding MyRecipe.IMG_Data, Converter={StaticResource ByteImageConverter}}"/>
                 
-                <Button x:Name="ChooseImageButton" Content="Choose Image..." DockPanel.Dock="Bottom" Click="ChooseImageButton_Click"/>
-            </DockPanel>
+                <Button x:Name="ChooseImageButton" Content="Choose Image..." Grid.Row="1"
+                        Click="ChooseImageButton_Click"/>
+            </Grid>
         </Grid>
 
         <StackPanel Grid.Column="0" Grid.Row="1">

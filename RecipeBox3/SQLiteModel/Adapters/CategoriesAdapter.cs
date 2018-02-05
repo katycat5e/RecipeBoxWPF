@@ -14,6 +14,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         private static SQLiteParameter nameParameter   = new SQLiteParameter("@name", DbType.String, "C_Name");
 
         protected override string TableName => "Categories";
+        protected override string IDColumn => "C_ID";
 
         protected override SQLiteParameter[] DataParameters => new SQLiteParameter[] { nameParameter };
 

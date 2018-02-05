@@ -32,6 +32,12 @@ namespace RecipeBox3
             SplashPage.Close();
         }
 
+        private void Test_Startup(object sender, StartupEventArgs e)
+        {
+            var cid = new EditRecipeDialog();
+            cid.Show();
+        }
+
         public static T GetVisualChild<T>(Visual parent) where T : Visual
         {
             T child = default(T);

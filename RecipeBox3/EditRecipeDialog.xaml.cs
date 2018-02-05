@@ -19,22 +19,41 @@ namespace RecipeBox3
     /// </summary>
     public partial class EditRecipeDialog : Window
     {
+        private ViewRecipeViewModel ViewModel
+        {
+            get => DataContext as ViewRecipeViewModel;
+            set => DataContext = value;
+        }
+
         public EditRecipeDialog()
         {
             InitializeComponent();
+
+            if (ViewModel != null)
+            {
+                ViewModel.MyRecipe = new SQLiteModel.Data.DetailRecipe();
+            }
         }
 
         public EditRecipeDialog(int recipeID)
         {
-            if (DataContext is ViewRecipeViewModel viewModel)
+            if (ViewModel != null)
             {
-                viewModel.RecipeID = recipeID;
+                ViewModel.RecipeID = recipeID;
             }
         }
 
         private void ChooseImageButton_Click(object sender, RoutedEventArgs e)
         {
+            var imagePicker = new ChooseImageDialog();
+            Cursor = Cursors.Wait;
+            bool? result = imagePicker.ShowDialog();
 
+            if (result == true && ViewModel != null)
+            {
+                ViewModel.MyRecipe.IMG_Data = ByteImageConverter.ConvertBitmapToBytes(imagePicker.FinalBitmap);
+            }
+            Cursor = Cursors.Arrow;
         }
     }
 }
