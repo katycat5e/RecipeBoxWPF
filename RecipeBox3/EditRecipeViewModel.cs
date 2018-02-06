@@ -30,5 +30,24 @@ namespace RecipeBox3
             categoriesAdapter = new CategoriesAdapter();
             CategoryList = categoriesAdapter.SelectAll().ToArray();
         }
+
+        public void SaveRecipe()
+        {
+            if (MyRecipe.Status == RowStatus.Unchanged)
+            {
+                MessageBox.Show("No changes detected", "No Change", MessageBoxButton.OK, MessageBoxImage.None);
+                return;
+            }
+
+            bool successful = recipesAdapter.Update(MyRecipe);
+            if (successful)
+            {
+                MessageBox.Show("Recipe saved successfully", "Success", MessageBoxButton.OK, MessageBoxImage.None);
+            }
+            else
+            {
+                MessageBox.Show("Recipe could not be saved", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

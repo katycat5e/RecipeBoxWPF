@@ -19,7 +19,8 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for C_Name.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty C_NameProperty =
-            DependencyProperty.Register("C_Name", typeof(string), typeof(DetailRecipe), new PropertyMetadata(""));
+            DependencyProperty.Register("C_Name", typeof(string), typeof(DetailRecipe),
+                new PropertyMetadata("", OnRowChanged));
 
         
         public byte[] IMG_Data
@@ -30,7 +31,8 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for IMG_Data.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IMG_DataProperty =
-            DependencyProperty.Register("IMG_Data", typeof(byte[]), typeof(DetailRecipe), new PropertyMetadata(null));
+            DependencyProperty.Register("IMG_Data", typeof(byte[]), typeof(DetailRecipe),
+                new PropertyMetadata(null, OnRowChanged));
 
         
 

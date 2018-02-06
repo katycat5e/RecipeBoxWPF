@@ -55,11 +55,7 @@ namespace RecipeBox3
 
         public RecipeListViewModel()
         {
-            recipesAdapter = new DetailRecipesAdapter()
-            {
-                RetrieveImages = false
-            };
-
+            recipesAdapter = new DetailRecipesAdapter();
             imagesAdapter = new ImagesAdapter();
 
             ImageDataDelegate = new SetImageDataDelegate(SetImageData);

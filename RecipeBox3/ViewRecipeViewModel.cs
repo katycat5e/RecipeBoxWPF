@@ -17,7 +17,7 @@ namespace RecipeBox3
 {
     public class ViewRecipeViewModel : DependencyObject
     {
-        private DetailRecipesAdapter recipesAdapter;
+        protected DetailRecipesAdapter recipesAdapter;
 
         public int? RecipeID
         {

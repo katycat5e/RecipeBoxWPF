@@ -9,21 +9,112 @@ using System.Threading.Tasks;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
-    class DetailRecipesAdapter : RecipesBaseAdapter<DetailRecipe>
+    public class DetailRecipesAdapter : RecipesBaseAdapter<DetailRecipe>
     {
-        public bool RetrieveImages { get; set; }
+        protected ImagesAdapter imagesAdapter = new ImagesAdapter();
 
-        protected override string TableName => "Recipes LEFT JOIN Categories ON R_Category=C_ID";
-        
-        protected override IEnumerable<string> DataColumns =>
-            base.DataColumns.Union(new string[] { "C_Name" });
+        protected override string TableName => "Recipes";
 
         /// <inheritdoc/>
         protected override void Initialize(string connectionString)
         {
             base.Initialize(connectionString);
+
+            // Override the auto command for the joined table
+            SelectCommand.CommandText =
+                String.Format(
+                    "SELECT {0}, {1}, C_Name FROM {2} WHERE (@id IS NULL) OR ({0} = @id)",
+                    IDColumn,
+                    String.Join(", ", DataColumns),
+                    "Recipes LEFT JOIN Categories ON R_Category=C_ID");
         }
-        
+
+        /// <inheritdoc/>
+        public override bool Insert(DetailRecipe row)
+        {
+            bool mainInsertSuccess = base.Insert(row);
+
+            if (mainInsertSuccess)
+            {
+                int? recipeID = LastInsertedID;
+                if (recipeID.HasValue)
+                {
+                    ImageRow imageRow = imagesAdapter.SelectByRecipe(recipeID.Value);
+
+                    if (imageRow == null)
+                    {
+                        // doesn't exist yet
+                        if (row.IMG_Data != null)
+                        {
+                            // new row
+                            imageRow = new ImageRow()
+                            {
+                                IMG_RecipeID = row.ID,
+                                IMG_Data = row.IMG_Data
+                            };
+                            imagesAdapter.Insert(imageRow);
+                        }
+                    }
+                    else
+                    {
+                        // row exists
+                        if (row.IMG_Data == null)
+                        {
+                            // delete
+                            imagesAdapter.Delete(imageRow);
+                        }
+                        else
+                        {
+                            // update
+                            imageRow.IMG_Data = row.IMG_Data;
+                            imagesAdapter.Modify(imageRow);
+                        }
+                    }
+                }
+            }
+
+            return mainInsertSuccess;
+        }
+
+        /// <inheritdoc/>
+        public override bool Modify(DetailRecipe row)
+        {
+            ImageRow imageRow = imagesAdapter.SelectByRecipe(row.ID);
+
+            if (imageRow == null && row.IMG_Data != null)
+            {
+                // create new row
+                imageRow = new ImageRow()
+                {
+                    IMG_RecipeID = row.ID,
+                    IMG_Data = row.IMG_Data
+                };
+            }
+            else if (imageRow != null && row.IMG_Data == null)
+            {
+                // delete row from db
+                imageRow.Status = RowStatus.Deleted;
+            }
+            else if (imageRow != null && row.IMG_Data != null)
+            {
+                // modify existing row
+                imageRow.IMG_Data = row.IMG_Data;
+            }
+
+            if (imageRow != null) imagesAdapter.Update(imageRow);
+            
+            return base.Modify(row);
+        }
+
+        /// <inheritdoc/>
+        public override bool Delete(DetailRecipe row)
+        {
+            ImageRow imageRow = imagesAdapter.SelectByRecipe(row.ID);
+            imagesAdapter.Delete(imageRow);
+
+            return base.Delete(row);
+        }
+
         /// <inheritdoc/>
         protected override DetailRecipe GetRowFromReader(SQLiteDataReader reader)
         {

@@ -52,6 +52,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected SQLiteCommand InsertCommand;
         protected SQLiteCommand UpdateCommand;
         protected SQLiteCommand DeleteCommand;
+        protected SQLiteCommand LastIDCommand;
 
         protected abstract string TableName { get; }
 
@@ -62,6 +63,21 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
         protected virtual IEnumerable<string> DataParamNames =>
             DataParameters.Select(p => p.ParameterName).ToList();
+
+        /// <summary>
+        /// Value of the last autoincrement primary key inserted into this table
+        /// </summary>
+        public virtual int? LastInsertedID
+        {
+            get
+            {
+                if (LastIDCommand?.Connection != null)
+                {
+                    return ExecuteCommandScalar(LastIDCommand) as int?;
+                }
+                else return null;
+            }
+        }
 
         protected SQLiteAdapter() : this(Properties.Settings.Default.SQLiteConnectionString) { }
 
@@ -128,6 +144,13 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
             DeleteCommand.Parameters.Add(IDParameter);
 
+            LastIDCommand = new SQLiteCommand()
+            {
+                CommandText = String.Format(
+                    "SELECT seq FROM sqlite_sequence WHERE name=\"{0}\"",
+                    TableName)
+            };
+
             Connection = new SQLiteConnection(_connectionString);
         }
 
@@ -186,6 +209,11 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <param name="row"></param>
         protected abstract void SetDataParametersFromRow(T row);
         
+        /// <summary>
+        /// Perform an update command on a row in the database
+        /// </summary>
+        /// <param name="row">row containing new values and the id of a row in the db</param>
+        /// <returns>true if one or more rows were updated successfully</returns>
         public virtual bool Modify(T row)
         {
             IDParameter.Value = row.ID;
@@ -193,22 +221,40 @@ namespace RecipeBox3.SQLiteModel.Adapters
             return (ExecuteCommandNonQuery(UpdateCommand) > 0);
         }
         
+        /// <summary>
+        /// Insert a row into the database
+        /// </summary>
+        /// <param name="row">row to be inserted</param>
+        /// <returns>true if the row was inserted successfully</returns>
         public virtual bool Insert(T row)
         {
             SetDataParametersFromRow(row);
             return (ExecuteCommandNonQuery(InsertCommand) > 0);
         }
 
-        public virtual bool Delete(int id)
+        /// <summary>
+        /// Delete a row from the database by id
+        /// </summary>
+        /// <param name="id">id to match in <see cref="IDColumn"/></param>
+        /// <returns>true if one or more rows were deleted</returns>
+        public virtual bool Delete(int? id)
         {
-            IDParameter.Value = id;
-            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
+            if (id.HasValue)
+            {
+                IDParameter.Value = id.Value;
+                return (ExecuteCommandNonQuery(DeleteCommand) > 0);
+            }
+            else return false;
         }
 
+        /// <summary>
+        /// Alias for Delete(row.ID)
+        /// </summary>
+        /// <param name="row">row to delete from db</param>
+        /// <returns>true if one or more rows were deleted</returns>
         public virtual bool Delete(T row)
         {
-            IDParameter.Value = row.ID;
-            return (ExecuteCommandNonQuery(DeleteCommand) > 0);
+            return Delete(row?.ID);
         }
 
 
@@ -261,7 +307,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         }
 
         /// <summary>
-        /// Execute a <see cref="SQLiteCommand"/> and return a reader
+        /// Execute an <see cref="SQLiteCommand"/> and return a reader
         /// </summary>
         /// <param name="command">Command to execute</param>
         /// <returns>DataReader containing results for the query</returns>
@@ -269,6 +315,19 @@ namespace RecipeBox3.SQLiteModel.Adapters
         {
             command.Connection.Open();
             return command.ExecuteReader(CommandBehavior.CloseConnection);
+        }
+
+        /// <summary>
+        /// Execute an <see cref="SQLiteCommand"/> and returns a scalar value
+        /// </summary>
+        /// <param name="command">Command to execute</param>
+        /// <returns>object from the first column of the first row in the result set</returns>
+        protected static object ExecuteCommandScalar(SQLiteCommand command)
+        {
+            command.Connection.Open();
+            object result = command.ExecuteScalar();
+            command.Connection.Close();
+            return result;
         }
     }
 }

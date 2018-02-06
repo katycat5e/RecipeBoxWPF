@@ -50,5 +50,17 @@ namespace RecipeBox3.SQLiteModel.Data
             DependencyProperty.Register("IMG_Data", typeof(byte[]), typeof(ImageRow), new PropertyMetadata(null));
 
 
+        public ImageRow()
+        {
+            Status = RowStatus.New;
+        }
+
+        public ImageRow(ImageRow source)
+        {
+            IMG_ID = source.IMG_ID;
+            IMG_RecipeID = source.IMG_RecipeID;
+            IMG_Data = source.IMG_Data;
+            Status = source.Status;
+        }
     }
 }

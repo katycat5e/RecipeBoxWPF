@@ -100,8 +100,8 @@
         </DockPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" FlowDirection="RightToLeft">
-            <Button x:Name="CancelButton" Content="Cancel"/>
-            <Button x:Name="SubmitButton" Content="Submit Changes"/>
+            <Button x:Name="CancelButton" Content="Cancel" FontSize="12pt" Click="CancelButton_Click"/>
+            <Button x:Name="SubmitButton" Content="Submit Changes" FontSize="12pt" Click="SubmitButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>

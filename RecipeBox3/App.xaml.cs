@@ -34,8 +34,8 @@ namespace RecipeBox3
 
         private void Test_Startup(object sender, StartupEventArgs e)
         {
-            var cid = new EditRecipeDialog();
-            cid.Show();
+            var cid = new ViewRecipeWindow(2);
+            cid.ShowDialog();
         }
 
         public static T GetVisualChild<T>(Visual parent) where T : Visual

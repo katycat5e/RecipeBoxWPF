@@ -19,9 +19,9 @@ namespace RecipeBox3
     /// </summary>
     public partial class EditRecipeDialog : Window
     {
-        private ViewRecipeViewModel ViewModel
+        private EditRecipeViewModel ViewModel
         {
-            get => DataContext as ViewRecipeViewModel;
+            get => DataContext as EditRecipeViewModel;
             set => DataContext = value;
         }
 
@@ -37,6 +37,8 @@ namespace RecipeBox3
 
         public EditRecipeDialog(int? recipeID)
         {
+            InitializeComponent();
+
             if (ViewModel != null && recipeID.HasValue)
             {
                 ViewModel.RecipeID = recipeID;
@@ -54,6 +56,20 @@ namespace RecipeBox3
                 ViewModel.MyRecipe.IMG_Data = ByteImageConverter.ConvertBitmapToBytes(imagePicker.FinalBitmap);
             }
             Cursor = Cursors.Arrow;
+        }
+
+        private void SubmitButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.SaveRecipe();
+
+            DialogResult = true;
+            Close();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }
