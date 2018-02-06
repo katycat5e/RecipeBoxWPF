@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         Title="RecipeBox" Height="800" Width="1400"
         WindowStartupLocation="CenterScreen"
-        Closed="RecipeListView_Closed">
+        Closed="RecipeListView_Closed"
+        Style="{StaticResource DefaultWindowStyle}">
 
     <Window.Resources>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
@@ -100,13 +101,15 @@
                     <MenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
                 </MenuItem>
                 <MenuItem x:Name="ViewOptionsMenuItem" Header="_View" Style="{StaticResource MenuClickableStyle}">
-                    <MenuItem Header="Refresh" Click="ReloadTable">
+                    <MenuItem Header="Reload Data" Click="ReloadTable">
                         <MenuItem.Icon>
                             <Image Source="{DynamicResource RefreshIcon}"/>
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
                     <MenuItem x:Name="ShowImagesMenuItem" Header="Show Images" IsCheckable="True" IsChecked="{Binding ShowImages, Mode=OneWayToSource}"
                               Checked="ShowImagesMenuItem_Checked" Unchecked="ShowImagesMenuItem_Unchecked"/>
+                    <MenuItem x:Name="ReloadImagesMenuItem" Header="Refresh Images" Click="ImgReload_Click"/>
                 </MenuItem>
             </Menu>
 

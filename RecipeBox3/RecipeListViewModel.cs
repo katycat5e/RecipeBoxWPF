@@ -81,7 +81,8 @@ namespace RecipeBox3
 
         public void UpdateImages()
         {
-            getImageWorker.RunWorkerAsync(Recipes.Select(p => p.ID).ToList());
+            if (!getImageWorker.IsBusy)
+                getImageWorker.RunWorkerAsync(Recipes.Select(p => p.ID).ToList());
         }
 
         private void GetImageWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -136,8 +137,11 @@ namespace RecipeBox3
                     break;
 
                 case "ShowImages":
-                    if (getImageWorker.IsBusy) getImageWorker.CancelAsync();
-                    if (e.NewValue is bool b && b) UpdateImages();
+                    if (e.NewValue is bool showImages)
+                    {
+                        if (showImages && !getImageWorker.IsBusy) UpdateImages();
+                        else if (!showImages && getImageWorker.IsBusy) getImageWorker.CancelAsync();
+                    }
                     break;
 
                 default:

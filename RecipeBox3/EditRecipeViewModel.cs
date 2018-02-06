@@ -31,22 +31,28 @@ namespace RecipeBox3
             CategoryList = categoriesAdapter.SelectAll().ToArray();
         }
 
-        public void SaveRecipe()
+        /// <summary>
+        /// Save the current recipe to the database
+        /// </summary>
+        /// <returns>true if changes were made to the database</returns>
+        public bool SaveRecipe()
         {
             if (MyRecipe.Status == RowStatus.Unchanged)
             {
                 MessageBox.Show("No changes detected", "No Change", MessageBoxButton.OK, MessageBoxImage.None);
-                return;
+                return false;
             }
 
             bool successful = recipesAdapter.Update(MyRecipe);
             if (successful)
             {
                 MessageBox.Show("Recipe saved successfully", "Success", MessageBoxButton.OK, MessageBoxImage.None);
+                return true;
             }
             else
             {
                 MessageBox.Show("Recipe could not be saved", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
     }

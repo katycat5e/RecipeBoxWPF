@@ -60,9 +60,7 @@ namespace RecipeBox3
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel?.SaveRecipe();
-
-            DialogResult = true;
+            DialogResult = ViewModel?.SaveRecipe();
             Close();
         }
 

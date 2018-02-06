@@ -20,15 +20,11 @@ namespace RecipeBox3
     /// </summary>
     public partial class RecipeListWindow : Window
     {
-        public CookbookDataSet DataSet { get; set; }
-        private static CookbookModel CookbookAdapter { get { return App.GlobalCookbookModel; } }
-
         private RecipeListViewModel ViewModel => DataContext as RecipeListViewModel;
         
         public RecipeListWindow()
         {
             InitializeComponent();
-            DataSet = new CookbookDataSet();
             ShowImagesMenuItem.IsChecked = Properties.Settings.Default.ShowPreviewImages;
         }
 
@@ -36,7 +32,11 @@ namespace RecipeBox3
         {
             Cursor = Cursors.Wait;
 
-            if (ViewModel != null) ViewModel.GetAllRecipes();
+            if (ViewModel != null)
+            {
+                ViewModel.GetAllRecipes();
+                if (ViewModel.ShowImages) ViewModel.UpdateImages();
+            }
 
             Cursor = Cursors.Arrow;
         }
@@ -52,47 +52,6 @@ namespace RecipeBox3
             Application.Current.Shutdown();
         }
 
-        
-
-        private delegate void SetPreviewImageDelegate(Bitmap image, int rowNum);
-        private void SetPreviewImage(Bitmap image, int rowNum)
-        {
-            //PreviewPanel.BackgroundImage = image;
-            //DataGridViewImageCell previewCell = (row.Cells["IMG_Preview"] as DataGridViewImageCell);
-            //if (previewCell != null)
-            //{
-            //    previewCell.Value = image;
-            //}
-
-            var imageCellInfo = new DataGridCellInfo(RecipeGrid.Items[rowNum], IMG_Preview);
-            if (imageCellInfo == null) return;
-
-            var imageCell = FindGridCell(RecipeGrid, imageCellInfo);
-            if (imageCell != null)
-            {
-                var imageItem = new System.Windows.Controls.Image
-                {
-                    Source = Imaging.CreateBitmapSourceFromHBitmap(image.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
-                };
-                imageCell.Content = imageItem;
-            }
-        }
-
-        static DataGridCell FindGridCell(DataGrid grid, DataGridCellInfo cellInfo)
-        {
-            DataGridCell result = null;
-            DataGridRow row = (DataGridRow)grid.ItemContainerGenerator.ContainerFromItem(cellInfo.Item);
-            if (row != null)
-            {
-                int columnIndex = grid.Columns.IndexOf(cellInfo.Column);
-                if (columnIndex > -1)
-                {
-                    DataGridCellsPresenter presenter = App.GetVisualChild<DataGridCellsPresenter>(row);
-                    result = presenter.ItemContainerGenerator.ContainerFromIndex(columnIndex) as DataGridCell;
-                }
-            }
-            return result;
-        }
 
         // Event Handlers
         //--------------------------------------------------------------------------------------------------------
@@ -115,16 +74,18 @@ namespace RecipeBox3
             viewRecipeWindow.Focus();
         }
 
-        private static void CreateNewRecipe()
+        private void CreateNewRecipe()
         {
             var recipeEditor = new EditRecipeDialog();
-            recipeEditor.ShowDialog();
+            bool? result = recipeEditor.ShowDialog();
+            if (result == true) ReloadTable(this, new RoutedEventArgs());
         }
 
-        private static void OpenRecipeForEdit(int recipeID)
+        private void OpenRecipeForEdit(int recipeID)
         {
             var recipeEditor = new EditRecipeDialog(recipeID);
-            recipeEditor.ShowDialog();
+            bool? result = recipeEditor.ShowDialog();
+            if (result == true) ReloadTable(this, new RoutedEventArgs());
         }
         
         private void RecipeGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)

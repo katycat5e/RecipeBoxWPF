@@ -28,6 +28,24 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     String.Join(", ", DataColumns),
                     "Recipes LEFT JOIN Categories ON R_Category=C_ID");
         }
+        
+        public DetailRecipe SelectWithImage(int id)
+        {
+            var recipe = base.Select(id);
+            recipe.IMG_Data = imagesAdapter.SelectByRecipe(id)?.IMG_Data;
+            return recipe;
+        }
+
+        public IEnumerable<DetailRecipe> SelectAllWithImages()
+        {
+            List<DetailRecipe> recipeList = base.SelectAll().ToList();
+            foreach (var recipe in recipeList)
+            {
+                recipe.IMG_Data = imagesAdapter.SelectByRecipe(recipe.ID)?.IMG_Data;
+            }
+
+            return recipeList;
+        }
 
         /// <inheritdoc/>
         public override bool Insert(DetailRecipe row)

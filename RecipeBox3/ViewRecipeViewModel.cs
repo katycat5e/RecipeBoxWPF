@@ -27,9 +27,13 @@ namespace RecipeBox3
                 if (value != MyRecipe?.ID)
                 {
                     if (value.HasValue)
-                        MyRecipe = recipesAdapter.Select(value.Value);
+                    {
+                        MyRecipe = recipesAdapter.SelectWithImage(value.Value);
+                    }
                     else
+                    {
                         MyRecipe = null;
+                    }
                 }
             }
         }
