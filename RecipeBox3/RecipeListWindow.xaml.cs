@@ -115,9 +115,16 @@ namespace RecipeBox3
             viewRecipeWindow.Focus();
         }
 
-        private static void ShowRecipeEditor(int recipeID)
+        private static void CreateNewRecipe()
         {
-            throw new NotImplementedException();
+            var recipeEditor = new EditRecipeDialog();
+            recipeEditor.ShowDialog();
+        }
+
+        private static void OpenRecipeForEdit(int recipeID)
+        {
+            var recipeEditor = new EditRecipeDialog(recipeID);
+            recipeEditor.ShowDialog();
         }
         
         private void RecipeGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -132,6 +139,12 @@ namespace RecipeBox3
         {
             if (!(sender is MenuItem item)) return;
 
+            if (item.Name == "NewRecipeMenuItem")
+            {
+                CreateNewRecipe();
+                return;
+            }
+
             // Recipe Options
             if (ViewModel?.SelectedGridItem is DetailRecipe selectedRow)
             {
@@ -144,7 +157,7 @@ namespace RecipeBox3
 
                     case "EditRecipeMenuItem":
                     case "EditRecipeContextItem":
-                        ShowRecipeEditor(selectedRow.ID);
+                        OpenRecipeForEdit(selectedRow.ID);
                         return;
 
                     case "DeleteRecipeMenuItem":

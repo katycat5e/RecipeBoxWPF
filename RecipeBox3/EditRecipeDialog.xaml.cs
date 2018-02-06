@@ -35,9 +35,9 @@ namespace RecipeBox3
             }
         }
 
-        public EditRecipeDialog(int recipeID)
+        public EditRecipeDialog(int? recipeID)
         {
-            if (ViewModel != null)
+            if (ViewModel != null && recipeID.HasValue)
             {
                 ViewModel.RecipeID = recipeID;
             }
