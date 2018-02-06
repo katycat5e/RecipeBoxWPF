@@ -29,7 +29,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_ID.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_IDProperty =
-            DependencyProperty.Register("R_ID", typeof(int), typeof(Recipe), new PropertyMetadata(-1, OnRowChanged));
+            DependencyProperty.Register("R_ID", typeof(int), typeof(RecipeBase<U>), new PropertyMetadata(-1, OnRowChanged));
 
 
 
@@ -41,7 +41,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Name.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_NameProperty =
-            DependencyProperty.Register("R_Name", typeof(string), typeof(Recipe), new PropertyMetadata("NewRecipe", OnRowChanged));
+            DependencyProperty.Register("R_Name", typeof(string), typeof(RecipeBase<U>), new PropertyMetadata("NewRecipe", OnRowChanged));
 
 
 
@@ -53,7 +53,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Description.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_DescriptionProperty =
-            DependencyProperty.Register("R_Description", typeof(string), typeof(Recipe), new PropertyMetadata("", OnRowChanged));
+            DependencyProperty.Register("R_Description", typeof(string), typeof(RecipeBase<U>), new PropertyMetadata("", OnRowChanged));
 
 
 
@@ -83,7 +83,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Modified.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_ModifiedProperty =
-            DependencyProperty.Register("R_Modified", typeof(long?), typeof(Recipe), new PropertyMetadata(null, OnRowChanged));
+            DependencyProperty.Register("R_Modified", typeof(long?), typeof(RecipeBase<U>), new PropertyMetadata(null, OnRowChanged));
 
 
 
@@ -95,7 +95,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_PrepTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_PrepTimeProperty =
-            DependencyProperty.Register("R_PrepTime", typeof(int), typeof(Recipe), new PropertyMetadata(0, OnRowChanged));
+            DependencyProperty.Register("R_PrepTime", typeof(int), typeof(RecipeBase<U>), new PropertyMetadata(0, OnRowChanged));
 
 
 
@@ -107,7 +107,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_CookTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_CookTimeProperty =
-            DependencyProperty.Register("R_CookTime", typeof(int), typeof(Recipe), new PropertyMetadata(0, OnRowChanged));
+            DependencyProperty.Register("R_CookTime", typeof(int), typeof(RecipeBase<U>), new PropertyMetadata(0, OnRowChanged));
 
 
 
@@ -119,7 +119,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Steps.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_StepsProperty =
-            DependencyProperty.Register("R_Steps", typeof(string), typeof(Recipe), new PropertyMetadata("", OnRowChanged));
+            DependencyProperty.Register("R_Steps", typeof(string), typeof(RecipeBase<U>), new PropertyMetadata("", OnRowChanged));
 
 
 
@@ -131,7 +131,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for R_Category.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty R_CategoryProperty =
-            DependencyProperty.Register("R_Category", typeof(int), typeof(Recipe), new PropertyMetadata(1, OnRowChanged));
+            DependencyProperty.Register("R_Category", typeof(int), typeof(RecipeBase<U>), new PropertyMetadata(1, OnRowChanged));
         
         
 

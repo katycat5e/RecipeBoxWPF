@@ -41,28 +41,30 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
     public abstract class RecipesBaseAdapter<U> : SQLiteAdapter<U> where U : RecipeBase<U>
     {
-        protected static SQLiteParameter nameParameter       = new SQLiteParameter("@name", DbType.String, 50, "R_Name");
-        protected static SQLiteParameter descParameter       = new SQLiteParameter("@desc", DbType.String, 254, "R_Description");
-        protected static SQLiteParameter modParameter        = new SQLiteParameter("@modified", DbType.Int64, "R_Modified");
-        protected static SQLiteParameter prepParameter       = new SQLiteParameter("@prep", DbType.Int32, "R_PrepTime");
-        protected static SQLiteParameter cookParameter       = new SQLiteParameter("@cook", DbType.Int32, "R_CookTime");
-        protected static SQLiteParameter stepsParameter      = new SQLiteParameter("@steps", DbType.String, "R_Steps");
-        protected static SQLiteParameter categoryParameter   = new SQLiteParameter("@category", DbType.Int32, "R_Category");
-
-        protected override SQLiteParameter[] DataParameters =>
-            new SQLiteParameter[]
-            {
-                nameParameter, descParameter, modParameter,
-                prepParameter, cookParameter, stepsParameter,
-                categoryParameter
-            };
-
+        protected SQLiteParameter nameParameter       = new SQLiteParameter("@name", DbType.String, 50, "R_Name");
+        protected SQLiteParameter descParameter       = new SQLiteParameter("@desc", DbType.String, 254, "R_Description");
+        protected SQLiteParameter modParameter        = new SQLiteParameter("@modified", DbType.Int64, "R_Modified");
+        protected SQLiteParameter prepParameter       = new SQLiteParameter("@prep", DbType.Int32, "R_PrepTime");
+        protected SQLiteParameter cookParameter       = new SQLiteParameter("@cook", DbType.Int32, "R_CookTime");
+        protected SQLiteParameter stepsParameter      = new SQLiteParameter("@steps", DbType.String, "R_Steps");
+        protected SQLiteParameter categoryParameter   = new SQLiteParameter("@category", DbType.Int32, "R_Category");
+        
         protected override string TableName => "Recipes";
         protected override string IDColumn => "R_ID";
 
         public RecipesBaseAdapter() : base() { }
 
         public RecipesBaseAdapter(string connectionString) : base(connectionString) { }
+
+        protected override void InitializeDataParameters()
+        {
+            DataParameters = new SQLiteParameter[]
+            {
+                nameParameter, descParameter, modParameter,
+                prepParameter, cookParameter, stepsParameter,
+                categoryParameter
+            };
+        }
 
         /// <inheritdoc/>
         protected override void SetDataParametersFromRow(U recipe)

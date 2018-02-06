@@ -46,7 +46,10 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
         protected SQLiteParameter IDParameter = new SQLiteParameter("@id", DbType.Int32);
         /// <summary>An array of non-identity parameters for insert and update queries</summary>
-        protected abstract SQLiteParameter[] DataParameters { get; }
+        protected SQLiteParameter[] DataParameters;
+
+        /// <summary>Build the list of data parameters</summary>
+        protected abstract void InitializeDataParameters();
 
         protected SQLiteCommand SelectCommand;
         protected SQLiteCommand InsertCommand;
