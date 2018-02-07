@@ -2,6 +2,8 @@
 using RecipeBox3.SQLiteModel.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +42,17 @@ namespace RecipeBox3
             DependencyProperty.Register("UnitList", typeof(Unit[]), typeof(EditRecipeViewModel), new PropertyMetadata(null));
 
 
+        public override ObservableCollection<DetailIngredient> Ingredients
+        {
+            get => base.Ingredients;
+            set
+            {
+                base.Ingredients = value;
+                value.CollectionChanged += Ingredients_CollectionChanged;
+            }
+        }
+
+        private List<DetailIngredient> deletedIngredients = new List<DetailIngredient>();
 
         public EditRecipeViewModel() : base()
         {
@@ -56,22 +69,56 @@ namespace RecipeBox3
         /// <returns>true if changes were made to the database</returns>
         public bool SaveRecipe()
         {
-            if (MyRecipe.Status == RowStatus.Unchanged)
-            {
-                MessageBox.Show("No changes detected", "No Change", MessageBoxButton.OK, MessageBoxImage.None);
-                return false;
-            }
+            bool ingredientSuccess = true;
+            bool recipeSuccess = true;
 
-            bool successful = recipesAdapter.Update(MyRecipe);
-            if (successful)
+            int numIngredientsToUpdate = Ingredients.Where(
+                p => (
+                    p.Status == RowStatus.New ||
+                    p.Status == RowStatus.Modified ||
+                    p.Status == RowStatus.Deleted)
+                ).Count();
+
+            numIngredientsToUpdate += deletedIngredients.Count;
+
+            int rowsAffected = ingredientsAdapter.Update(Ingredients);
+            rowsAffected += ingredientsAdapter.Update(deletedIngredients);
+
+            ingredientSuccess = (rowsAffected == numIngredientsToUpdate);
+
+            if (MyRecipe.Status != RowStatus.Unchanged)
+                recipeSuccess = recipesAdapter.Update(MyRecipe);
+            else
+                recipeSuccess = true;
+
+            if (recipeSuccess)
             {
-                MessageBox.Show("Recipe saved successfully", "Success", MessageBoxButton.OK, MessageBoxImage.None);
+                string message = "Recipe was saved successfully";
+                if (!ingredientSuccess)
+                    message += ", but not all ingredient changes could be saved";
+
+                MessageBox.Show(message, "Recipe Saved", MessageBoxButton.OK, MessageBoxImage.None);
                 return true;
             }
             else
             {
                 MessageBox.Show("Recipe could not be saved", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
+            }
+        }
+
+        private void Ingredients_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (DetailIngredient ingred in e.OldItems)
+                {
+                    if (!deletedIngredients.Contains(ingred))
+                    {
+                        ingred.Status = RowStatus.Deleted;
+                        deletedIngredients.Add(ingred);
+                    }
+                }
             }
         }
     }

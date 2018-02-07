@@ -54,7 +54,7 @@ namespace RecipeBox3
 
 
 
-        public ObservableCollection<DetailIngredient> Ingredients
+        public virtual ObservableCollection<DetailIngredient> Ingredients
         {
             get { return (ObservableCollection<DetailIngredient>)GetValue(IngredientsProperty); }
             set { SetValue(IngredientsProperty, value); }
