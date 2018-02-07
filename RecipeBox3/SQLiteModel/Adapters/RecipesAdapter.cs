@@ -52,19 +52,16 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected override string TableName => "Recipes";
         protected override string IDColumn => "R_ID";
 
-        public RecipesBaseAdapter() : base() { }
-
-        public RecipesBaseAdapter(string connectionString) : base(connectionString) { }
-
-        protected override void InitializeDataParameters()
-        {
-            DataParameters = new SQLiteParameter[]
+        protected override SQLiteParameter[] DataParameters => new SQLiteParameter[]
             {
                 nameParameter, descParameter, modParameter,
                 prepParameter, cookParameter, stepsParameter,
                 categoryParameter
             };
-        }
+
+        public RecipesBaseAdapter() : base() { }
+
+        public RecipesBaseAdapter(string connectionString) : base(connectionString) { }
 
         /// <inheritdoc/>
         protected override void SetDataParametersFromRow(U recipe)

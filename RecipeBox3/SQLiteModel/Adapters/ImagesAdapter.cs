@@ -11,11 +11,12 @@ namespace RecipeBox3.SQLiteModel.Adapters
 {
     public class ImagesAdapter : SQLiteAdapter<ImageRow>
     {
-        private static SQLiteParameter recipeParameter = new SQLiteParameter("@recipe", DbType.Int32, "IMG_RecipeID");
-        private static SQLiteParameter dataParameter   = new SQLiteParameter("@data", DbType.Binary, "IMG_Data");
+        private SQLiteParameter recipeParameter = new SQLiteParameter("@recipe", DbType.Int32, "IMG_RecipeID");
+        private SQLiteParameter dataParameter   = new SQLiteParameter("@data", DbType.Binary, "IMG_Data");
         
         /// <inheritdoc/>
-        protected override SQLiteParameter[] DataParameters => new SQLiteParameter[] { recipeParameter, dataParameter };
+        protected override SQLiteParameter[] DataParameters =>
+            new SQLiteParameter[] { recipeParameter, dataParameter };
 
         protected override string TableName => "Images";
         protected override string IDColumn => "IMG_ID";

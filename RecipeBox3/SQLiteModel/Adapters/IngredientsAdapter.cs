@@ -9,32 +9,121 @@ using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
+    public class IngredientsAdapter : IngredientsBaseAdapter<Ingredient>
+    {
+        protected override Ingredient GetRowFromReader(SQLiteDataReader reader)
+        {
+            try
+            {
+                Ingredient ingredient = new Ingredient()
+                {
+                    IE_ID = reader.GetInt32(0),
+                    IE_Name = reader.GetString(1),
+                    IE_Amount = reader.GetDecimal(2),
+                    IE_Unit = reader.GetInt32(3),
+                    IE_RecipeID = reader.GetValue(4) as int?
+                };
+
+                return ingredient;
+            }
+            catch (InvalidCastException ex)
+            {
+                App.LogException(ex);
+                return null;
+            }
+        }
+    }
+
     public abstract class IngredientsBaseAdapter<U> : SQLiteAdapter<U> where U : IngredientBase<U>
     {
         protected SQLiteParameter nameParameter = new SQLiteParameter("@name", DbType.String, "IE_Name");
         protected SQLiteParameter amountParameter = new SQLiteParameter("@amount", DbType.Decimal, "IE_Amount");
         protected SQLiteParameter unitParameter = new SQLiteParameter("@unit", DbType.Int32, "IE_Unit");
-        
-        
+        protected SQLiteParameter recipeParameter = new SQLiteParameter("@recipe", DbType.Int32, "IE_RecipeID");
 
-        protected override string TableName => throw new NotImplementedException();
-
-        public IngredientsBaseAdapter()
+        protected override SQLiteParameter[] DataParameters
         {
-            DataParameters = new SQLiteParameter[]
+            get
             {
-                nameParameter, amountParameter, unitParameter
-            };
+                return new SQLiteParameter[]
+                {
+                    nameParameter, amountParameter, unitParameter, recipeParameter
+                };
+            }
         }
 
-        protected override Ingredient GetRowFromReader(SQLiteDataReader reader)
+        protected override string TableName => "Ingredients";
+        protected override string IDColumn => "IE_ID";
+
+        protected SQLiteCommand SelectByRecipeCommand;
+
+        protected override SQLiteConnection Connection
         {
-            throw new NotImplementedException();
+            get => base.Connection;
+            set
+            {
+                if (value == _connection) return;
+                else
+                {
+                    if (SelectByRecipeCommand != null) SelectByRecipeCommand.Connection = value;
+                    base.Connection = value;
+                }
+            }
         }
 
-        protected override void SetDataParametersFromRow(Ingredient row)
+        public IngredientsBaseAdapter() : base() { }
+
+        public IngredientsBaseAdapter(string connectionString) : base(connectionString) { }
+
+        /// <inheritdoc/>
+        protected override void Initialize(string connectionString)
         {
-            throw new NotImplementedException();
+            base.Initialize(connectionString);
+
+            SelectByRecipeCommand = new SQLiteCommand(
+                String.Format(
+                    "SELECT {0}, {1} FROM Ingredients WHERE IE_RecipeID=@recipeid",
+                    IDColumn, DataColumns),
+                Connection);
+            SelectByRecipeCommand.Parameters.Add(recipeParameter);
+        }
+
+        /// <summary>Retrieve all ingredients for a recipe</summary>
+        /// <param name="recipeID">ID of the recipe to search for</param>
+        /// <returns>The set of ingredient objects matching the specified recipe</returns>
+        public virtual IEnumerable<U> SelectAllByRecipe(int recipeID)
+        {
+            if (SelectByRecipeCommand?.Connection == null) return null;
+            else
+            {
+                recipeParameter.Value = recipeID;
+
+                List<U> results = new List<U>();
+
+                using (var reader = ExecuteCommandReader(SelectByRecipeCommand))
+                {
+                    if (reader.HasRows)
+                    {
+                        U nextRow;
+
+                        while (reader.Read())
+                        {
+                            nextRow = GetRowFromReader(reader);
+                            if (nextRow != null) results.Add(nextRow);
+                        }
+                    }
+                }
+
+                return results;
+            }
+        }
+
+        /// <inheritdoc/>
+        protected override void SetDataParametersFromRow(U row)
+        {
+            nameParameter.Value = row.IE_Name;
+            amountParameter.Value = row.IE_Amount;
+            unitParameter.Value = row.IE_Unit;
         }
     }
 }
