@@ -13,8 +13,6 @@ namespace RecipeBox3.SQLiteModel.Adapters
     {
         protected ImagesAdapter imagesAdapter = new ImagesAdapter();
 
-        protected override string TableName => "Recipes";
-
         /// <inheritdoc/>
         protected override void Initialize(string connectionString)
         {

@@ -11,27 +11,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
 {
     public class IngredientsAdapter : IngredientsBaseAdapter<Ingredient>
     {
-        protected override Ingredient GetRowFromReader(SQLiteDataReader reader)
-        {
-            try
-            {
-                Ingredient ingredient = new Ingredient()
-                {
-                    IE_ID = reader.GetInt32(0),
-                    IE_Name = reader.GetString(1),
-                    IE_Amount = reader.GetDecimal(2),
-                    IE_Unit = reader.GetInt32(3),
-                    IE_RecipeID = reader.GetValue(4) as int?
-                };
-
-                return ingredient;
-            }
-            catch (InvalidCastException ex)
-            {
-                App.LogException(ex);
-                return null;
-            }
-        }
+        
     }
 
     public abstract class IngredientsBaseAdapter<U> : SQLiteAdapter<U> where U : IngredientBase<U>
@@ -82,8 +62,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
             SelectByRecipeCommand = new SQLiteCommand(
                 String.Format(
-                    "SELECT {0}, {1} FROM Ingredients WHERE IE_RecipeID=@recipeid",
-                    IDColumn, DataColumns),
+                    "SELECT {0}, {1} FROM {2} WHERE IE_RecipeID=@recipeid",
+                    IDColumn, DataColumns, TableName),
                 Connection);
             SelectByRecipeCommand.Parameters.Add(recipeParameter);
         }
@@ -124,6 +104,30 @@ namespace RecipeBox3.SQLiteModel.Adapters
             nameParameter.Value = row.IE_Name;
             amountParameter.Value = row.IE_Amount;
             unitParameter.Value = row.IE_Unit;
+        }
+
+        protected override U GetRowFromReader(SQLiteDataReader reader)
+        {
+            try
+            {
+                U ingredient = Activator.CreateInstance(typeof(U)) as U;
+
+                if (ingredient != null)
+                {
+                    ingredient.IE_ID = reader.GetInt32(0);
+                    ingredient.IE_Name = reader.GetString(1);
+                    ingredient.IE_Amount = reader.GetDecimal(2);
+                    ingredient.IE_Unit = reader.GetInt32(3);
+                    ingredient.IE_RecipeID = reader.GetValue(4) as int?;
+                }
+
+                return ingredient;
+            }
+            catch (InvalidCastException ex)
+            {
+                App.LogException(ex);
+                return null;
+            }
         }
     }
 }

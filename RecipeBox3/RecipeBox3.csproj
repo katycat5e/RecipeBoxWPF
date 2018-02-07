@@ -145,8 +145,12 @@
       <DependentUpon>EditRecipeDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditRecipeViewModel.cs" />
+    <Compile Include="SQLiteModel\Adapters\DetailIngredientsAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\IngredientsAdapter.cs" />
+    <Compile Include="SQLiteModel\Adapters\UnitsAdapter.cs" />
+    <Compile Include="SQLiteModel\Data\DetailIngredient.cs" />
     <Compile Include="SQLiteModel\Data\Ingredient.cs" />
+    <Compile Include="SQLiteModel\Data\Unit.cs" />
     <Compile Include="ValueConverters.cs" />
     <Compile Include="DBChecker.cs" />
     <Compile Include="CategoriesEditorView.xaml.cs">
