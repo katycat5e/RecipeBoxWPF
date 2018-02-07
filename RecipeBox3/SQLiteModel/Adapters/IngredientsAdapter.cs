@@ -63,7 +63,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             SelectByRecipeCommand = new SQLiteCommand(
                 String.Format(
                     "SELECT {0}, {1} FROM {2} WHERE IE_RecipeID=@recipeid",
-                    IDColumn, DataColumns, TableName),
+                    IDColumn, String.Join(", ", DataColumns), TableName),
                 Connection);
             SelectByRecipeCommand.Parameters.Add(recipeParameter);
         }

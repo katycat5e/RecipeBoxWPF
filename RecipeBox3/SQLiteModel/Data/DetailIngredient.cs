@@ -17,7 +17,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for U_Name.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty U_NameProperty =
-            DependencyProperty.Register("U_Name", typeof(string), typeof(Unit), new PropertyMetadata("New Unit", OnRowChanged));
+            DependencyProperty.Register("U_Name", typeof(string), typeof(DetailIngredient), new PropertyMetadata("New Unit", OnRowChanged));
 
 
 
@@ -29,7 +29,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for U_Plural.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty U_PluralProperty =
-            DependencyProperty.Register("U_Plural", typeof(string), typeof(Unit), new PropertyMetadata("New Units", OnRowChanged));
+            DependencyProperty.Register("U_Plural", typeof(string), typeof(DetailIngredient), new PropertyMetadata("New Units", OnRowChanged));
 
 
 
@@ -41,7 +41,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for Abbreviation.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty U_AbbreviationProperty =
-            DependencyProperty.Register("U_Abbreviation", typeof(string), typeof(Unit), new PropertyMetadata("", OnRowChanged));
+            DependencyProperty.Register("U_Abbreviation", typeof(string), typeof(DetailIngredient), new PropertyMetadata("", OnRowChanged));
 
 
 
@@ -53,7 +53,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for U_TypeCode.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty U_TypeCodeProperty =
-            DependencyProperty.Register("U_TypeCode", typeof(Unit.UnitType), typeof(Unit), new PropertyMetadata(Unit.UnitType.Mass, OnRowChanged));
+            DependencyProperty.Register("U_TypeCode", typeof(Unit.UnitType), typeof(DetailIngredient), new PropertyMetadata(Unit.UnitType.Mass, OnRowChanged));
 
 
 
@@ -65,7 +65,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for U_Ratio.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty U_RatioProperty =
-            DependencyProperty.Register("U_Ratio", typeof(float), typeof(Unit), new PropertyMetadata(1.0, OnRowChanged));
+            DependencyProperty.Register("U_Ratio", typeof(float), typeof(DetailIngredient), new PropertyMetadata(1.0F, OnRowChanged));
 
 
 
@@ -77,10 +77,10 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for U_System.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty U_SystemProperty =
-            DependencyProperty.Register("U_System", typeof(Unit.System), typeof(Unit), new PropertyMetadata(Unit.System.Metric, OnRowChanged));
+            DependencyProperty.Register("U_System", typeof(Unit.System), typeof(DetailIngredient), new PropertyMetadata(Unit.System.Metric, OnRowChanged));
 
 
-        public DetailIngredient()
+        public DetailIngredient() : base()
         {
             Status = RowStatus.New;
         }

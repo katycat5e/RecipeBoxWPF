@@ -83,7 +83,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         // Using a DependencyProperty as the backing store for U_Ratio.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty U_RatioProperty =
-            DependencyProperty.Register("U_Ratio", typeof(float), typeof(Unit), new PropertyMetadata(1.0, OnRowChanged));
+            DependencyProperty.Register("U_Ratio", typeof(float), typeof(Unit), new PropertyMetadata(1.0F, OnRowChanged));
 
 
 
@@ -122,7 +122,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
         public enum System : int
         {
-            Metric = 0, Customary = 1
+            Any = 0, Metric = 1, Customary = 2
         }
     }
 }

@@ -12,12 +12,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using RecipeBox3.SQLiteModel.Data;
 using RecipeBox3.SQLiteModel.Adapters;
+using System.Collections.ObjectModel;
 
 namespace RecipeBox3
 {
     public class ViewRecipeViewModel : DependencyObject
     {
         protected DetailRecipesAdapter recipesAdapter;
+        protected DetailIngredientsAdapter ingredientsAdapter;
 
         public int? RecipeID
         {
@@ -29,10 +31,12 @@ namespace RecipeBox3
                     if (value.HasValue)
                     {
                         MyRecipe = recipesAdapter.SelectWithImage(value.Value);
+                        Ingredients = new ObservableCollection<DetailIngredient>(ingredientsAdapter.SelectAllByRecipe(value.Value));
                     }
                     else
                     {
                         MyRecipe = null;
+                        Ingredients = null;
                     }
                 }
             }
@@ -48,9 +52,24 @@ namespace RecipeBox3
         public static readonly DependencyProperty MyRecipeProperty =
             DependencyProperty.Register("MyRecipe", typeof(DetailRecipe), typeof(ViewRecipeViewModel), new PropertyMetadata(null));
 
+
+
+        public ObservableCollection<DetailIngredient> Ingredients
+        {
+            get { return (ObservableCollection<DetailIngredient>)GetValue(IngredientsProperty); }
+            set { SetValue(IngredientsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Ingredients.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IngredientsProperty =
+            DependencyProperty.Register("Ingredients", typeof(ObservableCollection<DetailIngredient>), typeof(ViewRecipeViewModel), new PropertyMetadata(new ObservableCollection<DetailIngredient>()));
+
+
+
         public ViewRecipeViewModel()
         {
             recipesAdapter = new DetailRecipesAdapter();
+            ingredientsAdapter = new DetailIngredientsAdapter();
         }
     }
 }

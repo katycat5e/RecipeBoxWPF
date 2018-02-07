@@ -12,6 +12,7 @@ namespace RecipeBox3
     public class EditRecipeViewModel : ViewRecipeViewModel
     {
         private CategoriesAdapter categoriesAdapter;
+        private UnitsAdapter unitsAdapter;
         
         public Category[] CategoryList
         {
@@ -25,10 +26,28 @@ namespace RecipeBox3
 
 
 
+        public Unit[] UnitList
+        {
+            get { return (Unit[])GetValue(UnitListProperty); }
+            set
+            {
+                SetValue(UnitListProperty, value);
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for UnitList.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UnitListProperty =
+            DependencyProperty.Register("UnitList", typeof(Unit[]), typeof(EditRecipeViewModel), new PropertyMetadata(null));
+
+
+
         public EditRecipeViewModel() : base()
         {
             categoriesAdapter = new CategoriesAdapter();
+            unitsAdapter = new UnitsAdapter();
+
             CategoryList = categoriesAdapter.SelectAll().ToArray();
+            UnitList = unitsAdapter.SelectAll().ToArray();
         }
 
         /// <summary>

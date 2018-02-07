@@ -19,6 +19,12 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     "SELECT {0}, {1}, U_Name, U_Plural, U_Abbrev, U_Typecode, U_Ratio, U_System " +
                     "FROM Ingredients LEFT JOIN Units ON IE_Unit=U_ID WHERE (@id IS NULL) OR ({0} = @id)",
                     IDColumn, DataColumns);
+
+            SelectByRecipeCommand.CommandText =
+                String.Format(
+                    "SELECT {0}, {1}, U_Name, U_Plural, U_Abbrev, U_Typecode, U_Ratio, U_System " +
+                    "FROM Ingredients LEFT JOIN Units ON IE_Unit=U_ID WHERE IE_RecipeID=@recipe",
+                    IDColumn, String.Join(", ", DataColumns));
         }
 
         protected override DetailIngredient GetRowFromReader(SQLiteDataReader reader)

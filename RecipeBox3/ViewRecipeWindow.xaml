@@ -6,12 +6,16 @@
         xmlns:local="clr-namespace:RecipeBox3"
         xmlns:Data="clr-namespace:RecipeBox3.SQLiteModel.Data" x:Class="RecipeBox3.ViewRecipeWindow"
         mc:Ignorable="d"
-        Title="{Binding MyRecipe.R_Name}" Height="600" Width="1000">
+        Title="{Binding MyRecipe.R_Name}" Height="600" Width="1000"
+        Style="{StaticResource DefaultWindowStyle}"
+        d:DataContext="{d:DesignData Source=./DesignData/ViewRecipeWindowData.xaml}">
+    
     <Window.Resources>
         <local:TimeStringConverter x:Key="TimeStringConverter"/>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
         <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
 
@@ -21,49 +25,52 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <Image Grid.Row="0" Grid.Column="0" Source="{Binding MyRecipe.IMG_Data, Converter={StaticResource ByteImageConverter}}"/>
-        <Grid Grid.Row="0" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1.5*"/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <Label FontSize="18" FontWeight="Bold" Content="{Binding MyRecipe.R_Name}" Grid.Row="0" Grid.ColumnSpan="2"/>
-            <Label Content="{Binding MyRecipe.C_Name}" Grid.Row="1" Grid.ColumnSpan="2"/>
-            <Label Content="Modified:" HorizontalContentAlignment="Right" Grid.Row="2" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="2" Grid.Column="1" Content="{Binding MyRecipe.ModifiedDateTime}"/>
-            <Label Content="Prep Time:" HorizontalContentAlignment="Right" Grid.Row="3" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="1" Content="{Binding MyRecipe.R_PrepTime, Converter={StaticResource TimeStringConverter}}"/>
-            <Label Content="Cook Time:" HorizontalContentAlignment="Right" Grid.Row="4" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="4" Grid.Column="1" Content="{Binding MyRecipe.R_CookTime, Converter={StaticResource TimeStringConverter}}"/>
-        </Grid>
-        <DataGrid Grid.Row="1" Grid.Column="0"/>
-        <Grid Grid.Row="1" Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.5*"/>
-                <ColumnDefinition Width="90*"/>
-                <ColumnDefinition Width="2.5*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="2.5*"/>
-                <RowDefinition Height="90*"/>
-                <RowDefinition Height="2.5*"/>
-            </Grid.RowDefinitions>
+
+        <Label FontSize="16pt" FontWeight="Bold" Content="{Binding MyRecipe.R_Name}" Grid.Row="0" Grid.ColumnSpan="2"/>
+
+        <Image Grid.Row="1" Grid.Column="0" Source="{Binding MyRecipe.IMG_Data, Converter={StaticResource ByteImageConverter}}"/>
+        <UniformGrid Grid.Row="1" Grid.Column="1" Rows="2" Columns="4">
+
+            <Label Content="Category:" Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Right"/>
+            <Label Content="{Binding MyRecipe.C_Name}" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Left"/>
             
-            <TextBlock x:Name="StepsText" Grid.Row="1" Grid.Column="1" Text="{Binding MyRecipe.R_Steps}"/>
-        </Grid>
+            <Label Content="Modified:" HorizontalContentAlignment="Right" Grid.Row="1" Grid.Column="0"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="1" Grid.Column="1" Content="{Binding MyRecipe.ModifiedDateTime}"/>
+            
+            <Label Content="Prep Time:" HorizontalContentAlignment="Right" Grid.Row="2" Grid.Column="0"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="2" Grid.Column="1" Content="{Binding MyRecipe.R_PrepTime, Converter={StaticResource TimeStringConverter}}"/>
+            
+            <Label Content="Cook Time:" HorizontalContentAlignment="Right" Grid.Row="3" Grid.Column="0"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="1" Content="{Binding MyRecipe.R_CookTime, Converter={StaticResource TimeStringConverter}}"/>
+        </UniformGrid>
+
+        <DockPanel Grid.Row="2" Grid.Column="0">
+            <Label Content="Ingredients" FontSize="14pt" DockPanel.Dock="Top"/>
+            <DataGrid ItemsSource="{Binding Ingredients}" Margin="6" AutoGenerateColumns="False"
+                      HeadersVisibility="None" Style="{StaticResource DefaultDataGridStyle}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding IE_Amount}" Width="1*"/>
+                    <DataGridTextColumn Binding="{Binding U_Abbreviation}" Width="1*"/>
+                    <DataGridTextColumn Binding="{Binding IE_Name}" Width="3*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <DockPanel Grid.Row="2" Grid.Column="1">
+            <Label Content="Instructions:" FontSize="14pt" DockPanel.Dock="Top"/>
+            <FlowDocumentScrollViewer 
+                Margin="6"
+                VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
+
+            </FlowDocumentScrollViewer>
+        </DockPanel>
     </Grid>
 </Window>

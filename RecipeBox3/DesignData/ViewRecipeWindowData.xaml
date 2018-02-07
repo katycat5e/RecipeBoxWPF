@@ -1,0 +1,23 @@
+﻿<local:ViewRecipeViewModel
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:RecipeBox3"
+    xmlns:Data="clr-namespace:RecipeBox3.SQLiteModel.Data"
+    xmlns:objmod="clr-namespace:System.Collections.ObjectModel">
+
+    <local:ViewRecipeViewModel.Ingredients>
+        <Data:DetailIngredient IE_Name="Flour" IE_Amount="5.00" U_Abbreviation="C" U_TypeCode="Volume" U_System="Customary"/>
+        <Data:DetailIngredient U_Abbreviation="tsp" U_System="Customary" U_TypeCode="Volume" IE_Name="Salt" IE_Amount="3"/>
+    </local:ViewRecipeViewModel.Ingredients>
+    
+    <local:ViewRecipeViewModel.MyRecipe>
+        <Data:DetailRecipe R_Name="Demonstration Recipe"
+                           C_Name="Default" R_ID="1"
+                           R_Modified="131624931849569610"
+                           R_PrepTime="5" R_CookTime="30"
+                           R_Steps="These are some demonstration steps.\n
+                           \n
+                           lorem ipsem dolor sit amet"/>
+    </local:ViewRecipeViewModel.MyRecipe>
+</local:ViewRecipeViewModel>
