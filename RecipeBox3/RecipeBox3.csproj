@@ -192,10 +192,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </DesignData>
-    <Page Include="DesignData\EditRecipeWindowData.xaml">
+    <DesignData Include="DesignData\EditRecipeWindowData.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
+    </DesignData>
     <Page Include="EditRecipeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

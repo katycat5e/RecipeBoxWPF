@@ -4,17 +4,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:RecipeBox3"
     xmlns:Data="clr-namespace:RecipeBox3.SQLiteModel.Data"
-    xmlns:objmod="clr-namespace:System.Collections.ObjectModel">
+    xmlns:colGen="clr-namespace:System.Collections.Generic;assembly=mscorlib">
     <local:EditRecipeViewModel.CategoryList>
         <Data:Category C_Name="Default" ID="1"/>
         <Data:Category C_Name="Entree" ID="2"/>
     </local:EditRecipeViewModel.CategoryList>
-    
-    <local:EditRecipeViewModel.UnitList>
-        <Data:Unit U_Plural="kilograms" U_Ratio="1" U_ID="1" U_Name="kilogram" U_Abbreviation="kg" U_TypeCode="Mass"/>
-        <Data:Unit U_Plural="liters" U_Ratio="1" U_ID="2" U_Name="liter" U_Abbreviation="L" U_TypeCode="Volume"/>
-        <Data:Unit U_Plural="" U_Ratio="1" U_ID="3" U_Name="" U_Abbreviation="" U_TypeCode="Amount"/>
-    </local:EditRecipeViewModel.UnitList>
 
     <local:EditRecipeViewModel.Ingredients>
         <Data:DetailIngredient IE_Name="Flour" IE_Amount="5.00" U_Abbreviation="C" U_TypeCode="Volume" U_System="Customary"/>

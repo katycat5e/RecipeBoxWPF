@@ -3,77 +3,133 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
+using RecipeBox3.SQLiteModel.Adapters;
+using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3
 {
-    public class UnitManager
+    public class UnitManager : DependencyObject
     {
-        private CookbookModel GlobalCookbookAdapter { get { return App.GlobalCookbookModel; } }
-        private CookbookDataSet.UnitsDataTable _UnitsTable;
-        public CookbookDataSet.UnitsDataTable UnitsTable => _UnitsTable;
+        private UnitsAdapter unitsAdapter = new UnitsAdapter();
+
+
+        public Dictionary<int, Unit> UnitList
+        {
+            get { return (Dictionary<int, Unit>)GetValue(UnitListProperty); }
+            set { SetValue(UnitListProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UnitList.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UnitListProperty =
+            DependencyProperty.Register("UnitList", typeof(Dictionary<int, Unit>), typeof(UnitManager), new PropertyMetadata(null));
+
+
 
         public UnitManager()
         {
-            _UnitsTable = new CookbookDataSet.UnitsDataTable();
+            
         }
 
         public decimal Convert(decimal amount, int sourceID, int targetID)
         {
-            var sourceRow = _UnitsTable.FindByU_ID(sourceID);
-            var targetRow = _UnitsTable.FindByU_ID(targetID);
+            if (!UnitList.TryGetValue(sourceID, out Unit source))
+                throw new UnitNotFoundException("Source unit was not found in the unit table");
 
-            if (sourceRow == null) throw new UnitNotFoundException("Source unit was not found in the unit table");
-            if (targetRow == null) throw new UnitNotFoundException("Target unit was not found in the unit table");
+            if (!UnitList.TryGetValue(targetID, out Unit target))
+                throw new UnitNotFoundException("Target unit was not found in the unit table");
 
-            return Convert(amount, sourceRow, targetRow);
+            return Convert(amount, source, target);
         }
 
-        private decimal Convert(decimal amount, CookbookDataSet.UnitsRow sourceRow, CookbookDataSet.UnitsRow targetRow)
+        private decimal Convert(decimal amount, Unit source, Unit target)
         {
-            if (sourceRow == null || targetRow == null) throw new ArgumentNullException();
+            if (source == null || target == null) throw new ArgumentNullException();
 
-            if (sourceRow.IsU_RatioNull()) throw new InvalidUnitException("Source unit does not have a valid ratio");
-            if (targetRow.IsU_RatioNull()) throw new InvalidUnitException("Target unit does not have a valid ratio");
+            if (source.U_Ratio <= 0F) throw new InvalidUnitException("Source unit does not have a valid ratio");
+            if (target.U_Ratio <= 0F) throw new InvalidUnitException("Target unit does not have a valid ratio");
 
-            if (sourceRow.IsU_TypecodeNull() || targetRow.IsU_TypecodeNull() || sourceRow.U_Typecode != targetRow.U_Typecode)
-                throw new InvalidUnitException("Source and Target unit types are incompatible: " + sourceRow.U_Typecode + "->" + targetRow.U_Typecode);
+            if (source.U_TypeCode != target.U_TypeCode)
+                throw new InvalidUnitException(
+                    String.Format(
+                        "Source and Target unit types are incompatible: {0}->{1}",
+                        source.U_TypeCode.GetString(),
+                        target.U_TypeCode.GetString()
+                        )
+                    );
 
-            return System.Convert.ToDecimal(sourceRow.U_Ratio / targetRow.U_Ratio) * amount;
+            return System.Convert.ToDecimal(source.U_Ratio / target.U_Ratio) * amount;
+        }
+
+        public string GetString(decimal amount, int sourceID, Unit.System targetSystem)
+        {
+            if (!UnitList.TryGetValue(sourceID, out Unit sourceUnit))
+                throw new UnitNotFoundException("Source unit was not found in the unit table");
+
+            return GetString(amount, sourceUnit, targetSystem);
+        }
+
+        public string GetString(decimal amount, Unit sourceUnit, Unit.System targetSystem)
+        {
+            if (targetSystem == Unit.System.Any)
+            {
+                targetSystem = sourceUnit.U_System;
+            }
+
+            switch (targetSystem)
+            {
+                case Unit.System.Customary:
+                    return GetUSString(amount, sourceUnit);
+                case Unit.System.Metric:
+                    return GetMetricString(amount, sourceUnit);
+                default:
+                    if (sourceUnit.U_System == Unit.System.Customary)
+                        return GetUSString(amount, sourceUnit);
+                    else
+                        return GetMetricString(amount, sourceUnit);
+            }
         }
 
         public string GetUSString(decimal amount, int sourceID)
         {
-            var sourceRow = _UnitsTable.FindByU_ID(sourceID);
-            if (sourceRow == null) throw new UnitNotFoundException("Source unit was not found in the unit table");
+            if (!UnitList.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
 
             return GetUSString(amount, sourceRow);
         }
 
-        public string GetUSString(decimal amount, CookbookDataSet.UnitsRow sourceRow)
+        public string GetUSString(decimal amount, Unit sourceRow)
         {
             string outputStr = null;
 
-            if (!sourceRow.IsU_SystemNull() && sourceRow.U_System.Equals("USC"))
+            if (sourceRow.U_System == Unit.System.Customary)
             {
                 // already in US units
-                outputStr = FormatAsFraction(amount);
-                if (!sourceRow.IsU_AbbrevNull()) outputStr += " " + sourceRow.U_Abbrev;
+                outputStr = FormatAsFraction(amount) + " " + sourceRow.U_Abbreviation;
                 return outputStr;
             }
 
-            var rows = _UnitsTable.Select("U_System = 'USC' AND U_Typecode = " + sourceRow.U_Typecode + " OR U_ID = " + sourceRow.U_ID, "U_Ratio ASC");
+            //var rows = _UnitsTable.Select("U_System = 'USC' AND U_Typecode = " + sourceRow.U_Typecode + " OR U_ID = " + sourceRow.U_ID, "U_Ratio ASC");
+            var rows = UnitList
+                .Where(
+                    p => (p.Value.U_System == Unit.System.Customary &&
+                          p.Value.U_TypeCode == sourceRow.U_TypeCode) ||
+                          p.Key == sourceRow.ID
+                )
+                .Select(p => p.Value)
+                .ToList();
 
-            if (rows.Length <= 1)
+            if (rows.Count <= 1)
             {
-                return FormatAsFraction(amount) + " " + ((sourceRow.IsU_AbbrevNull()) ? null : sourceRow.U_Abbrev);
+                return FormatAsFraction(amount) + " " + sourceRow.U_Abbreviation;
             }
             else
             {
                 int sourceIndex = -1;
                 int i = 0;
 
-                foreach (CookbookDataSet.UnitsRow row in rows)
+                foreach (Unit row in rows)
                 {
                     if (row.U_ID == sourceRow.U_ID) sourceIndex = i;
                     else i++;
@@ -85,23 +141,23 @@ namespace RecipeBox3
                 }
                 else
                 {
-                    CookbookDataSet.UnitsRow target = null;
+                    Unit target = null;
 
                     if (sourceIndex == 0)
                     {
                         // no smaller, use larger
-                        target = rows[1] as CookbookDataSet.UnitsRow;
+                        target = rows[1];
                     }
-                    else if (sourceIndex > 0 && sourceIndex < rows.Length)
+                    else if (sourceIndex > 0 && sourceIndex < rows.Count)
                     {
                         // use smaller
-                        target = rows[sourceIndex - 1] as CookbookDataSet.UnitsRow;
+                        target = rows[sourceIndex - 1];
                     }
 
                     decimal newAmount = Convert(amount, sourceRow, target);
                     decimal fPart = newAmount % 1;
 
-                    string targetAbbrev = (target.IsU_AbbrevNull()) ? null : target.U_Abbrev;
+                    string targetAbbrev = target.U_Abbreviation;
 
                     if (fPart > 0)
                     {
@@ -114,7 +170,7 @@ namespace RecipeBox3
                         for (int j = sourceIndex; j >= 0 && !smallerUnitFound; j--)
                         {
                             // traverse back down the list to find the sub unit
-                            if (rows[j] is CookbookDataSet.UnitsRow subTarget)
+                            if (rows[j] is Unit subTarget)
                             {
                                 try
                                 {
@@ -123,7 +179,7 @@ namespace RecipeBox3
                                     if (subAmount > 1)
                                     {
                                         smallerUnitFound = true;
-                                        subTargetAbbrev = (subTarget.IsU_AbbrevNull()) ? null : subTarget.U_Abbrev;
+                                        subTargetAbbrev = subTarget.U_Abbreviation;
                                     }
                                 }
                                 catch (Exception)
@@ -157,27 +213,33 @@ namespace RecipeBox3
 
         public string GetMetricString(decimal amount, int sourceID)
         {
-            var sourceRow = _UnitsTable.FindByU_ID(sourceID);
-            if (sourceRow == null) throw new UnitNotFoundException("Source unit was not found in the unit table");
+            if (!UnitList.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
 
             return GetMetricString(amount, sourceRow);
         }
 
-        public string GetMetricString(decimal amount, CookbookDataSet.UnitsRow sourceRow)
+        public string GetMetricString(decimal amount, Unit sourceRow)
         {
             string outputStr = null;
 
-            if (!sourceRow.IsU_SystemNull() && sourceRow.U_System.Equals("MET"))
+            if (sourceRow.U_System == Unit.System.Metric)
             {
                 // already in metric units
-                outputStr = decimal.Round(amount, 3).ToString("0.###");
-                if (!sourceRow.IsU_AbbrevNull()) outputStr += " " + sourceRow.U_Abbrev;
+                outputStr = decimal.Round(amount, 3).ToString("0.###") + " " + sourceRow.U_Abbreviation;
                 return outputStr;
             }
 
-            var rows = _UnitsTable.Select("U_System = 'MET' AND U_Typecode = " + sourceRow.U_Typecode + " OR U_ID = " + sourceRow.U_ID, "U_Ratio ASC");
+            //var rows = _UnitsTable.Select("U_System = 'MET' AND U_Typecode = " + sourceRow.U_Typecode + " OR U_ID = " + sourceRow.U_ID, "U_Ratio ASC");
+            var rows = UnitList
+                .Where(
+                    p => (p.Value.U_System == Unit.System.Metric &&
+                          p.Value.U_TypeCode == sourceRow.U_TypeCode) ||
+                          p.Key == sourceRow.ID
+                )
+                .Select(p => p.Value)
+                .ToList();
 
-            if (rows.Length <= 1)
+            if (rows.Count <= 1)
             {
                 outputStr = decimal.Round(amount, 3).ToString("0.###");
             }
@@ -186,9 +248,9 @@ namespace RecipeBox3
                 int sourceIndex = -1;
                 int i = 0;
 
-                foreach (CookbookDataSet.UnitsRow row in rows)
+                foreach (Unit unit in rows)
                 {
-                    if (row.U_ID == sourceRow.U_ID) sourceIndex = i;
+                    if (unit.U_ID == sourceRow.U_ID) sourceIndex = i;
                     else i++;
                 }
 
@@ -198,23 +260,22 @@ namespace RecipeBox3
                 }
                 else
                 {
-                    CookbookDataSet.UnitsRow target = null;
+                    Unit target = null;
 
                     if (sourceIndex == 0)
                     {
                         // no smaller, use larger
-                        target = rows[1] as CookbookDataSet.UnitsRow;
+                        target = rows[1];
                     }
-                    else if (sourceIndex > 0 && sourceIndex < rows.Length)
+                    else if (sourceIndex > 0 && sourceIndex < rows.Count)
                     {
                         // use smaller
-                        target = rows[sourceIndex - 1] as CookbookDataSet.UnitsRow;
+                        target = rows[sourceIndex - 1];
                     }
 
                     decimal newAmount = Convert(amount, sourceRow, target);
 
-                    outputStr = decimal.Round(newAmount, 3).ToString("0.###");
-                    if (!target.IsU_AbbrevNull()) outputStr += " " + target.U_Abbrev;
+                    outputStr = decimal.Round(newAmount, 3).ToString("0.###") + " " + target.U_Abbreviation;
                 }
             }
 
@@ -223,7 +284,7 @@ namespace RecipeBox3
 
         public void UpdateUnitsTable()
         {
-            GlobalCookbookAdapter.UnitsTableAdapter.Fill(_UnitsTable);
+            UnitList = unitsAdapter.SelectAll().ToDictionary(p => p.ID, p => p);
         }
 
         public class UnitNotFoundException : Exception
@@ -302,7 +363,7 @@ namespace RecipeBox3
             return sb.ToString();
         }
 
-        public static decimal FormatAsDecimal(string inputStr)
+        public static decimal ParseFraction(string inputStr)
         {
             decimal result = 0.0M;
             string[] parts;
@@ -334,6 +395,46 @@ namespace RecipeBox3
             }
 
             return result;
+        }
+
+        public Unit FindUnit(string input)
+        {
+            input = input.Trim();
+
+            foreach (Unit unit in UnitList.Values)
+            {
+                if (input == unit.U_Name || input == unit.U_Plural || input == unit.U_Abbreviation)
+                {
+                    return unit;
+                }
+            }
+
+            return null;
+        }
+
+        public bool TryParseUnitString(string input, out int unitID, out decimal amount)
+        {
+            unitID = 0;
+            amount = 0.0M;
+
+            const string pattern = @"((?:\d*\.)?\d+|\d+\/\d+)\s+(\w+)";
+            // group 1: match integer, fraction, or decimal
+            // group 2: match word
+
+            var match = Regex.Match(input, pattern);
+            if (match.Success && match.Groups.Count == 2)
+            {
+                amount = ParseFraction(match.Groups[0].Value);
+                var unit = FindUnit(match.Groups[1].Value);
+
+                if (unit != null)
+                {
+                    unitID = unit.U_ID;
+                    return true;
+                }
+                else return false;
+            }
+            else return false;
         }
     }
 }

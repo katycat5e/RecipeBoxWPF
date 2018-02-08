@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3
 {
@@ -95,6 +96,60 @@ namespace RecipeBox3
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            return null;
+        }
+    }
+
+    public class AmountStringConverter : DependencyObject, IMultiValueConverter
+    {
+        public UnitManager UnitManager
+        {
+            get { return (UnitManager)GetValue(UnitManagerProperty); }
+            set { SetValue(UnitManagerProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UnitManager.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UnitManagerProperty =
+            DependencyProperty.Register("UnitManager", typeof(UnitManager), typeof(AmountStringConverter), new PropertyMetadata(null));
+
+
+
+        public Unit.System UnitSystem
+        {
+            get { return (Unit.System)GetValue(UnitSystemProperty); }
+            set { SetValue(UnitSystemProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UnitSystem.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UnitSystemProperty =
+            DependencyProperty.Register("UnitSystem", typeof(Unit.System), typeof(AmountStringConverter), new PropertyMetadata(Unit.System.Customary));
+
+
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            string outputString = null;
+            if (values.Length < 2) return null;
+
+            if (values[0] is int unitID && values[1] is decimal amount)
+            {
+                return UnitManager.GetString(amount, unitID, UnitSystem);
+            }
+
+            return outputString;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string inputString)
+            {
+                bool successful = UnitManager.TryParseUnitString(inputString, out int unitID, out decimal amount);
+                if (successful)
+                {
+                    return new object[] { unitID, amount };
+                }
+            }
+
             return null;
         }
     }

@@ -16,13 +16,13 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
             SelectCommand.CommandText =
                 String.Format(
-                    "SELECT {0}, {1}, U_Name, U_Plural, U_Abbrev, U_Typecode, U_Ratio, U_System " +
+                    "SELECT {0}, {1}, U_ID, U_Name, U_Plural, U_Abbrev, U_Typecode, U_Ratio, U_System " +
                     "FROM Ingredients LEFT JOIN Units ON IE_Unit=U_ID WHERE (@id IS NULL) OR ({0} = @id)",
                     IDColumn, DataColumns);
 
             SelectByRecipeCommand.CommandText =
                 String.Format(
-                    "SELECT {0}, {1}, U_Name, U_Plural, U_Abbrev, U_Typecode, U_Ratio, U_System " +
+                    "SELECT {0}, {1}, U_ID, U_Name, U_Plural, U_Abbrev, U_Typecode, U_Ratio, U_System " +
                     "FROM Ingredients LEFT JOIN Units ON IE_Unit=U_ID WHERE IE_RecipeID=@recipe",
                     IDColumn, String.Join(", ", DataColumns));
         }
@@ -34,12 +34,13 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
             try
             {
-                row.U_Name = reader.GetString(columnOffset);
-                row.U_Plural = reader.GetString(columnOffset + 1);
-                row.U_Abbreviation = reader.GetString(columnOffset + 2);
-                row.U_TypeCode = (Unit.UnitType)reader.GetInt32(columnOffset + 3);
-                row.U_Ratio = reader.GetFloat(columnOffset + 4);
-                row.U_System = (Unit.System)reader.GetInt32(columnOffset + 5);
+                row.U_ID = reader.GetInt32(columnOffset);
+                row.U_Name = reader.GetString(columnOffset + 1);
+                row.U_Plural = reader.GetString(columnOffset + 2);
+                row.U_Abbreviation = reader.GetString(columnOffset + 3);
+                row.U_TypeCode = (Unit.UnitType)reader.GetInt32(columnOffset + 4);
+                row.U_Ratio = reader.GetFloat(columnOffset + 5);
+                row.U_System = (Unit.System)reader.GetInt32(columnOffset + 6);
             }
             catch (InvalidCastException ex)
             {

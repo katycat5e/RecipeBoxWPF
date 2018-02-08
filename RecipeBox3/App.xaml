@@ -51,5 +51,7 @@
             <Setter Property="GridLinesVisibility" Value="None"/>
             <Setter Property="RowHeaderWidth" Value="0"/>
         </Style>
+
+        <local:UnitManager x:Key="GlobalUnitManager"/>
     </Application.Resources>
 </Application>

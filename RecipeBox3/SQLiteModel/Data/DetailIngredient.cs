@@ -9,6 +9,18 @@ namespace RecipeBox3.SQLiteModel.Data
 {
     public class DetailIngredient : IngredientBase<DetailIngredient>
     {
+        public int U_ID
+        {
+            get { return (int)GetValue(U_IDProperty); }
+            set { SetValue(U_IDProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for U_ID.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty U_IDProperty =
+            DependencyProperty.Register("U_ID", typeof(int), typeof(DetailIngredient), new PropertyMetadata(1, OnRowChanged));
+
+
+
         public string U_Name
         {
             get { return (string)GetValue(U_NameProperty); }

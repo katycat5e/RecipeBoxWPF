@@ -8,11 +8,15 @@
         mc:Ignorable="d"
         Title="{Binding MyRecipe.R_Name}" Height="600" Width="1000"
         Style="{StaticResource DefaultWindowStyle}"
-        d:DataContext="{d:DesignData Source=./DesignData/ViewRecipeWindowData.xaml}">
+        d:DataContext="{d:DesignData Source=./DesignData/ViewRecipeWindowData.xaml}" >
     
     <Window.Resources>
         <local:TimeStringConverter x:Key="TimeStringConverter"/>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
+        <local:AmountStringConverter 
+            x:Key="UnitStringConverter"
+            UnitManager="{Binding Mode=OneWay, Source={StaticResource GlobalUnitManager}}"/>
+
         <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -57,9 +61,27 @@
             <DataGrid ItemsSource="{Binding Ingredients}" Margin="6" AutoGenerateColumns="False"
                       HeadersVisibility="None" Style="{StaticResource DefaultDataGridStyle}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding IE_Amount}" Width="1*"/>
-                    <DataGridTextColumn Binding="{Binding U_Abbreviation}" Width="1*"/>
-                    <DataGridTextColumn Binding="{Binding IE_Name}" Width="3*"/>
+                    <DataGridTextColumn Width="2*">
+                        <DataGridTextColumn.CellStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                        <DataGridTextColumn.Binding>
+                            <MultiBinding Converter="{StaticResource UnitStringConverter}" Mode="OneWay">
+                                <Binding Mode="OneWay" Path="U_ID" />
+                                <Binding Mode="OneWay" Path="IE_Amount"/>
+                            </MultiBinding>
+                        </DataGridTextColumn.Binding>
+                    </DataGridTextColumn>
+                    
+                    <DataGridTextColumn Binding="{Binding IE_Name}" Width="3*">
+                        <DataGridTextColumn.CellStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

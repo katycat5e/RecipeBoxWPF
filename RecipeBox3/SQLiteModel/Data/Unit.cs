@@ -125,4 +125,40 @@ namespace RecipeBox3.SQLiteModel.Data
             Any = 0, Metric = 1, Customary = 2
         }
     }
+
+    public static class UnitTypeExtensions
+    {
+        public static string GetString(this Unit.UnitType me)
+        {
+            switch (me)
+            {
+                case Unit.UnitType.Mass:
+                    return "Mass";
+                case Unit.UnitType.Volume:
+                    return "Volume";
+                case Unit.UnitType.Amount:
+                    return "Amount";
+                default:
+                    return me.ToString();
+            }
+        }
+    }
+
+    public static class UnitSystemExtensions
+    {
+        public static string GetString(this Unit.System me)
+        {
+            switch (me)
+            {
+                case Unit.System.Metric:
+                    return "Metric";
+                case Unit.System.Customary:
+                    return "Customary";
+                case Unit.System.Any:
+                    return "Any";
+                default:
+                    return me.ToString();
+            }
+        }
+    }
 }

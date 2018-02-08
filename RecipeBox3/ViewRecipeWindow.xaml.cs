@@ -22,6 +22,11 @@ namespace RecipeBox3
         public ViewRecipeWindow()
         {
             InitializeComponent();
+
+            if (TryFindResource("UnitStringConverter") is AmountStringConverter unitStringConverter)
+            {
+                unitStringConverter.UnitManager?.UpdateUnitsTable();
+            }
         }
 
         public ViewRecipeWindow(int recipeID) : this()
