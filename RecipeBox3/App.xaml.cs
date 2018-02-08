@@ -8,9 +8,7 @@ namespace RecipeBox3
     /// </summary>
     public partial class App : Application
     {
-        public static CookbookModel GlobalCookbookModel;
         public static RecipeListWindow RecipeListView;
-        public static UnitManager UnitManager;
 
         private static SplashDialog SplashPage;
 
@@ -19,10 +17,12 @@ namespace RecipeBox3
             SplashPage = new SplashDialog();
             SplashPage.Show();
 
-            if (!EnsureDBExists()) Shutdown();
+            //if (!EnsureDBExists()) Shutdown();
             
-            GlobalCookbookModel = new CookbookModel(RecipeBox3.Properties.Settings.Default.CookbookConnectionString);
-            UnitManager = new UnitManager();
+            if (TryFindResource("GlobalUnitManager") is UnitManager unitManager)
+            {
+                unitManager.UpdateUnitsTable();
+            }
 
             RecipeListView = new RecipeListWindow();
             RecipeListView.ReloadTable(null, null);

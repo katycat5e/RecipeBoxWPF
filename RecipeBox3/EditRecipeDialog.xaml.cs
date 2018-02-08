@@ -33,7 +33,6 @@ namespace RecipeBox3
             if (ViewModel != null)
             {
                 ViewModel.MyRecipe = new SQLiteModel.Data.DetailRecipe();
-                ViewModel.UnitManager?.UpdateUnitsTable();
             }
         }
 
@@ -44,7 +43,6 @@ namespace RecipeBox3
             if (ViewModel != null && recipeID.HasValue)
             {
                 ViewModel.RecipeID = recipeID;
-                ViewModel.UnitManager?.UpdateUnitsTable();
             }
         }
 

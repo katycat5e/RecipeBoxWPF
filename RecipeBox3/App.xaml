@@ -34,7 +34,7 @@
         <Style TargetType="Window" x:Key="DefaultWindowStyle">
             <Setter Property="Background">
                 <Setter.Value>
-                    <SolidColorBrush Color="{StaticResource ColorPrimary}"/>
+                    <SolidColorBrush Color="{StaticResource ColorPrimaryMidLight}"/>
                 </Setter.Value>
             </Setter>
             <Setter Property="FontSize" Value="11pt"/>
