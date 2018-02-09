@@ -98,6 +98,18 @@ namespace RecipeBox3.SQLiteModel.Data
             DependencyProperty.Register("U_System", typeof(System), typeof(Unit), new PropertyMetadata(System.Metric, OnRowChanged));
 
 
+
+        public bool IsUserEditable
+        {
+            get { return (bool)GetValue(IsUserEditableProperty); }
+            set { SetValue(IsUserEditableProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsUserEditable.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsUserEditableProperty =
+            DependencyProperty.Register("IsUserEditable", typeof(bool), typeof(Unit), new PropertyMetadata(true, OnRowChanged));
+
+
         public Unit()
         {
             Status = RowStatus.New;
@@ -112,6 +124,7 @@ namespace RecipeBox3.SQLiteModel.Data
             U_TypeCode = source.U_TypeCode;
             U_Ratio = source.U_Ratio;
             U_System = source.U_System;
+            IsUserEditable = source.IsUserEditable;
             Status = source.Status;
         }
 

@@ -1,0 +1,10 @@
+﻿<local:UnitEditorViewModel
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:local="clr-namespace:RecipeBox3"
+    xmlns:data="clr-namespace:RecipeBox3.SQLiteModel.Data">
+    <local:UnitEditorViewModel.Items>
+        <data:Unit U_ID="1" U_Name="kilogram" U_Plural="kilograms" U_Ratio="1" U_System="Metric" U_TypeCode="Mass" U_Abbreviation="kg"/>
+        <data:Unit U_Abbreviation="L" U_ID="2" U_Name="liter" U_Plural="liters" U_Ratio="1" U_System="Metric" U_TypeCode="Volume"/>
+        <data:Unit U_Abbreviation="" U_ID="3" U_Name="" U_Plural="" U_Ratio="1" U_TypeCode="Amount"/>
+    </local:UnitEditorViewModel.Items>
+</local:UnitEditorViewModel>

@@ -179,6 +179,10 @@
     <Compile Include="ViewRecipeWindow.xaml.cs">
       <DependentUpon>ViewRecipeWindow.xaml</DependentUpon>
     </Compile>
+    <DesignData Include="DesignData\UnitEditorData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </DesignData>
     <Page Include="UnitEditorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

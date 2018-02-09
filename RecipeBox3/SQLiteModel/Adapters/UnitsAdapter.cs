@@ -17,12 +17,13 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected SQLiteParameter typeParameter = new SQLiteParameter("@typecode", DbType.Int32, "U_Typecode");
         protected SQLiteParameter ratioParamter = new SQLiteParameter("@ratio", DbType.Single, "U_Ratio");
         protected SQLiteParameter systemParameter = new SQLiteParameter("@system", DbType.String, "U_System");
+        protected SQLiteParameter editableParameter = new SQLiteParameter("@editable", DbType.Boolean, "U_Editable");
 
         protected override SQLiteParameter[] DataParameters =>
             new SQLiteParameter[]
             {
                 nameParameter, pluralParameter, abbrevParameter,
-                typeParameter, ratioParamter, systemParameter
+                typeParameter, ratioParamter, systemParameter, editableParameter
             };
 
         protected override string TableName => "Units";
@@ -40,7 +41,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     U_Abbreviation = reader.GetString(3),
                     U_TypeCode = (Unit.UnitType)reader.GetInt32(4),
                     U_Ratio = reader.GetFloat(5),
-                    U_System = (Unit.System)reader.GetInt32(6)
+                    U_System = (Unit.System)reader.GetInt32(6),
+                    IsUserEditable = reader.GetBoolean(7)
                 };
 
                 return unit;
@@ -61,6 +63,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             typeParameter.Value = (int)row.U_TypeCode;
             ratioParamter.Value = row.U_Ratio;
             systemParameter.Value = (int)row.U_System;
+            editableParameter.Value = row.IsUserEditable;
         }
     }
 }

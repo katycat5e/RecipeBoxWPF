@@ -4,20 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RecipeBox3"
-        xmlns:data="clr-namespace:RecipeBox3.SQLiteModel.Data"
-        xmlns:sys="clr-namespace:System;assembly=System"
         mc:Ignorable="d"
-        Title="Units" Height="300" Width="300">
+        Title="Units" Height="300" Width="600"
+        d:DataContext="{d:DesignData Source=./DesignData/UnitEditorData.xaml, IsDesignTimeCreatable=True}">
     <Window.DataContext>
         <local:UnitEditorViewModel />
     </Window.DataContext>
 
     <Window.Resources>
-        <ObjectDataProvider x:Key="TypeCodes" ObjectType="{x:Type sys:Enum}" MethodName="GetValues">
-            
-        </ObjectDataProvider>
+        <Style TargetType="{x:Type DataGridRow}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsUserEditable}" Value="False">
+                    <Setter Property="Foreground" Value="Gray"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -26,23 +29,40 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="26px"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
-        <DataGrid x:Name="CategoriesGrid" ItemsSource="{Binding Items}" AutoGenerateColumns="False"
-                  CanUserAddRows="True" CanUserDeleteRows="True" GridLinesVisibility="Horizontal" RowHeaderWidth="0"
-                  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
+        <DataGrid x:Name="UnitsGrid" ItemsSource="{Binding Items}" AutoGenerateColumns="False"
+                  CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="Horizontal" RowHeaderWidth="0"
+                  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"
+                  BeginningEdit="UnitsGrid_BeginningEdit"
+                  SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}">
             <DataGrid.Columns>
                 <DataGridComboBoxColumn
-                    Header="Type"
-                    ItemsSource="{Binding Mode=OneTime, Source={StaticResource TypeCodes}, XPath=*}"
-                    SelectedValuePath="@Value" DisplayMemberPath="@Header"
+                    Header="Type" Width="2*"
+                    ItemsSource="{x:Static local:UnitEditorView.UnitTypeDict}"
+                    SelectedValuePath="Key" DisplayMemberPath="Value"
                     SelectedValueBinding="{Binding U_TypeCode}"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding U_Name}" Width="1*" />
+                <DataGridTextColumn Header="Name" Binding="{Binding U_Name}" Width="2*" />
+                <DataGridTextColumn Header="Plural" Binding="{Binding U_Plural}" Width="2*"/>
+                <DataGridTextColumn Header="Abbreviation" Binding="{Binding U_Abbreviation}" Width="1*"/>
+                <DataGridTextColumn Header="Ratio" Binding="{Binding U_Ratio}" Width="1*"/>
+                <DataGridComboBoxColumn
+                    Header="System" Width="2*"
+                    ItemsSource="{x:Static local:UnitEditorView.UnitSystemDict}"
+                    SelectedValuePath="Key" DisplayMemberPath="Value"
+                    SelectedValueBinding="{Binding U_System}"/>
             </DataGrid.Columns>
         </DataGrid>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+            <Button x:Name="AddRowButton" Content="Add Unit" Click="AddRowButton_Click"/>
+            <Button x:Name="DeleteRowButton" Content="Delete Unit" Click="DeleteRowButton_Click"/>
+        </StackPanel>
         
-        <Button x:Name="SubmitButton" Content="Submit" Grid.Column="0" Grid.Row="1" Click="SubmitButton_Click"/>
-        <Button x:Name="CancelButton" Content="Cancel" Grid.Column="1" Grid.Row="1" Click="CancelButton_Click"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
+            <Button x:Name="SubmitButton" Content="Submit" Click="SubmitButton_Click"/>
+        </StackPanel>
     </Grid>
 </Window>

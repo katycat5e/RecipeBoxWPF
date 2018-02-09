@@ -31,6 +31,16 @@ namespace RecipeBox3
             set => DataContext = value;
         }
 
+        public static Dictionary<Unit.UnitType, string> UnitTypeDict =
+            Enum.GetValues(typeof(Unit.UnitType))
+            .Cast<Unit.UnitType>()
+            .ToDictionary(p => p, p => p.GetString());
+
+        public static Dictionary<Unit.System, string> UnitSystemDict =
+            Enum.GetValues(typeof(Unit.System))
+            .Cast<Unit.System>()
+            .ToDictionary(p => p, p => p.GetString());
+
         private List<Unit> deletedItems = new List<Unit>();
 
         private void SetUnits(IEnumerable<Unit> units)
@@ -95,7 +105,27 @@ namespace RecipeBox3
             Close();
         }
 
-        
+        // prevent user from editing read only rows
+        private void UnitsGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            if (e.Row.Item is Unit selectedUnit)
+            {
+                if (!selectedUnit.IsUserEditable)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        private void AddRowButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.AddUnit();
+        }
+
+        private void DeleteRowButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.DeleteSelectedUnit();
+        }
     }
 
     public class UnitEditorViewModel : DependencyObject
@@ -112,8 +142,34 @@ namespace RecipeBox3
 
 
 
+        public object SelectedItem
+        {
+            get { return (object)GetValue(SelectedItemProperty); }
+            set { SetValue(SelectedItemProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedItem.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedItemProperty =
+            DependencyProperty.Register("SelectedItem", typeof(object), typeof(UnitEditorViewModel), new PropertyMetadata(null));
+
+
+
         public UnitEditorViewModel()
         {
+            
+        }
+
+        public void AddUnit()
+        {
+            Items.Add(new Unit());
+        }
+
+        public void DeleteSelectedUnit()
+        {
+            if (SelectedItem is Unit selectedUnit)
+            {
+                if (selectedUnit.IsUserEditable) Items.Remove(selectedUnit);
+            }
         }
     }
 }
