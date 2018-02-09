@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
     public sealed class CategoriesAdapter : SQLiteAdapter<Category>
     {
-        private static SQLiteParameter nameParameter   = new SQLiteParameter("@name", DbType.String, "C_Name");
+        private SQLiteParameter nameParameter   = new SQLiteParameter("@name", DbType.String, "C_Name");
+        private SQLiteParameter editableParameter = new SQLiteParameter("@editable", DbType.Boolean, "C_Editable");
 
         protected override string TableName => "Categories";
         protected override string IDColumn => "C_ID";
 
-        protected override SQLiteParameter[] DataParameters => new SQLiteParameter[] { nameParameter };
+        protected override SQLiteParameter[] DataParameters =>
+            new SQLiteParameter[] { nameParameter, editableParameter };
 
         /// <summary>
         /// Create a new adapter with the application default connection string
@@ -43,7 +41,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 Category newCategory = new Category()
                 {
                     C_ID = reader.GetInt32(0),
-                    C_Name = reader.GetString(1)
+                    C_Name = reader.GetString(1),
+                    IsUserEditable = reader.GetBoolean(2)
                 };
 
                 return newCategory;

@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:RecipeBox3"
         mc:Ignorable="d"
         Title="Units" Height="300" Width="600"
+        Style="{StaticResource DefaultWindowStyle}"
         d:DataContext="{d:DesignData Source=./DesignData/UnitEditorData.xaml, IsDesignTimeCreatable=True}">
     <Window.DataContext>
-        <local:UnitEditorViewModel />
+        <local:UnitEditorViewModel/>
     </Window.DataContext>
 
     <Window.Resources>
@@ -35,20 +36,21 @@
         <DataGrid x:Name="UnitsGrid" ItemsSource="{Binding Items}" AutoGenerateColumns="False"
                   CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="Horizontal" RowHeaderWidth="0"
                   Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"
+                  Style="{StaticResource DefaultDataGridStyle}"
                   BeginningEdit="UnitsGrid_BeginningEdit"
                   SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}">
             <DataGrid.Columns>
                 <DataGridComboBoxColumn
-                    Header="Type" Width="2*"
+                    Header="Type" Width="1*"
                     ItemsSource="{x:Static local:UnitEditorView.UnitTypeDict}"
                     SelectedValuePath="Key" DisplayMemberPath="Value"
                     SelectedValueBinding="{Binding U_TypeCode}"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding U_Name}" Width="2*" />
-                <DataGridTextColumn Header="Plural" Binding="{Binding U_Plural}" Width="2*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding U_Name}" Width="1*" />
+                <DataGridTextColumn Header="Plural" Binding="{Binding U_Plural}" Width="1*"/>
                 <DataGridTextColumn Header="Abbreviation" Binding="{Binding U_Abbreviation}" Width="1*"/>
                 <DataGridTextColumn Header="Ratio" Binding="{Binding U_Ratio}" Width="1*"/>
                 <DataGridComboBoxColumn
-                    Header="System" Width="2*"
+                    Header="System" Width="1*"
                     ItemsSource="{x:Static local:UnitEditorView.UnitSystemDict}"
                     SelectedValuePath="Key" DisplayMemberPath="Value"
                     SelectedValueBinding="{Binding U_System}"/>
@@ -57,7 +59,7 @@
 
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
             <Button x:Name="AddRowButton" Content="Add Unit" Click="AddRowButton_Click"/>
-            <Button x:Name="DeleteRowButton" Content="Delete Unit" Click="DeleteRowButton_Click"/>
+            <Button x:Name="DeleteRowButton" Content="Delete Selected" Click="DeleteRowButton_Click"/>
         </StackPanel>
         
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" FlowDirection="RightToLeft">

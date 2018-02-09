@@ -23,6 +23,8 @@ namespace RecipeBox3.SQLiteModel.Data
         public abstract int ID { get; set; }
 
         public RowStatus Status = RowStatus.Unchanged;
+
+        public virtual bool IsUserEditable { get => true; set { } }
         
         protected static void OnRowChanged()
         {

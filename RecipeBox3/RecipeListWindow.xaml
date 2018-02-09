@@ -48,23 +48,6 @@
         </Style>
         <Style x:Key="MenuClickableStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource ClickableStyle}"/>
 
-        <Style TargetType="{x:Type DataGrid}">
-            <Setter Property="Background" Value="LightSlateGray"/>
-            <Setter Property="AlternatingRowBackground" Value="LightGray"/>
-        </Style>
-
-        <Style x:Key="GridHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
-            <Setter Property="Height" Value="Auto"/>
-            <Setter Property="Padding" Value="0,5"/>
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="1,0">
-                        <GradientStop Color="{StaticResource ColorPrimary}"/>
-                        <GradientStop Offset="1" Color="{StaticResource ColorPrimaryMidDark}"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-        </Style>
         <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
@@ -89,7 +72,7 @@
                 <MenuItem Header="_Edit" Style="{StaticResource MenuClickableStyle}">
                     <MenuItem Header="Database">
                         <MenuItem Header="Categories" x:Name="EditCategoriesMenuItem" Click="EditCategoriesMenuItem_Click"/>
-                        <MenuItem Header="Units" x:Name="EditUnitsMenuItem" Click="RecipeMenuItem_Click"/>
+                        <MenuItem Header="Units" x:Name="EditUnitsMenuItem" Click="EditUnitsMenuItem_Click"/>
                     </MenuItem>
                     <MenuItem Header="Recipe">
                         <MenuItem Header="New" x:Name="NewRecipeMenuItem" Click="RecipeMenuItem_Click"/>
@@ -122,9 +105,9 @@
                 <DataGrid x:Name="RecipeGrid" ItemsSource="{Binding Recipes}" CanUserAddRows="False"
                           CanUserDeleteRows="False" AutoGenerateColumns="False"
                           RowHeaderWidth="0" SelectionMode="Single"
-                          ColumnHeaderStyle="{Binding Mode=OneWay, Source={StaticResource GridHeaderStyle}}"
                           Grid.Column="0" CurrentItem="{Binding SelectedGridItem, Mode=OneWayToSource}"
-                          MouseDoubleClick="RecipeGrid_MouseDoubleClick" IsReadOnly="True">
+                          MouseDoubleClick="RecipeGrid_MouseDoubleClick" IsReadOnly="True"
+                          Style="{StaticResource DefaultDataGridStyle}">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding R_Name}" SortDirection="Ascending" Width="3*" IsReadOnly="True"/>
@@ -133,7 +116,7 @@
                         <DataGridTextColumn Header="Prep Time" Binding="{Binding R_PrepTime}" Width="1*" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Cook Time" Binding="{Binding R_CookTime}" Width="1*" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Category" Binding="{Binding C_Name}" Width="2*" IsReadOnly="True"/>
-                        <DataGridTemplateColumn x:Name="IMG_Preview" Header="Preview Image" Width="1*" IsReadOnly="True">
+                        <DataGridTemplateColumn x:Name="IMG_Preview" Header="Preview Image" Width="1.5*" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image Stretch="UniformToFill" Source="{Binding IMG_Data, Converter={StaticResource ByteImageConverter}}"/>

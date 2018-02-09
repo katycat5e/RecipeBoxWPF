@@ -99,7 +99,7 @@ namespace RecipeBox3.SQLiteModel.Data
 
 
 
-        public bool IsUserEditable
+        public override bool IsUserEditable
         {
             get { return (bool)GetValue(IsUserEditableProperty); }
             set { SetValue(IsUserEditableProperty, value); }
