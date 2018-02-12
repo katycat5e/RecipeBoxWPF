@@ -81,6 +81,10 @@ namespace RecipeBox3
 
             ingredientSuccess = (rowsAffected == numIngredientsToUpdate);
 
+            string newSteps = Recipe.SerializeSteps(StepsDocument);
+            if (newSteps != MyRecipe.R_Steps)
+                MyRecipe.R_Steps = newSteps;
+
             if (MyRecipe.Status != RowStatus.Unchanged)
                 recipeSuccess = recipesAdapter.Update(MyRecipe);
             else

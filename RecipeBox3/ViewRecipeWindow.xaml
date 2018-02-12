@@ -89,8 +89,9 @@
         <DockPanel Grid.Row="2" Grid.Column="1">
             <Label Content="Instructions:" FontSize="14pt" DockPanel.Dock="Top"/>
             <FlowDocumentScrollViewer 
-                Margin="6"
-                VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
+                x:Name="StepsViewer" Padding="6" Margin="6"
+                VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"
+                Document="{Binding StepsDocument}">
 
             </FlowDocumentScrollViewer>
         </DockPanel>

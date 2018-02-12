@@ -12,6 +12,10 @@
 
     <Window.Resources>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
+        <SolidColorBrush x:Key="PrimaryMDBrush" Color="{StaticResource ColorPrimaryMidDark}"/>
+        <SolidColorBrush x:Key="SecondaryDarkBrush" Color="{StaticResource ColorSecondary2Dark}"/>
+
+        
     </Window.Resources>
     <Window.DataContext>
         <local:EditRecipeViewModel UnitManager="{StaticResource GlobalUnitManager}"/>
@@ -61,7 +65,7 @@
                 <Label Content="Category:" Grid.Column="0" Grid.Row="1"/>
                 <ComboBox Grid.Column="1" Grid.Row="1"
                           ItemsSource="{Binding CategoryList}" DisplayMemberPath="C_Name"
-                          SelectedValuePath="C_ID" SelectedValue="{Binding MyRecipe.R_Category}"/>
+                          SelectedValuePath="C_ID" SelectedValue="{Binding MyRecipe.R_Category}" Style="{StaticResource ComboBoxHoverableStyle}"/>
 
                 <Label Content="Description:" Grid.Column="0" Grid.Row="2"/>
                 <TextBox SpellCheck.IsEnabled="True" Text="{Binding MyRecipe.R_Description}" Grid.Column="1" Grid.Row="2"/>
@@ -73,23 +77,23 @@
                 <xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="4" Value="{Binding MyRecipe.R_CookTime}"/>
             </Grid>
 
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Margin="6,0,0,6">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Image x:Name="PreviewImage" Grid.Row="0" Margin="0,6,0,0"
+                <Image x:Name="PreviewImage" Grid.Row="0"
                        Source="{Binding MyRecipe.IMG_Data, Converter={StaticResource ByteImageConverter}}"/>
 
-                <Button x:Name="ChooseImageButton" Content="Choose Image..." Grid.Row="1"
-                        Click="ChooseImageButton_Click"/>
+                <Button x:Name="ChooseImageButton" Content="Choose Image..." Grid.Row="1" Margin="0,6,0,0"
+                        Click="ChooseImageButton_Click" Style="{StaticResource FlatButtonHoverableStyle}"/>
             </Grid>
         </Grid>
 
         <DockPanel Grid.Column="0" Grid.Row="1" LastChildFill="True">
             <Label Content="Ingredients:" HorizontalContentAlignment="Center" FontSize="14pt" DockPanel.Dock="Top"/>
-            <DataGrid x:Name="IngredGrid" Margin="6" ItemsSource="{Binding Ingredients}"
+            <DataGrid x:Name="IngredGrid" Margin="3" ItemsSource="{Binding Ingredients}"
                       Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Amount" Binding="{Binding IE_Amount}" Width="1*"/>
@@ -116,13 +120,38 @@
 
         <DockPanel Grid.Column="1" Grid.Row="1" LastChildFill="True">
             <Label Content="Instructions:" HorizontalContentAlignment="Center" FontSize="14pt" DockPanel.Dock="Top"/>
-            <TextBox DockPanel.Dock="Bottom" Text="{Binding MyRecipe.R_Steps}" Padding="6" Margin="6"
-                     ScrollViewer.CanContentScroll="True"/>
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <ToggleButton x:Name="BoldButton" Command="EditingCommands.ToggleBold" Template="{StaticResource FlatToggleButtonTemplate}"
+                              Height="22px" Width="22px" CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
+                    <Image Source="{StaticResource BoldIcon}"/>
+                </ToggleButton>
+                <ToggleButton x:Name="ItalicButton" Command="EditingCommands.ToggleItalic" Template="{StaticResource FlatToggleButtonTemplate}"
+                              Height="22px" Width="22px" CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
+                    <Image Source="{StaticResource ItalicIcon}"/>
+                </ToggleButton>
+                <ToggleButton x:Name="UnderlineButton" Command="EditingCommands.ToggleUnderline" Template="{StaticResource FlatToggleButtonTemplate}"
+                              Height="22px" Width="22px" CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
+                    <Image Source="{StaticResource UnderlineIcon}"/>
+                </ToggleButton>
+                <ComboBox x:Name="FontFamilySelector" Width="150" Margin="3" SelectionChanged="FontFamilySelector_SelectionChanged"/>
+                <ComboBox x:Name="FontSizeSelector" IsEditable="True" Width="75" Margin="3" SelectionChanged="FontSizeSelector_SelectionChanged"/>
+                <Button x:Name="ToggleListButton" Content="Toggle List" Margin="3" Click="NewOrderedListButton_Click"
+                        Style="{StaticResource FlatButtonHoverableStyle}" Template="{StaticResource FlatButtonTemplate}"/>
+            </StackPanel>
+            <RichTextBox
+                x:Name="StepsEditor" DockPanel.Dock="Bottom" Padding="6" Margin="3"
+                VerticalScrollBarVisibility="Auto" AcceptsTab="True"
+                SelectionChanged="StepsEditor_SelectionChanged" IsInactiveSelectionHighlightEnabled="True">
+                <RichTextBox.SelectionBrush>
+                    <SolidColorBrush Color="{StaticResource ColorSecondary2Dark}"/>
+                </RichTextBox.SelectionBrush>
+
+            </RichTextBox>
         </DockPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" FlowDirection="RightToLeft">
-            <Button x:Name="CancelButton" Content="Cancel" FontSize="12pt" Click="CancelButton_Click"/>
-            <Button x:Name="SubmitButton" Content="Submit Changes" FontSize="12pt" Click="SubmitButton_Click"/>
+            <Button x:Name="CancelButton" Content="Cancel" FontSize="12pt" Click="CancelButton_Click" Style="{StaticResource FlatButtonHoverableStyle}"/>
+            <Button x:Name="SubmitButton" Content="Submit Changes" FontSize="12pt" Click="SubmitButton_Click" Style="{StaticResource FlatButtonHoverableStyle}"/>
         </StackPanel>
     </Grid>
 </Window>
