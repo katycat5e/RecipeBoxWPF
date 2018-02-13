@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="Resources/Images.xaml"/>
                 <ResourceDictionary Source="Resources/FlatComboBoxDictionary.xaml"/>
                 <ResourceDictionary Source="Resources/FlatButtonDictionary.xaml"/>
+                <ResourceDictionary Source="Resources/FlatMenuItemDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Base Hover responsive styles -->
@@ -49,8 +50,29 @@
                 <Setter Property="Margin" Value="6"/>
             </Style>
 
-            <Style x:Key="MenuItemHoverableStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource HoverableStyle}">
-                
+            <Style x:Key="MenuItemHoverableStyle" TargetType="{x:Type local:ExtendedMenuItem}">
+                <Setter Property="Background" Value="{StaticResource PrimaryMidDarkBrush}"/>
+                <Setter Property="SubMenuBrush" Value="{StaticResource PrimaryMidDarkBrush}"/>
+                <Setter Property="Padding" Value="10,3"/>
+
+                <Style.Triggers>
+                    <Trigger Property="Role" Value="TopLevelHeader">
+                        <Setter Property="Template" Value="{StaticResource FlatMenuItemTopHeaderTemplate}"/>
+                    </Trigger>
+                    <Trigger Property="Role" Value="TopLevelItem">
+                        <Setter Property="Template" Value="{StaticResource FlatMenuItemTopItemTemplate}"/>
+                    </Trigger>
+                    <Trigger Property="Role" Value="SubmenuHeader">
+                        <Setter Property="Template" Value="{StaticResource FlatMenuItemSubHeaderTemplate}"/>
+                    </Trigger>
+                    <Trigger Property="Role" Value="SubmenuItem">
+                        <Setter Property="Template" Value="{StaticResource FlatMenuItemSubItemTemplate}"/>
+                    </Trigger>
+
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <Style x:Key="ComboBoxHoverableStyle" TargetType="{x:Type ComboBox}">
