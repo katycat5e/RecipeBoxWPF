@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RecipeBox3"
         mc:Ignorable="d"
-        Title="ChooseImageDialog" Height="300" Width="300"
+        Title="Choose Image" Height="300" Width="300"
         Style="{StaticResource DefaultWindowStyle}"
         d:DataContext="{d:DesignData Source=./DesignData/ImageEditorData.xaml}"
         
@@ -70,6 +70,9 @@
         <Image x:Name="CroppingImage" Grid.Row="0" Source="{Binding PreviewImage}" Panel.ZIndex="0" Margin="5"/>
 
         <UniformGrid Rows="2" Columns="2" Grid.Row="1">
+            <UniformGrid.Resources>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource FlatButtonHoverableStyle}"/>
+            </UniformGrid.Resources>
             <Button x:Name="PickImageFileButton" Content="Open File..." Click="PickImageFileButton_Click"/>
             <Button x:Name="SelectAllButton" Content="Select Entire Image" Click="SelectAllButton_Click"/>
             <Button x:Name="SubmitButton" Content="Attach Image" Click="SubmitButton_Click" />

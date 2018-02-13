@@ -158,7 +158,8 @@ namespace RecipeBox3
 
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)
         {
-
+            ViewModel.CaptureTopLeftPoint = new System.Windows.Point(0, 0);
+            ViewModel.CaptureWidth = Math.Min(CroppingCanvas.ActualWidth, CroppingCanvas.ActualHeight);
         }
     }
 
