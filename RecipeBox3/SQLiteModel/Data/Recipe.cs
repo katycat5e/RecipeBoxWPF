@@ -172,7 +172,7 @@ namespace RecipeBox3.SQLiteModel.Data
             catch (Exception e)
             {
                 App.LogException(e);
-                return null;
+                return new FlowDocument();
             }
         }
 

@@ -65,7 +65,8 @@
                 <Label Content="Category:" Grid.Column="0" Grid.Row="1"/>
                 <ComboBox Grid.Column="1" Grid.Row="1"
                           ItemsSource="{Binding CategoryList}" DisplayMemberPath="C_Name"
-                          SelectedValuePath="C_ID" SelectedValue="{Binding MyRecipe.R_Category}" Style="{StaticResource ComboBoxHoverableStyle}"/>
+                          SelectedValuePath="C_ID" SelectedValue="{Binding MyRecipe.R_Category}"
+                          Template="{StaticResource FlatComboBoxNonEditTemplate}"/>
 
                 <Label Content="Description:" Grid.Column="0" Grid.Row="2"/>
                 <TextBox SpellCheck.IsEnabled="True" Text="{Binding MyRecipe.R_Description}" Grid.Column="1" Grid.Row="2"/>
@@ -121,15 +122,15 @@
         <DockPanel Grid.Column="1" Grid.Row="1" LastChildFill="True">
             <Label Content="Instructions:" HorizontalContentAlignment="Center" FontSize="14pt" DockPanel.Dock="Top"/>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                <ToggleButton x:Name="BoldButton" Command="EditingCommands.ToggleBold" Template="{StaticResource FlatToggleButtonTemplate}"
+                <ToggleButton x:Name="BoldButton" Command="EditingCommands.ToggleBold" Template="{DynamicResource FlatToggleButtonTemplate}"
                               Height="22px" Width="22px" CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
                     <Image Source="{StaticResource BoldIcon}"/>
                 </ToggleButton>
-                <ToggleButton x:Name="ItalicButton" Command="EditingCommands.ToggleItalic" Template="{StaticResource FlatToggleButtonTemplate}"
+                <ToggleButton x:Name="ItalicButton" Command="EditingCommands.ToggleItalic" Template="{DynamicResource FlatToggleButtonTemplate}"
                               Height="22px" Width="22px" CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
                     <Image Source="{StaticResource ItalicIcon}"/>
                 </ToggleButton>
-                <ToggleButton x:Name="UnderlineButton" Command="EditingCommands.ToggleUnderline" Template="{StaticResource FlatToggleButtonTemplate}"
+                <ToggleButton x:Name="UnderlineButton" Command="EditingCommands.ToggleUnderline" Template="{DynamicResource FlatToggleButtonTemplate}"
                               Height="22px" Width="22px" CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
                     <Image Source="{StaticResource UnderlineIcon}"/>
                 </ToggleButton>
