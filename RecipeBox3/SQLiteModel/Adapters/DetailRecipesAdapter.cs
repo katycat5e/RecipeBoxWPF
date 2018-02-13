@@ -65,7 +65,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                             // new row
                             imageRow = new ImageRow()
                             {
-                                IMG_RecipeID = row.ID,
+                                IMG_RecipeID = recipeID,
                                 IMG_Data = row.IMG_Data
                             };
                             imagesAdapter.Insert(imageRow);

@@ -40,6 +40,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     if (InsertCommand != null) InsertCommand.Connection = _connection;
                     if (UpdateCommand != null) UpdateCommand.Connection = _connection;
                     if (DeleteCommand != null) DeleteCommand.Connection = _connection;
+                    if (LastIDCommand != null) LastIDCommand.Connection = _connection;
                 }
             }
         }
@@ -73,7 +74,17 @@ namespace RecipeBox3.SQLiteModel.Adapters
             {
                 if (LastIDCommand?.Connection != null)
                 {
-                    return ExecuteCommandScalar(LastIDCommand) as int?;
+                    var id = ExecuteCommandScalar(LastIDCommand);
+
+                    try
+                    {
+                        return Convert.ToInt32(id);
+                    }
+                    catch (Exception e)
+                    {
+                        App.LogException(e);
+                        return null;
+                    }
                 }
                 else return null;
             }
@@ -147,7 +158,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             LastIDCommand = new SQLiteCommand()
             {
                 CommandText = String.Format(
-                    "SELECT seq FROM sqlite_sequence WHERE name=\"{0}\"",
+                    "SELECT seq FROM sqlite_sequence WHERE name='{0}'",
                     TableName)
             };
 
