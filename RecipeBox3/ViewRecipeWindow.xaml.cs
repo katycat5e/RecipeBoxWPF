@@ -23,5 +23,22 @@ namespace RecipeBox3
         {
             InitializeComponent();
         }
+
+        public ViewRecipeWindow(int recipeID) : this()
+        {
+            if (DataContext is ViewRecipeViewModel viewModel)
+            {
+                viewModel.RecipeID = recipeID;
+                try
+                {
+                    StepsViewer.Document = SQLiteModel.Data.Recipe.ParseSteps(viewModel.MyRecipe.R_Steps);
+                }
+                catch (Exception e)
+                {
+                    App.LogException(e);
+                    StepsViewer.Document = null;
+                }
+            }
+        }
     }
 }

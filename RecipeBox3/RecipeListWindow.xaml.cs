@@ -10,6 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using RecipeBox3.SQLiteModel.Data;
 using Xceed.Wpf.DataGrid;
 
 namespace RecipeBox3
@@ -19,46 +20,23 @@ namespace RecipeBox3
     /// </summary>
     public partial class RecipeListWindow : Window
     {
-        public CookbookDataSet DataSet { get; set; }
-        private static CookbookModel CookbookAdapter { get { return App.GlobalCookbookModel; } }
-
-
-        public object SelectedGridItem
-        {
-            get { return (object)GetValue(SelectedGridItemProperty); }
-            set { SetValue(SelectedGridItemProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for SelectedGridItem.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedGridItemProperty =
-            DependencyProperty.Register("SelectedGridItem", typeof(object), typeof(RecipeListWindow), new PropertyMetadata(null));
-
-
-
+        private RecipeListViewModel ViewModel => DataContext as RecipeListViewModel;
+        
         public RecipeListWindow()
         {
             InitializeComponent();
-            DataSet = new CookbookDataSet();
-            DataContext = this;
+            ShowImagesMenuItem.IsChecked = Properties.Settings.Default.ShowPreviewImages;
         }
 
         public void ReloadTable(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.Wait;
 
-            try
+            if (ViewModel != null)
             {
-                CookbookAdapter.SimpleRecipeViewTableAdapter.Fill(DataSet.SimpleRecipeView);
+                ViewModel.GetAllRecipes();
+                if (ViewModel.ShowImages) ViewModel.UpdateImages();
             }
-            catch (SqlException ex)
-            {
-                DataSet.SimpleRecipeView.Clear();
-
-                MessageBox.Show("An error occurred while downloading the data:\n\n" + ex.Message,
-                    "Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            if (Properties.Settings.Default.ShowPreviewImages) UpdateImages();
 
             Cursor = Cursors.Arrow;
         }
@@ -74,115 +52,13 @@ namespace RecipeBox3
             Application.Current.Shutdown();
         }
 
-        private void UpdateImages()
-        {
-            if (!Properties.Settings.Default.ShowPreviewImages) return;
-
-            //int visibleRowCount = RecipeGrid.vis;
-            //int firstDisplayedRowNumber = RecipeGrid.FirstDisplayedCell.RowIndex;
-
-            //DataGridViewRow row;
-            //for (int i = firstDisplayedRowNumber; i < (firstDisplayedRowNumber + visibleRowCount); i++)
-            for (int i = 0; i < DataSet.SimpleRecipeView.Rows.Count; i++)
-            {
-                //var row = DataSet.SimpleRecipeView.Rows[i];
-                var getImageThread = new Thread(GetRecipeImageAsync);
-                getImageThread.Start(i);
-            }
-        }
-
-        private Mutex ImageConnectorLock = new Mutex();
-
-        private void GetRecipeImageAsync(object rowIndex)
-        {
-            CookbookDataSet.ImagesDataTable images = null;
-            if (!(rowIndex is int rowNum)) return;
-
-            try
-            {
-                if (CookbookAdapter.ImagesTableAdapter == null) return;
-                //if (!(dataRow.Cells["R_ID"] is DataGridViewTextBoxCell idCell)) return;
-                int? id = (DataSet.SimpleRecipeView.Rows[rowNum] as CookbookDataSet.SimpleRecipeViewRow)?.R_ID;
-                if (id == null) return;
-
-                ImageConnectorLock.WaitOne();
-                images = CookbookAdapter.ImagesTableAdapter.GetDataByRecipe(id);
-                ImageConnectorLock.ReleaseMutex();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred while downloading the preview image:\n\n" + ex.Message,
-                    "Error loading image", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                return;
-            }
-
-            Bitmap previewImage;
-
-            if (images.Count > 0)
-            {
-                if (!images[0].IsIMG_DataNull())
-                {
-                    using (var imgStream = new MemoryStream(images[0].IMG_Data))
-                    {
-                        previewImage = new Bitmap(System.Drawing.Image.FromStream(imgStream));
-                    }
-                }
-                else previewImage = null;
-            }
-            else previewImage = null;
-
-            if (Dispatcher != null)
-                Dispatcher.BeginInvoke(new SetPreviewImageDelegate(SetPreviewImage), new object[] { previewImage, rowNum });
-
-        }
-
-        private delegate void SetPreviewImageDelegate(Bitmap image, int rowNum);
-        private void SetPreviewImage(Bitmap image, int rowNum)
-        {
-            //PreviewPanel.BackgroundImage = image;
-            //DataGridViewImageCell previewCell = (row.Cells["IMG_Preview"] as DataGridViewImageCell);
-            //if (previewCell != null)
-            //{
-            //    previewCell.Value = image;
-            //}
-
-            var imageCellInfo = new DataGridCellInfo(RecipeGrid.Items[rowNum], IMG_Preview);
-            if (imageCellInfo == null) return;
-
-            var imageCell = FindGridCell(RecipeGrid, imageCellInfo);
-            if (imageCell != null)
-            {
-                var imageItem = new System.Windows.Controls.Image
-                {
-                    Source = Imaging.CreateBitmapSourceFromHBitmap(image.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
-                };
-                imageCell.Content = imageItem;
-            }
-        }
-
-        static DataGridCell FindGridCell(DataGrid grid, DataGridCellInfo cellInfo)
-        {
-            DataGridCell result = null;
-            DataGridRow row = (DataGridRow)grid.ItemContainerGenerator.ContainerFromItem(cellInfo.Item);
-            if (row != null)
-            {
-                int columnIndex = grid.Columns.IndexOf(cellInfo.Column);
-                if (columnIndex > -1)
-                {
-                    DataGridCellsPresenter presenter = App.GetVisualChild<DataGridCellsPresenter>(row);
-                    result = presenter.ItemContainerGenerator.ContainerFromIndex(columnIndex) as DataGridCell;
-                }
-            }
-            return result;
-        }
 
         // Event Handlers
         //--------------------------------------------------------------------------------------------------------
 
         private void ImgReload_Click(object sender, RoutedEventArgs e)
         {
-            UpdateImages();
+            ViewModel?.UpdateImages();
         }
 
         private void QuitMenuItem_Click(object sender, RoutedEventArgs e)
@@ -192,75 +68,100 @@ namespace RecipeBox3
 
         private static void ShowRecipeDetails(int recipeID)
         {
-            var viewRecipeWindow = new ViewRecipeWindow();
-            if (viewRecipeWindow.DataContext is RecipeViewModel viewModel)
-            {
-                viewModel.RecipeID = recipeID;
-            }
+            var viewRecipeWindow = new ViewRecipeWindow(recipeID);
 
             viewRecipeWindow.Show();
             viewRecipeWindow.Focus();
         }
 
-        private static void ShowRecipeEditor(int recipeID)
+        private void CreateNewRecipe()
         {
-            throw new NotImplementedException();
+            var recipeEditor = new EditRecipeDialog();
+            bool? result = recipeEditor.ShowDialog();
+            if (result == true) ReloadTable(this, new RoutedEventArgs());
         }
 
-        private static void DeleteRecipe(int recipeID)
+        private void OpenRecipeForEdit(int recipeID)
         {
-            var adapter = CookbookAdapter.RecipesTableAdapter;
-            var recipes = adapter.GetDataByID(recipeID);
-
-            if (recipes.Count > 0)
-            {
-                foreach (CookbookDataSet.RecipesRow row in recipes)
-                {
-                    row.Delete();
-                }
-
-                adapter.Update(recipes);
-            }
-
-            adapter.Dispose();
+            var recipeEditor = new EditRecipeDialog(recipeID);
+            bool? result = recipeEditor.ShowDialog();
+            if (result == true) ReloadTable(this, new RoutedEventArgs());
         }
-
-
+        
         private void RecipeGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (SelectedGridItem is DataRowView drv && drv.Row is CookbookDataSet.SimpleRecipeViewRow row)
+            if (ViewModel?.SelectedGridItem is DetailRecipe row)
             {
                 ShowRecipeDetails(row.R_ID);
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void RecipeMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (!(sender is MenuItem item)) return;
 
-            if (SelectedGridItem is DataRowView drv && drv.Row is CookbookDataSet.SimpleRecipeViewRow selectedRow)
+            if (item.Name == "NewRecipeMenuItem")
+            {
+                CreateNewRecipe();
+                return;
+            }
+
+            // Recipe Options
+            if (ViewModel?.SelectedGridItem is DetailRecipe selectedRow)
             {
                 switch (item.Name)
                 {
                     case "ViewRecipeMenuItem":
                     case "ViewRecipeContextItem":
-                        ShowRecipeDetails(selectedRow.R_ID);
+                        ShowRecipeDetails(selectedRow.ID);
                         return;
 
                     case "EditRecipeMenuItem":
                     case "EditRecipeContextItem":
-                        ShowRecipeEditor(selectedRow.R_ID);
+                        OpenRecipeForEdit(selectedRow.ID);
                         return;
 
                     case "DeleteRecipeMenuItem":
                     case "DeleteRecipeContextItem":
-                        DeleteRecipe(selectedRow.R_ID);
+                        if (ViewModel != null)
+                        {
+                            ViewModel.DeleteRecipe(selectedRow.ID);
+                            ReloadTable(sender, e);
+                        }
                         return;
 
                     default:
                         return;
                 }
             }
+        }
+
+        private void EditCategoriesMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current.TryFindResource("GlobalCategoryEditor") is CategoriesEditorView categoryEditor)
+            {
+                categoryEditor.Owner = this;
+                categoryEditor.ShowDialog();
+            }
+        }
+
+        private void EditUnitsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current.TryFindResource("GlobalUnitEditor") is UnitEditorView unitEditor)
+            {
+                unitEditor.Owner = this;
+                unitEditor.ShowDialog();
+            }
+        }
+
+        private void ShowImagesMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            if (IMG_Preview != null) IMG_Preview.Visibility = Visibility.Visible;
+        }
+
+        private void ShowImagesMenuItem_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (IMG_Preview != null) IMG_Preview.Visibility = Visibility.Collapsed;
         }
     }
 }

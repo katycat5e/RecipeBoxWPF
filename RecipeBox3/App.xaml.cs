@@ -8,9 +8,7 @@ namespace RecipeBox3
     /// </summary>
     public partial class App : Application
     {
-        public static CookbookModel GlobalCookbookModel;
         public static RecipeListWindow RecipeListView;
-        public static UnitManager UnitManager;
 
         private static SplashDialog SplashPage;
 
@@ -19,10 +17,12 @@ namespace RecipeBox3
             SplashPage = new SplashDialog();
             SplashPage.Show();
 
-            if (!EnsureDBExists()) Shutdown();
+            //if (!EnsureDBExists()) Shutdown();
             
-            GlobalCookbookModel = new CookbookModel(RecipeBox3.Properties.Settings.Default.CookbookConnectionString);
-            UnitManager = new UnitManager();
+            if (TryFindResource("GlobalUnitManager") is UnitManager unitManager)
+            {
+                unitManager.UpdateUnitsTable();
+            }
 
             RecipeListView = new RecipeListWindow();
             RecipeListView.ReloadTable(null, null);
@@ -30,6 +30,13 @@ namespace RecipeBox3
             Current.MainWindow = RecipeListView;
             RecipeListView.Show();
             SplashPage.Close();
+        }
+
+        private void Test_Startup(object sender, StartupEventArgs e)
+        {
+            var window = new UnitEditorView();
+            window.ShowDialog();
+            Current.Shutdown();
         }
 
         public static T GetVisualChild<T>(Visual parent) where T : Visual
@@ -50,6 +57,16 @@ namespace RecipeBox3
                 }
             }
             return child;
+        }
+
+        public static void LogMessage(string message)
+        {
+            System.Console.WriteLine(message);
+        }
+
+        public static void LogException(System.Exception e)
+        {
+            LogMessage(e.ToString());
         }
     }
 }

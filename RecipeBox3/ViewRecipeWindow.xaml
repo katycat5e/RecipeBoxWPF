@@ -1,54 +1,99 @@
-﻿<Window x:Class="RecipeBox3.ViewRecipeWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RecipeBox3"
+        xmlns:Data="clr-namespace:RecipeBox3.SQLiteModel.Data" x:Class="RecipeBox3.ViewRecipeWindow"
         mc:Ignorable="d"
-        Title="{Binding RecipeName}" Height="600" Width="1000">
-    <Window.DataContext>
-        <local:RecipeViewModel/>
-    </Window.DataContext>
+        Title="{Binding MyRecipe.R_Name}" Height="600" Width="1000"
+        Style="{StaticResource DefaultWindowStyle}"
+        d:DataContext="{d:DesignData Source=./DesignData/ViewRecipeWindowData.xaml}" >
+    
     <Window.Resources>
-        <Style TargetType="Label">
+        <local:TimeStringConverter x:Key="TimeStringConverter"/>
+        <local:ByteImageConverter x:Key="ByteImageConverter"/>
+        <local:AmountStringConverter 
+            x:Key="UnitStringConverter"
+            UnitManager="{Binding Mode=OneWay, Source={StaticResource GlobalUnitManager}}"/>
+
+        <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
 
+    <Window.DataContext>
+        <local:ViewRecipeViewModel/>
+    </Window.DataContext>
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <Image Grid.Row="0" Grid.Column="0" Source="{Binding RecipePreview}"/>
-        <Grid Grid.Row="0" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1.5*"/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <Label FontSize="18" FontWeight="Bold" Content="{Binding RecipeName}" Grid.Row="0" Grid.ColumnSpan="2"/>
-            <Label Content="{Binding RecipeCategory}" Grid.Row="1" Grid.ColumnSpan="2"/>
-            <Label Content="Modified:" HorizontalContentAlignment="Right" Grid.Row="2" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="2" Grid.Column="1" Content="{Binding RecipeModified}"/>
-            <Label Content="Prep Time:" HorizontalContentAlignment="Right" Grid.Row="3" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="1" Content="{Binding PrepTimeString}"/>
-            <Label Content="Cook Time:" HorizontalContentAlignment="Right" Grid.Row="4" Grid.Column="0"/>
-            <Label HorizontalContentAlignment="Left" Grid.Row="4" Grid.Column="1" Content="{Binding CookTimeString}"/>
-        </Grid>
-        <DataGrid Grid.Row="1" Grid.Column="0">
+
+        <Label FontSize="16pt" FontWeight="Bold" Content="{Binding MyRecipe.R_Name}" Grid.Row="0" Grid.ColumnSpan="2"/>
+
+        <Image Grid.Row="1" Grid.Column="0" Source="{Binding MyRecipe.IMG_Data, Converter={StaticResource ByteImageConverter}}"/>
+        <UniformGrid Grid.Row="1" Grid.Column="1" Rows="2" Columns="4">
+
+            <Label Content="Category:" Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Right"/>
+            <Label Content="{Binding MyRecipe.C_Name}" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Left"/>
             
-        </DataGrid>
-        <TextBlock x:Name="StepsText" Grid.Row="1" Grid.Column="1" Text="{Binding RecipeSteps}"/>
+            <Label Content="Modified:" HorizontalContentAlignment="Right" Grid.Row="1" Grid.Column="0"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="1" Grid.Column="1" Content="{Binding MyRecipe.ModifiedDateTime}"/>
+            
+            <Label Content="Prep Time:" HorizontalContentAlignment="Right" Grid.Row="2" Grid.Column="0"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="2" Grid.Column="1" Content="{Binding MyRecipe.R_PrepTime, Converter={StaticResource TimeStringConverter}}"/>
+            
+            <Label Content="Cook Time:" HorizontalContentAlignment="Right" Grid.Row="3" Grid.Column="0"/>
+            <Label HorizontalContentAlignment="Left" Grid.Row="3" Grid.Column="1" Content="{Binding MyRecipe.R_CookTime, Converter={StaticResource TimeStringConverter}}"/>
+        </UniformGrid>
+
+        <DockPanel Grid.Row="2" Grid.Column="0">
+            <Label Content="Ingredients" FontSize="14pt" DockPanel.Dock="Top"/>
+            <DataGrid ItemsSource="{Binding Ingredients}" Margin="6" AutoGenerateColumns="False"
+                      HeadersVisibility="None" Style="{StaticResource DefaultDataGridStyle}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="2*">
+                        <DataGridTextColumn.CellStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                        <DataGridTextColumn.Binding>
+                            <MultiBinding Converter="{StaticResource UnitStringConverter}" Mode="OneWay">
+                                <Binding Mode="OneWay" Path="U_ID" />
+                                <Binding Mode="OneWay" Path="IE_Amount"/>
+                            </MultiBinding>
+                        </DataGridTextColumn.Binding>
+                    </DataGridTextColumn>
+                    
+                    <DataGridTextColumn Binding="{Binding IE_Name}" Width="3*">
+                        <DataGridTextColumn.CellStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <DockPanel Grid.Row="2" Grid.Column="1">
+            <Label Content="Instructions:" FontSize="14pt" DockPanel.Dock="Top"/>
+            <FlowDocumentScrollViewer 
+                x:Name="StepsViewer" Padding="6" Margin="6"
+                VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"
+                Document="{Binding StepsDocument}">
+
+            </FlowDocumentScrollViewer>
+        </DockPanel>
     </Grid>
 </Window>

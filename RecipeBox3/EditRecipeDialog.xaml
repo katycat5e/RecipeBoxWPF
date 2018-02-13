@@ -1,0 +1,172 @@
+﻿<Window x:Name="window" x:Class="RecipeBox3.EditRecipeDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RecipeBox3"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="Editing Recipe" Height="600" Width="1000"
+        Style="{StaticResource DefaultWindowStyle}"
+        d:DataContext="{d:DesignData Source=./DesignData/EditRecipeWindowData.xaml, IsDesignTimeCreatable=True}">
+
+    <Window.Resources>
+        <local:ByteImageConverter x:Key="ByteImageConverter"/>
+        <SolidColorBrush x:Key="PrimaryMDBrush" Color="{StaticResource ColorPrimaryMidDark}"/>
+        <SolidColorBrush x:Key="SecondaryDarkBrush" Color="{StaticResource ColorSecondary2Dark}"/>
+
+        
+    </Window.Resources>
+    <Window.DataContext>
+        <local:EditRecipeViewModel UnitManager="{StaticResource GlobalUnitManager}"/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                    </Style>
+                </Grid.Resources>
+
+                <Label Content="Name:" Grid.Column="0" Grid.Row="0"/>
+                <TextBox SpellCheck.IsEnabled="True" Text="{Binding MyRecipe.R_Name}" Grid.Column="1" Grid.Row="0"/>
+
+                <Label Content="Category:" Grid.Column="0" Grid.Row="1"/>
+                <ComboBox Grid.Column="1" Grid.Row="1"
+                          ItemsSource="{Binding CategoryList}" DisplayMemberPath="C_Name"
+                          SelectedValuePath="C_ID" SelectedValue="{Binding MyRecipe.R_Category}"
+                          Style="{StaticResource ComboBoxHoverableStyle}"/>
+
+                <Label Content="Description:" Grid.Column="0" Grid.Row="2"/>
+                <TextBox SpellCheck.IsEnabled="True" Text="{Binding MyRecipe.R_Description}" Grid.Column="1" Grid.Row="2"/>
+
+                <Label Content="Prep Time:" Grid.Column="0" Grid.Row="3"/>
+                <xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="3" Value="{Binding MyRecipe.R_PrepTime}"/>
+
+                <Label Content="Cook Time:" Grid.Column="0" Grid.Row="4"/>
+                <xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="4" Value="{Binding MyRecipe.R_CookTime}"/>
+            </Grid>
+
+            <Grid Grid.Column="1" Margin="6,0,0,6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Image x:Name="PreviewImage" Grid.Row="0"
+                       Source="{Binding MyRecipe.IMG_Data, Converter={StaticResource ByteImageConverter}}"/>
+
+                <Button x:Name="ChooseImageButton" Content="Choose Image..." Grid.Row="1" Margin="0,6,0,0"
+                        Click="ChooseImageButton_Click" Style="{StaticResource FlatButtonHoverableStyle}"/>
+            </Grid>
+        </Grid>
+
+        <DockPanel Grid.Column="0" Grid.Row="1" LastChildFill="True">
+            <Label Content="Ingredients:" HorizontalContentAlignment="Center" FontSize="14pt" DockPanel.Dock="Top"/>
+            <DataGrid x:Name="IngredGrid" Margin="3" ItemsSource="{Binding Ingredients}"
+                      Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Amount" Binding="{Binding IE_Amount}" Width="1*"/>
+                    <DataGridComboBoxColumn
+                        Header="Unit" Width="2*"
+                        SelectedValueBinding="{Binding IE_Unit}"
+                        DisplayMemberPath="U_Name" SelectedValuePath="U_ID">
+                        <DataGridComboBoxColumn.ElementStyle>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.UnitList.Values}"/>
+                                <Setter Property="IsReadOnly" Value="True"/>
+                            </Style>
+                        </DataGridComboBoxColumn.ElementStyle>
+                        <DataGridComboBoxColumn.EditingElementStyle>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.UnitList.Values}"/>
+                            </Style>
+                        </DataGridComboBoxColumn.EditingElementStyle>
+                    </DataGridComboBoxColumn>
+                    <DataGridTextColumn Header="Ingredient" Binding="{Binding IE_Name}" Width="2*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <DockPanel Grid.Column="1" Grid.Row="1" LastChildFill="True">
+            <Label Content="Instructions:" HorizontalContentAlignment="Center" FontSize="14pt" DockPanel.Dock="Top"/>
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <ToggleButton x:Name="BoldButton" Style="{StaticResource ToggleButtonHoverableStyle}"
+                              Height="22px" Width="22px" Padding="3"
+                              Command="EditingCommands.ToggleBold"
+                              CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
+                    <Image Source="{StaticResource BoldIcon}"/>
+                </ToggleButton>
+
+                <ToggleButton x:Name="ItalicButton" Style="{StaticResource ToggleButtonHoverableStyle}"
+                              Height="22px" Width="22px" Padding="3"
+                              Command="EditingCommands.ToggleItalic"
+                              CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
+                    <Image Source="{StaticResource ItalicIcon}"/>
+                </ToggleButton>
+
+                <ToggleButton x:Name="UnderlineButton" Style="{StaticResource ToggleButtonHoverableStyle}"
+                              Height="22px" Width="22px" Padding="3"
+                              Command="EditingCommands.ToggleUnderline"
+                              CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
+                    <Image Source="{StaticResource UnderlineIcon}"/>
+                </ToggleButton>
+                
+                <ComboBox x:Name="FontFamilySelector" Width="150" Margin="3"
+                          SelectionChanged="FontFamilySelector_SelectionChanged"
+                          Style="{StaticResource ComboBoxHoverableStyle}"/>
+                
+                <ComboBox x:Name="FontSizeSelector" IsEditable="True" Width="75" Margin="3"
+                          SelectionChanged="FontSizeSelector_SelectionChanged"
+                          Style="{StaticResource ComboBoxHoverableStyle}"/>
+                
+                <Button x:Name="ToggleListButton" Content="Toggle List" Margin="3" Click="NewOrderedListButton_Click"
+                        Style="{StaticResource FlatButtonHoverableStyle}"/>
+            </StackPanel>
+            <RichTextBox
+                x:Name="StepsEditor" DockPanel.Dock="Bottom" Padding="6" Margin="3"
+                VerticalScrollBarVisibility="Auto" AcceptsTab="True"
+                SelectionChanged="StepsEditor_SelectionChanged" IsInactiveSelectionHighlightEnabled="True"
+                Style="{StaticResource TextControlStyle}">
+                
+
+            </RichTextBox>
+        </DockPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" FlowDirection="RightToLeft">
+            <Button x:Name="CancelButton" Content="Cancel" FontSize="12pt" Click="CancelButton_Click" Style="{StaticResource FlatButtonHoverableStyle}"/>
+            <Button x:Name="SubmitButton" Content="Submit Changes" FontSize="12pt" Click="SubmitButton_Click" Style="{StaticResource FlatButtonHoverableStyle}"/>
+        </StackPanel>
+    </Grid>
+</Window>
