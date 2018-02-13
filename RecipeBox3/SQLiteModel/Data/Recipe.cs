@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Markup;
+using System.Xml;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
@@ -152,6 +155,31 @@ namespace RecipeBox3.SQLiteModel.Data
             R_Steps = source.R_Steps;
             R_Category = source.R_Category;
             Status = source.Status;
+        }
+
+        public static FlowDocument ParseSteps(string stepsString)
+        {
+            try
+            {
+                using (var sr = new System.IO.StringReader(stepsString))
+                {
+                    using (var xmlReader = new XmlTextReader(sr))
+                    {
+                        return XamlReader.Parse(stepsString) as FlowDocument;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                App.LogException(e);
+                return new FlowDocument();
+            }
+        }
+
+        public static string SerializeSteps(FlowDocument document)
+        {
+            if (document == null) return null;
+            return XamlWriter.Save(document);
         }
     }
 }

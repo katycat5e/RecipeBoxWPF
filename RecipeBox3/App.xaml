@@ -1,76 +1,137 @@
-﻿<Application x:Name="Program" x:Class="RecipeBox3.App"
+﻿<Application
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:RecipeBox3"
+             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Name="Program" x:Class="RecipeBox3.App"
              Startup="Program_Startup"
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Colors.xaml"/>
+                <ResourceDictionary Source="Resources/Images.xaml"/>
+                <ResourceDictionary Source="Resources/FlatComboBoxDictionary.xaml"/>
+                <ResourceDictionary Source="Resources/FlatButtonDictionary.xaml"/>
+                <ResourceDictionary Source="Resources/FlatMenuItemDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <BitmapImage x:Key="FoxIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/fox.ico"/>
-        <BitmapImage x:Key="RefreshIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/refresh_16xLG.png"/>
+            <!-- Base Hover responsive styles -->
+            <Style TargetType="{x:Type Control}" x:Key="HoverableStyle">
+                <Setter Property="Background" Value="{StaticResource PrimaryMidDarkBrush}"/>
+                <Setter Property="Padding" Value="6,3"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
 
+            <Style TargetType="{x:Type Control}" x:Key="TextControlStyle">
+                <Setter Property="Background" Value="{StaticResource PrimaryControlBrush}"/>
+                <Setter Property="Padding" Value="6,3"/>
+            </Style>
 
-        <!-- Main Primary Color -->
-        <Color x:Key="ColorPrimary" A="#FF" R="#A7" G="#B6" B="#CA"/>
-        <Color x:Key="ColorPrimaryLight" A="#FF" R="#B4" G="#C6" B="#DC"/>
-        <Color x:Key="ColorPrimaryMidLight" A="#FF" R="#AE" G="#BE" B="#D3"/>
-        <Color x:Key="ColorPrimaryMidDark" A="#FF" R="#8F" G="#A7" B="#C7"/>
-        <Color x:Key="ColorPrimaryDark" A="#FF" R="#6B" G="#8C" B="#B5"/>
+            <Style x:Key="ToggleButtonHoverableStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource HoverableStyle}">
+                <Setter Property="Template" Value="{StaticResource FlatToggleButtonTemplate}"/>
+                <Setter Property="Margin" Value="3"/>
 
-        <!-- Main Secondary Color (1) -->
-        <Color x:Key="ColorSecondary1" A="#FF" R="#B2" G="#AE" B="#D0"/>
-        <Color x:Key="ColorSecondary1Light" A="#FF" R="#BE" G="#B9" B="#E0"/>
-        <Color x:Key="ColorSecondary1MidLight" A="#FF" R="#B8" G="#B4" B="#D8"/>
-        <Color x:Key="ColorSecondary1MidDark" A="#FF" R="#9D" G="#96" B="#CD"/>
-        <Color x:Key="ColorSecondary1Dark" A="#FF" R="#7D" G="#74" B="#BD"/>
+                <Style.Triggers>
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Background" Value="MediumSeaGreen"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="0.7"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
 
-        <!-- Main Secondary Color (2) -->
-        <Color x:Key="ColorSecondary2" A="#FF" R="#A3" G="#C9" B="#C0"/>
-        <Color x:Key="ColorSecondary2Light" A="#FF" R="#B0" G="#DB" B="#D1"/>
-        <Color x:Key="ColorSecondary2MidLight" A="#FF" R="#AA" G="#D3" B="#C8"/>
-        <Color x:Key="ColorSecondary2MidDark" A="#FF" R="#89" G="#C6" B="#B7"/>
-        <Color x:Key="ColorSecondary2Dark" A="#FF" R="#64" G="#B4" B="#A0"/>
+            <Style x:Key="FlatButtonHoverableStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource HoverableStyle}">
+                <Setter Property="Template" Value="{StaticResource FlatButtonTemplate}"/>
+                <Setter Property="Margin" Value="6"/>
+            </Style>
 
-        <Style TargetType="Window" x:Key="DefaultWindowStyle">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <SolidColorBrush Color="{StaticResource ColorPrimaryMidLight}"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="FontSize" Value="11pt"/>
-        </Style>
+            <Style x:Key="MenuItemHoverableStyle" TargetType="{x:Type local:ExtendedMenuItem}">
+                <Setter Property="Background" Value="{StaticResource PrimaryMidDarkBrush}"/>
+                <Setter Property="SubMenuBrush" Value="{StaticResource PrimaryMidDarkBrush}"/>
+                <Setter Property="Padding" Value="10,3"/>
 
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="3,6,3,6"/>
-            <Setter Property="Padding" Value="5,0,5,0"/>
-        </Style>
+                <Style.Triggers>
+                    <Trigger Property="Role" Value="TopLevelHeader">
+                        <Setter Property="Template" Value="{StaticResource FlatMenuItemTopHeaderTemplate}"/>
+                    </Trigger>
+                    <Trigger Property="Role" Value="TopLevelItem">
+                        <Setter Property="Template" Value="{StaticResource FlatMenuItemTopItemTemplate}"/>
+                    </Trigger>
+                    <Trigger Property="Role" Value="SubmenuHeader">
+                        <Setter Property="Template" Value="{StaticResource FlatMenuItemSubHeaderTemplate}"/>
+                    </Trigger>
+                    <Trigger Property="Role" Value="SubmenuItem">
+                        <Setter Property="Template" Value="{StaticResource FlatMenuItemSubItemTemplate}"/>
+                    </Trigger>
 
-        <Style TargetType="{x:Type DataGrid}" x:Key="DefaultDataGridStyle">
-            <Setter Property="Background" Value="LightSlateGray"/>
-            <Setter Property="AlternatingRowBackground" Value="LightGray"/>
-            <Setter Property="GridLinesVisibility" Value="None"/>
-            <Setter Property="RowHeaderWidth" Value="0"/>
-            <Setter Property="ColumnHeaderStyle">
-                <Setter.Value>
-                    <Style TargetType="DataGridColumnHeader">
-                        <Setter Property="Height" Value="Auto"/>
-                        <Setter Property="Padding" Value="0,5"/>
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <LinearGradientBrush StartPoint="1,0">
-                                    <GradientStop Color="{StaticResource ColorPrimary}"/>
-                                    <GradientStop Offset="1" Color="{StaticResource ColorPrimaryMidDark}"/>
-                                </LinearGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                    </Style>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
 
-        <local:UnitManager x:Key="GlobalUnitManager"/>
-        <local:CategoriesEditorView x:Key="GlobalCategoryEditor" WindowStartupLocation="CenterOwner"/>
-        <local:UnitEditorView x:Key="GlobalUnitEditor" WindowStartupLocation="CenterOwner"/>
+            <Style x:Key="ComboBoxHoverableStyle" TargetType="{x:Type ComboBox}">
+                <Setter Property="Template" Value="{StaticResource FlatComboBoxTemplate}"/>
+                <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsEditable" Value="True">
+                        <Setter Property="Background" Value="{StaticResource PrimaryControlBrush}"/>
+                    </Trigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver" Value="True"/>
+                            <Condition Property="IsEditable" Value="False"/>
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background" Value="{StaticResource PrimaryMidDarkBrush}"/>
+                    </MultiTrigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver" Value="True"/>
+                            <Condition Property="IsEditable" Value="True"/>
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background" Value="{StaticResource PrimaryLighterBrush}"/>
+                    </MultiTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="DefaultWindowStyle" TargetType="{x:Type Window}">
+                <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
+                <Setter Property="FontSize" Value="14"/><!-- ~10.5 pt -->
+            </Style>
+
+            <Style x:Key="DefaultDataGridStyle" TargetType="{x:Type DataGrid}">
+                <Setter Property="Background" Value="LightSlateGray"/>
+                <Setter Property="AlternatingRowBackground" Value="LightGray"/>
+                <Setter Property="GridLinesVisibility" Value="None"/>
+                <Setter Property="RowHeaderWidth" Value="0"/>
+                <Setter Property="ColumnHeaderStyle">
+                    <Setter.Value>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Height" Value="Auto"/>
+                            <Setter Property="Padding" Value="0,5"/>
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="1,0">
+                                        <GradientStop Color="{StaticResource ColorPrimary}"/>
+                                        <GradientStop Offset="1" Color="{StaticResource ColorPrimaryMidDark}"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <local:UnitManager x:Key="GlobalUnitManager"/>
+            <local:CategoriesEditorView x:Key="GlobalCategoryEditor" WindowStartupLocation="CenterOwner"/>
+            <local:UnitEditorView x:Key="GlobalUnitEditor" WindowStartupLocation="CenterOwner"/>
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

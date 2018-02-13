@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using RecipeBox3.SQLiteModel.Data;
 using RecipeBox3.SQLiteModel.Adapters;
 using System.Collections.ObjectModel;
+using System.Windows.Documents;
 
 namespace RecipeBox3
 {
@@ -32,6 +33,10 @@ namespace RecipeBox3
                     {
                         MyRecipe = recipesAdapter.SelectWithImage(value.Value);
                         Ingredients = new ObservableCollection<DetailIngredient>(ingredientsAdapter.SelectAllByRecipe(value.Value));
+                        if (MyRecipe?.R_Steps != null)
+                        {
+                            StepsDocument = Recipe.ParseSteps(MyRecipe.R_Steps);
+                        }
                     }
                     else
                     {
@@ -63,6 +68,18 @@ namespace RecipeBox3
         // Using a DependencyProperty as the backing store for Ingredients.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IngredientsProperty =
             DependencyProperty.Register("Ingredients", typeof(ObservableCollection<DetailIngredient>), typeof(ViewRecipeViewModel), new PropertyMetadata(new ObservableCollection<DetailIngredient>()));
+
+
+
+        public FlowDocument StepsDocument
+        {
+            get { return (FlowDocument)GetValue(StepsDocumentProperty); }
+            set { SetValue(StepsDocumentProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for StepsDocument.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StepsDocumentProperty =
+            DependencyProperty.Register("StepsDocument", typeof(FlowDocument), typeof(ViewRecipeViewModel), new PropertyMetadata(null));
 
 
 

@@ -13,40 +13,6 @@
 
     <Window.Resources>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
-        <ControlTemplate x:Key="FlatButtonTemplate" TargetType="{x:Type Button}">
-            <Border Background="{TemplateBinding Background}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
-                <ContentPresenter
-                    Margin="{TemplateBinding Padding}"
-                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                    RecognizesAccessKey="True"
-                    Content="{TemplateBinding Content}"/>
-            </Border>
-        </ControlTemplate>
-
-        <Style TargetType="{x:Type Control}" x:Key="ClickableStyle">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <SolidColorBrush Color="{StaticResource ColorPrimaryMidDark}"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <SolidColorBrush Color="{StaticResource ColorPrimaryDark}"/>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="ButtonClickableStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource ClickableStyle}">
-            <Setter Property="Padding" Value="0,5"/>
-        </Style>
-        <Style x:Key="MenuClickableStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource ClickableStyle}"/>
 
         <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -54,6 +20,8 @@
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="Background" Value="White"/>
         </Style>
+
+        <Style TargetType="{x:Type local:ExtendedMenuItem}" BasedOn="{StaticResource MenuItemHoverableStyle}"/>
     </Window.Resources>
 
     <Window.DataContext>
@@ -62,38 +30,38 @@
 
     <Grid>
         <DockPanel LastChildFill="True">
-            <Menu DockPanel.Dock="Top" BorderThickness="0">
+            <Menu DockPanel.Dock="Top" BorderThickness="0" FontSize="{Binding ElementName=RecipeListView, Path=FontSize, Mode=OneWay}">
                 <Menu.Background>
                     <SolidColorBrush Color="{StaticResource ColorPrimaryMidDark}"/>
                 </Menu.Background>
-                <MenuItem x:Name="RBItem" Header="_RecipeBox" Style="{StaticResource MenuClickableStyle}">
-                    <MenuItem x:Name="QuitMenuItem" Header="_Quit" Click="QuitMenuItem_Click"/>
-                </MenuItem>
-                <MenuItem Header="_Edit" Style="{StaticResource MenuClickableStyle}">
-                    <MenuItem Header="Database">
-                        <MenuItem Header="Categories" x:Name="EditCategoriesMenuItem" Click="EditCategoriesMenuItem_Click"/>
-                        <MenuItem Header="Units" x:Name="EditUnitsMenuItem" Click="EditUnitsMenuItem_Click"/>
-                    </MenuItem>
-                    <MenuItem Header="Recipe">
-                        <MenuItem Header="New" x:Name="NewRecipeMenuItem" Click="RecipeMenuItem_Click"/>
-                        <MenuItem Header="View" x:Name="ViewRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
-                        <MenuItem Header="Edit" x:Name="EditRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
-                        <MenuItem Header="Delete" x:Name="DeleteRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
-                </MenuItem>
-                <MenuItem x:Name="ViewOptionsMenuItem" Header="_View" Style="{StaticResource MenuClickableStyle}">
-                    <MenuItem Header="Reload Data" Click="ReloadTable">
+                <local:ExtendedMenuItem x:Name="RBItem" Header="_RecipeBox">
+                    <local:ExtendedMenuItem x:Name="QuitMenuItem" Header="_Quit" Click="QuitMenuItem_Click"/>
+                </local:ExtendedMenuItem>
+                <local:ExtendedMenuItem Header="_Edit">
+                    <local:ExtendedMenuItem Header="Database">
+                        <local:ExtendedMenuItem Header="Categories" x:Name="EditCategoriesMenuItem" Click="EditCategoriesMenuItem_Click"/>
+                        <local:ExtendedMenuItem Header="Units" x:Name="EditUnitsMenuItem" Click="EditUnitsMenuItem_Click"/>
+                    </local:ExtendedMenuItem>
+                    <local:ExtendedMenuItem Header="Recipe">
+                        <local:ExtendedMenuItem Header="New" x:Name="NewRecipeMenuItem" Click="RecipeMenuItem_Click"/>
+                        <local:ExtendedMenuItem Header="View" x:Name="ViewRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
+                        <local:ExtendedMenuItem Header="Edit" x:Name="EditRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
+                        <local:ExtendedMenuItem Header="Delete" x:Name="DeleteRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
+                    </local:ExtendedMenuItem>
+                    <Separator Style="{StaticResource FlatMenuItemSeperatorStyle}"/>
+                    <local:ExtendedMenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
+                </local:ExtendedMenuItem>
+                <local:ExtendedMenuItem x:Name="ViewOptionsMenuItem" Header="_View">
+                    <local:ExtendedMenuItem Header="Reload Data" Click="ReloadTable">
                         <MenuItem.Icon>
                             <Image Source="{DynamicResource RefreshIcon}"/>
                         </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem x:Name="ShowImagesMenuItem" Header="Show Images" IsCheckable="True" IsChecked="{Binding ShowImages, Mode=OneWayToSource}"
+                    </local:ExtendedMenuItem>
+                    <Separator Style="{StaticResource FlatMenuItemSeperatorStyle}"/>
+                    <local:ExtendedMenuItem x:Name="ShowImagesMenuItem" Header="Show Images" IsCheckable="True" IsChecked="{Binding ShowImages, Mode=OneWayToSource}"
                               Checked="ShowImagesMenuItem_Checked" Unchecked="ShowImagesMenuItem_Unchecked"/>
-                    <MenuItem x:Name="ReloadImagesMenuItem" Header="Refresh Images" Click="ImgReload_Click"/>
-                </MenuItem>
+                    <local:ExtendedMenuItem x:Name="ReloadImagesMenuItem" Header="Refresh Images" Click="ImgReload_Click"/>
+                </local:ExtendedMenuItem>
             </Menu>
 
             <Grid>
@@ -150,8 +118,8 @@
                     <xctk:ShortUpDown x:Name="MaxTimeInput" DockPanel.Dock="Top"/>
                     <Label Content="Category:" DockPanel.Dock="Top"/>
                     <ComboBox x:Name="CategorySelect" DockPanel.Dock="Top" ItemsSource="{Binding CategoryOptions}" SelectedValuePath="Value" SelectedValue="{Binding SearchCategory}" DisplayMemberPath="Key"/>
-                    <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10" Template="{StaticResource FlatButtonTemplate}" />
-                    <Button x:Name="ClearSearchButton" Content="Clear Search" DockPanel.Dock="Top" Margin="0,10,0,0" Template="{StaticResource FlatButtonTemplate}"/>
+                    <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10" Style="{StaticResource FlatButtonHoverableStyle}" />
+                    <Button x:Name="ClearSearchButton" Content="Clear Search" DockPanel.Dock="Top" Margin="0,10,0,0" Style="{StaticResource FlatButtonHoverableStyle}"/>
                 </DockPanel>
             </Grid>
         </DockPanel>
