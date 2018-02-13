@@ -123,7 +123,11 @@ namespace RecipeBox3
 
                     case "DeleteRecipeMenuItem":
                     case "DeleteRecipeContextItem":
-                        if (ViewModel != null) ViewModel.DeleteRecipe(selectedRow.ID);
+                        if (ViewModel != null)
+                        {
+                            ViewModel.DeleteRecipe(selectedRow.ID);
+                            ReloadTable(sender, e);
+                        }
                         return;
 
                     default:
