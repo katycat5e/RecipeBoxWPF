@@ -20,7 +20,7 @@
                         RecognizesAccessKey="True"
                         Content="{TemplateBinding Content}"/>
             </Border>
-            <Path Fill="DimGray" Grid.Column="1" Data="{StaticResource DropDownArrowPath}"
+            <Path Fill="{TemplateBinding Foreground}" Grid.Column="1" Data="{StaticResource DropDownArrowPath}"
                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
     </ControlTemplate>
@@ -28,15 +28,16 @@
     <ControlTemplate x:Key="FlatComboBoxTextBox" TargetType="{x:Type TextBox}">
         <Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}"/>
     </ControlTemplate>
-    
-    <ControlTemplate x:Key="FlatComboBoxNonEditTemplate" TargetType="{x:Type ComboBox}">
+
+    <ControlTemplate x:Key="FlatComboBoxTemplate" TargetType="{x:Type ComboBox}">
         <Grid>
             <ToggleButton
                 Template="{StaticResource FlatComboBoxToggleButton}"
-                Style="{DynamicResource HoverableStyle}"
+                Foreground="{TemplateBinding Foreground}"
+                Background="{TemplateBinding Background}"
                 Grid.Column="2" Focusable="False" ClickMode="Press"
                 IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
-            
+
             <ContentPresenter
                 Name="ContentSite"
                 IsHitTestVisible="False" 
@@ -67,12 +68,12 @@
                 PopupAnimation="Slide">
                 <Grid 
                     Name="DropDown"
-                    SnapsToDevicePixels="True"                
+                    SnapsToDevicePixels="True"
                     MinWidth="{TemplateBinding ActualWidth}"
                     MaxHeight="{TemplateBinding MaxDropDownHeight}">
                     <Border 
                         x:Name="DropDownBorder"
-                        Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+                        Background="{TemplateBinding Background}"/>
                     <ScrollViewer SnapsToDevicePixels="True">
                         <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                     </ScrollViewer>
@@ -84,7 +85,7 @@
                 <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Foreground" Value="LightGray"/>
+                <Setter Property="Foreground" Value="Gray"/>
             </Trigger>
             <Trigger Property="IsGrouping" Value="true">
                 <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
@@ -96,9 +97,10 @@
             <Trigger Property="IsEditable"
                Value="true">
                 <Setter Property="IsTabStop" Value="false"/>
-                <Setter TargetName="PART_EditableTextBox" Property="Visibility"    Value="Visible"/>
+                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
                 <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+
 </ResourceDictionary>

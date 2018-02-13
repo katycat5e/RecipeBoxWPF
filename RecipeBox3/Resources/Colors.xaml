@@ -9,6 +9,13 @@
     <Color x:Key="ColorPrimaryMidDark" A="#FF" R="#8F" G="#A7" B="#C7"/>
     <Color x:Key="ColorPrimaryDark" A="#FF" R="#6B" G="#8C" B="#B5"/>
 
+    <Color x:Key="ColorControlBackground" A="#FF" R="#F8" G="#F8" B="#F8"/>
+    <SolidColorBrush x:Key="PrimaryControlBrush" Color="{StaticResource ColorControlBackground}"/>
+    
+    <Color x:Key="ColorPrimaryLight2" A="#FF" R="#D3" G="#DC" B="#E9"/>
+    <SolidColorBrush x:Key="PrimaryLighterBrush" Color="{StaticResource ColorPrimaryLight2}"/>
+
+    <SolidColorBrush x:Key="PrimaryLightBrush" Color="{StaticResource ColorPrimaryLight}"/>
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource ColorPrimary}"/>
     <SolidColorBrush x:Key="PrimaryMidDarkBrush" Color="{StaticResource ColorPrimaryMidDark}"/>
     <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource ColorPrimaryDark}"/>

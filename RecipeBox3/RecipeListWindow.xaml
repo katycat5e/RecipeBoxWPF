@@ -28,7 +28,7 @@
 
     <Grid>
         <DockPanel LastChildFill="True">
-            <Menu DockPanel.Dock="Top" BorderThickness="0">
+            <Menu DockPanel.Dock="Top" BorderThickness="0" FontSize="{Binding ElementName=RecipeListView, Path=FontSize, Mode=OneWay}">
                 <Menu.Background>
                     <SolidColorBrush Color="{StaticResource ColorPrimaryMidDark}"/>
                 </Menu.Background>
@@ -116,8 +116,8 @@
                     <xctk:ShortUpDown x:Name="MaxTimeInput" DockPanel.Dock="Top"/>
                     <Label Content="Category:" DockPanel.Dock="Top"/>
                     <ComboBox x:Name="CategorySelect" DockPanel.Dock="Top" ItemsSource="{Binding CategoryOptions}" SelectedValuePath="Value" SelectedValue="{Binding SearchCategory}" DisplayMemberPath="Key"/>
-                    <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10" Template="{StaticResource FlatButtonTemplate}" />
-                    <Button x:Name="ClearSearchButton" Content="Clear Search" DockPanel.Dock="Top" Margin="0,10,0,0" Template="{StaticResource FlatButtonTemplate}"/>
+                    <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10" Style="{StaticResource FlatButtonHoverableStyle}" />
+                    <Button x:Name="ClearSearchButton" Content="Clear Search" DockPanel.Dock="Top" Margin="0,10,0,0" Style="{StaticResource FlatButtonHoverableStyle}"/>
                 </DockPanel>
             </Grid>
         </DockPanel>

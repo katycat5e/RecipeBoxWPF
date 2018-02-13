@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace RecipeBox3
 {
@@ -104,6 +98,7 @@ namespace RecipeBox3
                 StepsEditor.Selection.ApplyPropertyValue(
                     Inline.FontFamilyProperty,
                     FontFamilySelector.SelectedItem);
+            StepsEditor.Focus();
         }
 
         private void FontSizeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -114,6 +109,7 @@ namespace RecipeBox3
                   Inline.FontSizeProperty,
                   Convert.ToDouble(e.AddedItems[0]));
             }
+            StepsEditor.Focus();
         }
 
         private void StepsEditor_SelectionChanged(object sender, RoutedEventArgs e)

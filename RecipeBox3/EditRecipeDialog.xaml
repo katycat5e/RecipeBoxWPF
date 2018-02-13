@@ -66,7 +66,7 @@
                 <ComboBox Grid.Column="1" Grid.Row="1"
                           ItemsSource="{Binding CategoryList}" DisplayMemberPath="C_Name"
                           SelectedValuePath="C_ID" SelectedValue="{Binding MyRecipe.R_Category}"
-                          Template="{StaticResource FlatComboBoxNonEditTemplate}"/>
+                          Style="{StaticResource ComboBoxHoverableStyle}"/>
 
                 <Label Content="Description:" Grid.Column="0" Grid.Row="2"/>
                 <TextBox SpellCheck.IsEnabled="True" Text="{Binding MyRecipe.R_Description}" Grid.Column="1" Grid.Row="2"/>
@@ -122,30 +122,44 @@
         <DockPanel Grid.Column="1" Grid.Row="1" LastChildFill="True">
             <Label Content="Instructions:" HorizontalContentAlignment="Center" FontSize="14pt" DockPanel.Dock="Top"/>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                <ToggleButton x:Name="BoldButton" Command="EditingCommands.ToggleBold" Template="{DynamicResource FlatToggleButtonTemplate}"
-                              Height="22px" Width="22px" CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
+                <ToggleButton x:Name="BoldButton" Style="{StaticResource ToggleButtonHoverableStyle}"
+                              Height="22px" Width="22px" Padding="3"
+                              Command="EditingCommands.ToggleBold"
+                              CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
                     <Image Source="{StaticResource BoldIcon}"/>
                 </ToggleButton>
-                <ToggleButton x:Name="ItalicButton" Command="EditingCommands.ToggleItalic" Template="{DynamicResource FlatToggleButtonTemplate}"
-                              Height="22px" Width="22px" CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
+
+                <ToggleButton x:Name="ItalicButton" Style="{StaticResource ToggleButtonHoverableStyle}"
+                              Height="22px" Width="22px" Padding="3"
+                              Command="EditingCommands.ToggleItalic"
+                              CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
                     <Image Source="{StaticResource ItalicIcon}"/>
                 </ToggleButton>
-                <ToggleButton x:Name="UnderlineButton" Command="EditingCommands.ToggleUnderline" Template="{DynamicResource FlatToggleButtonTemplate}"
-                              Height="22px" Width="22px" CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
+
+                <ToggleButton x:Name="UnderlineButton" Style="{StaticResource ToggleButtonHoverableStyle}"
+                              Height="22px" Width="22px" Padding="3"
+                              Command="EditingCommands.ToggleUnderline"
+                              CommandTarget="{Binding ElementName=StepsEditor, Mode=OneWay}">
                     <Image Source="{StaticResource UnderlineIcon}"/>
                 </ToggleButton>
-                <ComboBox x:Name="FontFamilySelector" Width="150" Margin="3" SelectionChanged="FontFamilySelector_SelectionChanged"/>
-                <ComboBox x:Name="FontSizeSelector" IsEditable="True" Width="75" Margin="3" SelectionChanged="FontSizeSelector_SelectionChanged"/>
+                
+                <ComboBox x:Name="FontFamilySelector" Width="150" Margin="3"
+                          SelectionChanged="FontFamilySelector_SelectionChanged"
+                          Style="{StaticResource ComboBoxHoverableStyle}"/>
+                
+                <ComboBox x:Name="FontSizeSelector" IsEditable="True" Width="75" Margin="3"
+                          SelectionChanged="FontSizeSelector_SelectionChanged"
+                          Style="{StaticResource ComboBoxHoverableStyle}"/>
+                
                 <Button x:Name="ToggleListButton" Content="Toggle List" Margin="3" Click="NewOrderedListButton_Click"
-                        Style="{StaticResource FlatButtonHoverableStyle}" Template="{StaticResource FlatButtonTemplate}"/>
+                        Style="{StaticResource FlatButtonHoverableStyle}"/>
             </StackPanel>
             <RichTextBox
                 x:Name="StepsEditor" DockPanel.Dock="Bottom" Padding="6" Margin="3"
                 VerticalScrollBarVisibility="Auto" AcceptsTab="True"
-                SelectionChanged="StepsEditor_SelectionChanged" IsInactiveSelectionHighlightEnabled="True">
-                <RichTextBox.SelectionBrush>
-                    <SolidColorBrush Color="{StaticResource ColorSecondary2Dark}"/>
-                </RichTextBox.SelectionBrush>
+                SelectionChanged="StepsEditor_SelectionChanged" IsInactiveSelectionHighlightEnabled="True"
+                Style="{StaticResource TextControlStyle}">
+                
 
             </RichTextBox>
         </DockPanel>
