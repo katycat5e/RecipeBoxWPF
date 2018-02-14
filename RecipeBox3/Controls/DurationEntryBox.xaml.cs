@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RecipeBox3.Controls
 {
@@ -28,77 +20,114 @@ namespace RecipeBox3.Controls
             InitializeComponent();
         }
 
-        /// <summary>Minimum value accepted for this input</summary>
-        public double Minimum
+
+        /// <summary>Whether the current input of this control is a valid duration string</summary>
+        public bool ValidInput
         {
-            get { return (double)GetValue(MinimumProperty); }
-            set { SetValue(MinimumProperty, value); }
+            get { return (bool)GetValue(ValidInputProperty); }
+            set { SetValue(ValidInputProperty, value); }
         }
 
-        /// <summary>Minimum value accepted for this input</summary>
-        public static readonly DependencyProperty MinimumProperty =
-            DependencyProperty.Register("Minimum", typeof(double), typeof(DurationEntryBox), new PropertyMetadata(0.0));
-
-
-        /// <summary>Maximum value accepted for this input</summary>
-        public double Maximum
-        {
-            get { return (double)GetValue(MaximumProperty); }
-            set { SetValue(MaximumProperty, value); }
-        }
-
-        /// <summary>Maximum value accepted for this input</summary>
-        public static readonly DependencyProperty MaximumProperty =
-            DependencyProperty.Register("Maximum", typeof(double), typeof(DurationEntryBox), new PropertyMetadata(100.0));
+        /// <summary>Whether the current input of this control is a valid duration string</summary>
+        public static readonly DependencyProperty ValidInputProperty =
+            DependencyProperty.Register("ValidInput", typeof(bool), typeof(DurationEntryBox), new PropertyMetadata(true));
 
 
         /// <summary>Current numeric value of the input</summary>
-        public double Value
+        public int MinuteValue
         {
-            get { return 0; }
-            set {  }
+            get { return (int)GetValue(MinuteValueProperty); }
+            set { SetValue(MinuteValueProperty, value); }
         }
 
-        private void InputBox_TextChanged(object sender, TextChangedEventArgs e)
+        /// <summary>Current numeric value of the input</summary>
+        public static readonly DependencyProperty MinuteValueProperty =
+            DependencyProperty.Register("MinuteValue", typeof(int), typeof(DurationEntryBox), new PropertyMetadata(0));
+
+
+        /// <summary>Outline color to use when input is a valid duration</summary>
+        public Color ValidColor
         {
-            string curValueString = InputBox.Text;
+            get { return (Color)GetValue(ValidColorProperty); }
+            set { SetValue(ValidColorProperty, value); }
         }
 
-        static bool TryGetMinutesFromTimeString(string timeString, out int minutes)
+        /// <summary>Outline color to use when input is a valid duration</summary>
+        public static readonly DependencyProperty ValidColorProperty =
+            DependencyProperty.Register("ValidColor", typeof(Color), typeof(DurationEntryBox), new PropertyMetadata(Colors.Transparent));
+
+
+        /// <summary>Outline color to use when input is an invalid duration</summary>
+        public Color InvalidColor
         {
-            minutes = 0;
-            if (timeString == null) return false;
+            get { return (Color)GetValue(InvalidColorProperty); }
+            set { SetValue(InvalidColorProperty, value); }
+        }
 
-            var partList = new List<TimeStringPart>(1);
-            var sb = new StringBuilder();
-            char[] inChars = timeString.Trim().ToArray();
+        /// <summary>Outline color to use when input is an invalid duration</summary>
+        public static readonly DependencyProperty InvalidColorProperty =
+            DependencyProperty.Register("InvalidColor", typeof(Color), typeof(DurationEntryBox), new PropertyMetadata(Colors.DarkRed));
 
-            if (inChars.Length > 0)
+
+        /// <inheritdoc/>
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+
+            if (e.Property.Name == "MinuteValue" && e.NewValue is int newVal)
             {
-                bool lastCharNumeric = Char.IsDigit(inChars[0]);
-
-                for (int i = 0; i < inChars.Length; i++)
-                {
-                    sb.Append(inChars[i]);
-                    if (Char.IsDigit(inChars[i]) != lastCharNumeric)
-                    {
-                        partList.Add(
-                            new TimeStringPart()
-                            {
-                                IsNumeric = lastCharNumeric,
-                                Text = sb.ToString()
-                            });
-                    }
-                }
+                InputBox.Text = TimeStringConverter.ConvertMinutesToString(newVal, true);
             }
-
-            return false;
         }
 
-        private struct TimeStringPart
+        private void InputBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            public bool IsNumeric;
-            public string Text;
+            bool validInput = TimeStringConverter.TryGetMinutes(InputBox.Text, out int minutes);
+            if (validInput) MinuteValue = minutes;
+
+            ValidInput = validInput;
+        }
+    }
+
+    /// <summary>Turns a boolean into a valid/invalid indication color</summary>
+    public class ValidValueBrushConverter : DependencyObject, IValueConverter
+    {
+        /// <summary>Color given when input value is true</summary>
+        public Color TrueColor
+        {
+            get { return (Color)GetValue(TrueColorProperty); }
+            set { SetValue(TrueColorProperty, value); }
+        }
+
+        /// <summary>Color given when input value is true</summary>
+        public static readonly DependencyProperty TrueColorProperty =
+            DependencyProperty.Register("TrueColor", typeof(Color), typeof(ValidValueBrushConverter), new PropertyMetadata(Colors.Transparent));
+
+
+        /// <summary>Color given when input value is false</summary>
+        public Color FalseColor
+        {
+            get { return (Color)GetValue(FalseColorProperty); }
+            set { SetValue(FalseColorProperty, value); }
+        }
+
+        /// <summary>Color given when input value is false</summary>
+        public static readonly DependencyProperty FalseColorProperty =
+            DependencyProperty.Register("FalseColor", typeof(Color), typeof(ValidValueBrushConverter), new PropertyMetadata(Colors.Red));
+
+
+
+        /// <inheritdoc/>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue && boolValue == true) return TrueColor;
+            else return FalseColor;
+        }
+
+        /// <inheritdoc/>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

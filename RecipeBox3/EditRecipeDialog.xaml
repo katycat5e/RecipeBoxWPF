@@ -72,11 +72,12 @@
                 <TextBox SpellCheck.IsEnabled="True" Text="{Binding MyRecipe.R_Description}" Grid.Column="1" Grid.Row="2"/>
 
                 <Label Content="Prep Time:" Grid.Column="0" Grid.Row="3"/>
-                <!--<xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="3" Value="{Binding MyRecipe.R_PrepTime}"/>-->
-                <ctrls:DurationEntryBox Grid.Column="1" Grid.Row="3"/>
+                <ctrls:DurationEntryBox x:Name="PrepTimeInput" Grid.Column="1" Grid.Row="3"
+                                        MinuteValue="{Binding MyRecipe.R_PrepTime}"/>
 
                 <Label Content="Cook Time:" Grid.Column="0" Grid.Row="4"/>
-                <!--<xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="4" Value="{Binding MyRecipe.R_CookTime}"/>-->
+                <ctrls:DurationEntryBox x:Name="CookTimeInput" Grid.Column="1" Grid.Row="4"
+                                        MinuteValue="{Binding MyRecipe.R_CookTime}"/>
             </Grid>
 
             <Grid Grid.Column="1" Margin="6,0,0,6">
