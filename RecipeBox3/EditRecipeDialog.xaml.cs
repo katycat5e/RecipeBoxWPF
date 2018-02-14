@@ -20,6 +20,9 @@ namespace RecipeBox3
             set => DataContext = value;
         }
 
+        /// <summary>Whether the editor inputs hold valid entries</summary>
+        public bool InputsAreValid => PrepTimeInput.ValidInput && CookTimeInput.ValidInput;
+
         private FontSizeConverter fontSizeConverter = new FontSizeConverter();
 
         public EditRecipeDialog()
@@ -77,13 +80,22 @@ namespace RecipeBox3
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ViewModel != null)
+            if (InputsAreValid)
             {
-                
-                DialogResult = ViewModel?.SaveRecipe();
+                if (ViewModel != null)
+                {
+                    DialogResult = ViewModel?.SaveRecipe();
+                }
+
+                Close();
             }
-            
-            Close();
+            else
+            {
+                MessageBox.Show(
+                    "Not all fields contain valid entries, please verify and try again",
+                    "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+                return;
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

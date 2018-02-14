@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RecipeBox3"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:ctrls="clr-namespace:RecipeBox3.Controls"
         mc:Ignorable="d"
         Title="RecipeBox" Height="800" Width="1400"
         WindowStartupLocation="CenterScreen"
@@ -115,7 +115,7 @@
                     <Label Content="Ingredients:" DockPanel.Dock="Top"/>
                     <TextBox x:Name="IngredientsInput" DockPanel.Dock="Top"/>
                     <Label Content="Max Time:" DockPanel.Dock="Top"/>
-                    <xctk:ShortUpDown x:Name="MaxTimeInput" DockPanel.Dock="Top"/>
+                    <ctrls:DurationEntryBox x:Name="MaxTimeInput" DockPanel.Dock="Top" MinuteValue="{Binding SearchMaxTime}"/>
                     <Label Content="Category:" DockPanel.Dock="Top"/>
                     <ComboBox x:Name="CategorySelect" DockPanel.Dock="Top" ItemsSource="{Binding CategoryOptions}" SelectedValuePath="Value" SelectedValue="{Binding SearchCategory}" DisplayMemberPath="Key"/>
                     <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10" Style="{StaticResource FlatButtonHoverableStyle}" />
