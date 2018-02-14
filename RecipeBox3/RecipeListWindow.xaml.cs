@@ -11,7 +11,6 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using RecipeBox3.SQLiteModel.Data;
-using Xceed.Wpf.DataGrid;
 
 namespace RecipeBox3
 {
