@@ -28,7 +28,7 @@
     </TransformComponentArguments>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
-    <HelpFileFormat>MSHelpViewer</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <IndentHtml>False</IndentHtml>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
@@ -47,6 +47,7 @@
     <DocumentationSources>
       <DocumentationSource sourceFile="..\RecipeBox3\RecipeBox3.csproj" xmlns="" />
     </DocumentationSources>
+    <VisibleItems>InheritedMembers, Protected, ProtectedInternalAsProtected</VisibleItems>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
