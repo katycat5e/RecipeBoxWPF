@@ -25,6 +25,7 @@ namespace RecipeBox3
 
         private FontSizeConverter fontSizeConverter = new FontSizeConverter();
 
+        /// <summary>Create a new instance of the class</summary>
         public EditRecipeDialog()
         {
             InitializeComponent();
@@ -41,6 +42,10 @@ namespace RecipeBox3
             }
         }
 
+        /// <summary>
+        /// Create a new instance of the recipe editor for the specified recipe.
+        /// A null argument creates a new recipe
+        /// </summary>
         public EditRecipeDialog(int? recipeID)
         {
             InitializeComponent();

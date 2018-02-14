@@ -19,6 +19,7 @@ namespace RecipeBox3
     /// </summary>
     public partial class EditSettingsDialog : Window
     {
+        /// <summary>Create a new instance of the class</summary>
         public EditSettingsDialog()
         {
             InitializeComponent();

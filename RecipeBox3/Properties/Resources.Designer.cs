@@ -63,7 +63,7 @@ namespace RecipeBox3.Properties {
         /// <summary>
         ///   Looks up a localized string similar to USE [master]
         ///GO
-        ////****** Object:  Database [Cookbook]    Script Date: 6/12/2017 9:30:21 AM ******/
+        /// /****** Object:  Database [Cookbook]    Script Date: 6/12/2017 9:30:21 AM ******/
         ///CREATE DATABASE [Cookbook]
         /// CONTAINMENT = NONE
         /// ON  PRIMARY 

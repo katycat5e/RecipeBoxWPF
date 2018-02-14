@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace RecipeBox3
 {
@@ -24,19 +15,23 @@ namespace RecipeBox3
         private bool MouseLeftButtonDownInCanvas = false;
         private Bitmap baseBitmap = null;
 
+        /// <summary>Final output of this image picker</summary>
         public Bitmap FinalBitmap = null;
-
-        public ImageEditorViewModel ViewModel
+        
+        private ImageEditorViewModel ViewModel
         {
             get => DataContext as ImageEditorViewModel;
             set => DataContext = value;
         }
 
+        /// <summary>Create a new instance of the class</summary>
         public ChooseImageDialog()
         {
             InitializeComponent();
         }
 
+        /// <summary>Create a new instance with the specified image data</summary>
+        /// <param name="imgData"></param>
         public ChooseImageDialog(byte[] imgData) : this()
         {
             ViewModel.PreviewImage = ByteImageConverter.ConvertBytesToBitmapImage(imgData);
@@ -163,48 +158,54 @@ namespace RecipeBox3
         }
     }
 
+    /// <summary>
+    /// View model for the image editor dialog
+    /// </summary>
     public class ImageEditorViewModel : DependencyObject
     {
+        /// <summary>Create a new instance of the class</summary>
         public ImageEditorViewModel()
         {
 
         }
 
+        /// <summary>Preview image to show in editor window</summary>
         public BitmapImage PreviewImage
         {
             get { return (BitmapImage)GetValue(PreviewImageProperty); }
             set { SetValue(PreviewImageProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ImageData.  This enables animation, styling, binding, etc...
+        /// <summary>Preview image to show in editor window</summary>
         public static readonly DependencyProperty PreviewImageProperty =
             DependencyProperty.Register("PreviewImage", typeof(BitmapImage), typeof(ImageEditorViewModel), new PropertyMetadata(null));
 
 
-
+        /// <summary>Left bound for image cropping</summary>
         public double CaptureLeft
         {
             get { return (double)GetValue(CaptureLeftProperty); }
             set { SetValue(CaptureLeftProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for CaptureLeft.  This enables animation, styling, binding, etc...
+        /// <summary>Left bound for image cropping</summary>
         public static readonly DependencyProperty CaptureLeftProperty =
             DependencyProperty.Register("CaptureLeft", typeof(double), typeof(ImageEditorViewModel), new PropertyMetadata(0.0));
 
 
-
+        /// <summary>Upper bound for image cropping</summary>
         public double CaptureTop
         {
             get { return (double)GetValue(CaptureTopProperty); }
             set { SetValue(CaptureTopProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for CaptureTop.  This enables animation, styling, binding, etc...
+        /// <summary>Upper bound for image cropping</summary>
         public static readonly DependencyProperty CaptureTopProperty =
             DependencyProperty.Register("CaptureTop", typeof(double), typeof(ImageEditorViewModel), new PropertyMetadata(0.0));
 
 
+        /// <summary>Top left point of the image cropping selection</summary>
         public System.Windows.Point CaptureTopLeftPoint
         {
             get => new System.Windows.Point(CaptureLeft, CaptureTop);
@@ -216,13 +217,14 @@ namespace RecipeBox3
         }
 
 
+        /// <summary>Width/height of the cropping square</summary>
         public double CaptureWidth
         {
             get { return (double)GetValue(CaptureWidthProperty); }
             set { SetValue(CaptureWidthProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for CaptureWidth.  This enables animation, styling, binding, etc...
+        /// <summary>Width/height of the cropping square</summary>
         public static readonly DependencyProperty CaptureWidthProperty =
             DependencyProperty.Register("CaptureWidth", typeof(double), typeof(ImageEditorViewModel), new PropertyMetadata(0.0));
     }

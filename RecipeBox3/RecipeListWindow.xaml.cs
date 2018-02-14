@@ -1,32 +1,28 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
-using System.Drawing;
-using System.IO;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
 using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for RecipeListWindow.xaml
     /// </summary>
     public partial class RecipeListWindow : Window
     {
         private RecipeListViewModel ViewModel => DataContext as RecipeListViewModel;
-        
+
+        /// <summary>Create a new instance of the class</summary>
         public RecipeListWindow()
         {
             InitializeComponent();
             ShowImagesMenuItem.IsChecked = Properties.Settings.Default.ShowPreviewImages;
         }
 
+        /// <summary>Refresh the list of recipes</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void ReloadTable(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.Wait;

@@ -9,6 +9,10 @@ namespace RecipeBox3
 {
     partial class App
     {
+        /// <summary>
+        /// Check that the database is setup correctly
+        /// </summary>
+        /// <returns></returns>
         public static bool EnsureDBExists()
         {
             bool successful = false;

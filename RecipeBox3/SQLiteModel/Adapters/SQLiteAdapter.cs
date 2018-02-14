@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
+    /// <summary>Abstract adapter for a table in the database</summary>
+    /// <typeparam name="T">Type of row objects held in this table</typeparam>
     public abstract class SQLiteAdapter<T> where T : CookbookRow<T>
     {
+        /// <summary>Connection string for this adapter</summary>
         protected string _connectionString;
+
+        /// <summary>Get/Set the connection string for this adapter</summary>
         public string ConnectionString
         {
             get { return _connectionString; }
@@ -22,7 +25,10 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <summary>Connection for this adapter</summary>
         protected SQLiteConnection _connection;
+
+        /// <summary>Get/set the connection for this adapter</summary>
         protected virtual SQLiteConnection Connection
         {
             get
@@ -45,23 +51,34 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <summary>Parameter for the table's primary key column</summary>
         protected SQLiteParameter IDParameter = new SQLiteParameter("@id", DbType.Int32);
+
         /// <summary>An array of non-identity parameters for insert and update queries</summary>
         protected abstract SQLiteParameter[] DataParameters { get; }
 
+        /// <summary>Command to select one (by id) or all rows from the table</summary>
         protected SQLiteCommand SelectCommand;
+        /// <summary>Command to insert a new row</summary>
         protected SQLiteCommand InsertCommand;
+        /// <summary>Command to update an existing row</summary>
         protected SQLiteCommand UpdateCommand;
+        /// <summary>Command to delete a row</summary>
         protected SQLiteCommand DeleteCommand;
+        /// <summary>Command to fetch the primary key ID of the last row inserted into the table</summary>
         protected SQLiteCommand LastIDCommand;
 
+        /// <summary>Name of the table this adapter manages</summary>
         protected abstract string TableName { get; }
 
+        /// <summary>Name of the primary key ID column for this adapter's table</summary>
         protected virtual string IDColumn => IDParameter.SourceColumn;
 
+        /// <summary>Collection of this adapter's table's data column names</summary>
         protected virtual IEnumerable<string> DataColumns =>
             DataParameters.Select(p => p.SourceColumn).ToList();
 
+        /// <summary>Collection of this adapter's parameter names</summary>
         protected virtual IEnumerable<string> DataParamNames =>
             DataParameters.Select(p => p.ParameterName).ToList();
 
@@ -90,17 +107,17 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <summary>Create a new instance of the class</summary>
         protected SQLiteAdapter() : this(Properties.Settings.Default.SQLiteConnectionString) { }
 
+        /// <summary>Create a new instance of the class with the specified connection</summary>
         protected SQLiteAdapter(string connectionString)
         {
             connectionString = Environment.ExpandEnvironmentVariables(connectionString);
             Initialize(connectionString);
         }
 
-        /// <summary>
-        /// Setup the basic table commands
-        /// </summary>
+        /// <summary>Setup the primary table commands</summary>
         /// <param name="connectionString">Connection string to be used for the connection</param>
         protected virtual void Initialize(string connectionString)
         {
@@ -165,6 +182,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
             Connection = new SQLiteConnection(_connectionString);
         }
 
+        /// <summary>Fetch all rows from the table</summary>
+        /// <returns>Enumerable set of row objects from the table</returns>
         public virtual IEnumerable<T> SelectAll()
         {
             if (SelectCommand.Connection == null) return null;
@@ -191,6 +210,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <summary>Try to fetch a single row from the table by its ID</summary>
+        /// <param name="id">Primary key ID of the row to look for</param>
+        /// <returns>The row object with the desired ID, or null if no such row exists</returns>
         public virtual T Select(int id)
         {
             if (SelectCommand.Connection == null) return null;
@@ -212,12 +234,15 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <summary>Construct a row object using data returned from the database</summary>
+        /// <param name="reader">DataReader to pull values from</param>
+        /// <returns>Row object representing the current row from the reader</returns>
         protected abstract T GetRowFromReader(SQLiteDataReader reader);
 
         /// <summary>
-        /// Set all fields other than the row ID
+        /// Set all data parameters other than the row's primary key ID
         /// </summary>
-        /// <param name="row"></param>
+        /// <param name="row">Row object to pull values from</param>
         protected abstract void SetDataParametersFromRow(T row);
         
         /// <summary>
@@ -268,7 +293,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
             return Delete(row?.ID);
         }
 
-
+        /// <summary>Save changes from a row to the database if necessary</summary>
+        /// <param name="row">Row object to be saved</param>
+        /// <returns>true if modifications were made to the database</returns>
         public bool Update(T row)
         {
             switch (row.Status)
@@ -289,7 +316,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         }
 
         /// <summary>
-        /// Update each <see cref="CookbookRow"/> in an enumerable set
+        /// Update each row object in an enumerable set
         /// </summary>
         /// <param name="rows">set of rows to update</param>
         public int Update(IEnumerable<T> rows)

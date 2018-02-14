@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
+    /// <summary>Adapter for Ingredients table left joined with Units</summary>
     public class DetailIngredientsAdapter : IngredientsBaseAdapter<DetailIngredient>
     {
+        /// <inheritdoc/>
         protected override void Initialize(string connectionString)
         {
             base.Initialize(connectionString);
@@ -27,6 +26,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     IDColumn, String.Join(", ", DataColumns));
         }
 
+        /// <inheritdoc/>
         protected override DetailIngredient GetRowFromReader(SQLiteDataReader reader)
         {
             var row = base.GetRowFromReader(reader);

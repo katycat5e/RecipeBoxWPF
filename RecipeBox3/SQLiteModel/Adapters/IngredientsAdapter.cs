@@ -2,25 +2,30 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
+    /// <summary>Adapter for the Ingredients table</summary>
     public class IngredientsAdapter : IngredientsBaseAdapter<Ingredient>
     {
         
     }
 
+    /// <summary>Abstract base adapter for Ingredients table</summary>
+    /// <typeparam name="U">Type of row objects returned by this adapter</typeparam>
     public abstract class IngredientsBaseAdapter<U> : SQLiteAdapter<U> where U : IngredientBase<U>
     {
+        /// <summary></summary>
         protected SQLiteParameter nameParameter = new SQLiteParameter("@name", DbType.String, "IE_Name");
+        /// <summary></summary>
         protected SQLiteParameter amountParameter = new SQLiteParameter("@amount", DbType.Decimal, "IE_Amount");
+        /// <summary></summary>
         protected SQLiteParameter unitParameter = new SQLiteParameter("@unit", DbType.Int32, "IE_Unit");
+        /// <summary></summary>
         protected SQLiteParameter recipeParameter = new SQLiteParameter("@recipe", DbType.Int32, "IE_RecipeID");
 
+        /// <inheritdoc/>
         protected override SQLiteParameter[] DataParameters
         {
             get
@@ -32,11 +37,15 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <inheritdoc/>
         protected override string TableName => "Ingredients";
+        /// <inheritdoc/>
         protected override string IDColumn => "IE_ID";
 
+        /// <summary>Command to select ingredients based on recipe id</summary>
         protected SQLiteCommand SelectByRecipeCommand;
 
+        /// <inheritdoc/>
         protected override SQLiteConnection Connection
         {
             get => base.Connection;
@@ -51,8 +60,10 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <summary>Create a new instance of the class</summary>
         public IngredientsBaseAdapter() : base() { }
 
+        /// <summary>Create a new instance of the class with the specified connection</summary>
         public IngredientsBaseAdapter(string connectionString) : base(connectionString) { }
 
         /// <inheritdoc/>
@@ -106,6 +117,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             unitParameter.Value = row.IE_Unit;
         }
 
+        /// <inheritdoc/>
         protected override U GetRowFromReader(SQLiteDataReader reader)
         {
             try

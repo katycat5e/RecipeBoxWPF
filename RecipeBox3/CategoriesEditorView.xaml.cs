@@ -16,6 +16,7 @@ namespace RecipeBox3
             set => DataContext = value;
         }
 
+        /// <summary>Create a new category editor</summary>
         public CategoriesEditorView()
         {
             InitializeComponent();
@@ -55,8 +56,10 @@ namespace RecipeBox3
         }
     }
 
+    /// <summary>View Model for the categories editor</summary>
     public class CategoriesViewModel : TableEditorViewModel<Category, CategoriesAdapter>
     {
+        /// <summary>Create a new instance</summary>
         public CategoriesViewModel()
         {
         }

@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Media;
 
 namespace RecipeBox3
 {
+    /// <summary>Extension of the MenuItem class to allow flat styling</summary>
     public class ExtendedMenuItem : MenuItem
     {
+        /// <summary>Brush for the background of the submenu in this item</summary>
         public Brush SubMenuBrush
         {
             get { return (Brush)GetValue(SubMenuBrushProperty); }
             set { SetValue(SubMenuBrushProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for SubMenuBrush.  This enables animation, styling, binding, etc...
+        /// <summary>Brush for the background of the submenu in this item</summary>
         public static readonly DependencyProperty SubMenuBrushProperty =
             DependencyProperty.Register("SubMenuBrush", typeof(Brush), typeof(ExtendedMenuItem), new PropertyMetadata(SystemColors.ControlBrush));
     }

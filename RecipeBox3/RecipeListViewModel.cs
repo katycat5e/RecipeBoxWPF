@@ -5,13 +5,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace RecipeBox3
 {
+    /// <summary>View Model for the <see cref="RecipeListWindow"/></summary>
     public class RecipeListViewModel : DependencyObject
     {
         private DetailRecipesAdapter recipesAdapter;
@@ -19,40 +17,43 @@ namespace RecipeBox3
 
         private BackgroundWorker getImageWorker;
 
+        /// <summary>List of recipes to show in the grid</summary>
         public ObservableCollection<DetailRecipe> Recipes
         {
             get { return (ObservableCollection<DetailRecipe>)GetValue(RecipesProperty); }
             set { SetValue(RecipesProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Recipes.  This enables animation, styling, binding, etc...
+        /// <summary>List of recipes to show in the grid</summary>
         public static readonly DependencyProperty RecipesProperty =
             DependencyProperty.Register("Recipes", typeof(ObservableCollection<DetailRecipe>), typeof(RecipeListViewModel), new PropertyMetadata(null));
 
 
+        /// <summary>Currently selected item in the recipe list</summary>
         public object SelectedGridItem
         {
             get { return (object)GetValue(SelectedGridItemProperty); }
             set { SetValue(SelectedGridItemProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for SelectedGridItem.  This enables animation, styling, binding, etc...
+        /// <summary>Currently selected item in the recipe list</summary>
         public static readonly DependencyProperty SelectedGridItemProperty =
             DependencyProperty.Register("SelectedGridItem", typeof(object), typeof(RecipeListViewModel), new PropertyMetadata(null));
 
         
+        /// <summary>Whether preview images are shown in the recipe list</summary>
         public bool ShowImages
         {
             get { return (bool)GetValue(ShowImagesProperty); }
             set { SetValue(ShowImagesProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ShowImages.  This enables animation, styling, binding, etc...
+        /// <summary>Whether preview images are shown in the recipe list</summary>
         public static readonly DependencyProperty ShowImagesProperty =
             DependencyProperty.Register("ShowImages", typeof(bool), typeof(RecipeListViewModel), new PropertyMetadata(true));
 
 
-
+        /// <summary>Create a new instance of the window, loading all recipes</summary>
         public RecipeListViewModel()
         {
             recipesAdapter = new DetailRecipesAdapter();
@@ -69,16 +70,20 @@ namespace RecipeBox3
             GetAllRecipes();
         }
 
+        /// <summary>Fetch complete list of recipes from the database</summary>
         public void GetAllRecipes()
         {
             Recipes = new ObservableCollection<DetailRecipe>(recipesAdapter.SelectAll());
         }
 
+        /// <summary>Delete a recipe from the database by id</summary>
+        /// <param name="id"></param>
         public void DeleteRecipe(int id)
         {
             recipesAdapter.Delete(id);
         }
 
+        /// <summary>Start to fetch preview images asynchronously</summary>
         public void UpdateImages()
         {
             if (!getImageWorker.IsBusy)
@@ -123,6 +128,7 @@ namespace RecipeBox3
             if (ShowImages) UpdateImages();
         }
 
+        /// <inheritdoc/>
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
