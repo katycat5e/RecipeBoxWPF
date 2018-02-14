@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    public class ImageRow : CookbookRow<ImageRow>
+    public class ImageRow : CookbookRow
     {
         public override int ID
         {

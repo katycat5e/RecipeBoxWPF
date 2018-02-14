@@ -8,8 +8,7 @@ using RecipeBox3.SQLiteModel.Data;
 namespace RecipeBox3.SQLiteModel.Adapters
 {
     /// <summary>Abstract adapter for a table in the database</summary>
-    /// <typeparam name="T">Type of row objects held in this table</typeparam>
-    public abstract class SQLiteAdapter<T> where T : CookbookRow<T>
+    public abstract class SQLiteAdapter<T> where T : CookbookRow
     {
         /// <summary>Connection string for this adapter</summary>
         protected string _connectionString;

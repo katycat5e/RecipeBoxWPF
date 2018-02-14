@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
@@ -18,7 +13,7 @@ namespace RecipeBox3.SQLiteModel.Data
         Deleted
     }
 
-    public abstract class CookbookRow<T> : DependencyObject where T : CookbookRow<T>
+    public abstract class CookbookRow : DependencyObject
     {
         public abstract int ID { get; set; }
 
@@ -33,28 +28,10 @@ namespace RecipeBox3.SQLiteModel.Data
 
         protected static void OnRowChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CookbookRow<T> row)
+            if (d is CookbookRow row)
             {
                 if (row.Status == RowStatus.Unchanged) row.Status = RowStatus.Modified;
             }
-        }
-
-        public static T Clone(T source)
-        {
-            var constructor = source.GetType().GetConstructor(new Type[] { source.GetType() });
-
-            if (constructor != null)
-            {
-                try
-                {
-                    return constructor.Invoke(new object[] { source }) as T;
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-            else return null;
         }
     }
 }

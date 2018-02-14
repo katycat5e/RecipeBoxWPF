@@ -16,7 +16,7 @@
     <Grid>
         <TextBox x:Name="InputBox" LostFocus="InputBox_LostFocus" BorderThickness="1">
             <TextBox.BorderBrush>
-                <SolidColorBrush Color="{Binding ValidInput, Converter={DynamicResource ValidBrushConverter}, ElementName=ThisControl, Mode=OneWay}" />
+                <SolidColorBrush Color="{Binding ValidInput, Converter={StaticResource ValidBrushConverter}, ElementName=ThisControl, Mode=OneWay}" />
             </TextBox.BorderBrush>
         </TextBox>
     </Grid>

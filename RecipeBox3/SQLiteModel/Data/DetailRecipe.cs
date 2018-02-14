@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    public class DetailRecipe : RecipeBase<DetailRecipe>
+    public class DetailRecipe : Recipe
     {
         public string C_Name
         {

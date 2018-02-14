@@ -12,7 +12,7 @@ using System.Collections.Specialized;
 namespace RecipeBox3
 {
     public class TableEditorViewModel<T, U> : DependencyObject
-        where T : CookbookRow<T>
+        where T : CookbookRow
         where U : SQLiteAdapter<T>
     {
         protected U Adapter;

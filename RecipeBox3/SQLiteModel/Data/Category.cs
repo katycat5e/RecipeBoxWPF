@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    public class Category : CookbookRow<Category>
+    public class Category : CookbookRow
     {
         public override int ID
         {

@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    public class DetailIngredient : IngredientBase<DetailIngredient>
+    public class DetailIngredient : Ingredient
     {
         public int U_ID
         {

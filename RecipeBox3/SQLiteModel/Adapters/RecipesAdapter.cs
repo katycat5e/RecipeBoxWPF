@@ -38,7 +38,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
 
     /// <summary>Abstract base adapter for the Recipes table</summary>
     /// <typeparam name="U">Type of row objects returned by this adapter</typeparam>
-    public abstract class RecipesBaseAdapter<U> : SQLiteAdapter<U> where U : RecipeBase<U>
+    public abstract class RecipesBaseAdapter<U> : SQLiteAdapter<U> where U : Recipe
     {
         /// <summary></summary>
         protected SQLiteParameter nameParameter       = new SQLiteParameter("@name", DbType.String, 50, "R_Name");
