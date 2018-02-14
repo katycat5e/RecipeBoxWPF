@@ -14,7 +14,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         
     }
 
-    public abstract class IngredientsBaseAdapter<U> : SQLiteAdapter<U> where U : IngredientBase<U>
+    public abstract class IngredientsBaseAdapter<U> : SQLiteAdapter<U> where U : Ingredient
     {
         protected SQLiteParameter nameParameter = new SQLiteParameter("@name", DbType.String, "IE_Name");
         protected SQLiteParameter amountParameter = new SQLiteParameter("@amount", DbType.Decimal, "IE_Amount");

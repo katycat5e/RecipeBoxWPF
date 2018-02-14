@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    public class Unit : CookbookRow<Unit>
+    public class Unit : CookbookRow
     {
         public override int ID
         {

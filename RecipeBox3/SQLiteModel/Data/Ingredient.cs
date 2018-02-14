@@ -7,9 +7,7 @@ using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    public class Ingredient : IngredientBase<Ingredient> { }
-
-    public abstract class IngredientBase<U> : CookbookRow<U> where U : IngredientBase<U>
+    public class Ingredient : CookbookRow
     {
         public override int ID
         {
@@ -76,12 +74,12 @@ namespace RecipeBox3.SQLiteModel.Data
             DependencyProperty.Register("IE_RecipeID", typeof(int?), typeof(Ingredient), new PropertyMetadata(null, OnRowChanged));
 
 
-        public IngredientBase()
+        public Ingredient()
         {
             Status = RowStatus.New;
         }
 
-        public IngredientBase(IngredientBase<U> source)
+        public Ingredient(Ingredient source)
         {
             IE_ID = source.IE_ID;
             IE_Name = source.IE_Name;

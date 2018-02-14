@@ -9,7 +9,7 @@ using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
-    public abstract class SQLiteAdapter<T> where T : CookbookRow<T>
+    public abstract class SQLiteAdapter<T> where T : CookbookRow
     {
         protected string _connectionString;
         public string ConnectionString
