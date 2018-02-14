@@ -141,8 +141,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\NumericEntryBox.xaml.cs">
-      <DependentUpon>NumericEntryBox.xaml</DependentUpon>
+    <Compile Include="Controls\DurationEntryBox.xaml.cs">
+      <DependentUpon>DurationEntryBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ExtendedMenuItem.cs" />
     <Compile Include="TableEditorViewModel.cs" />
@@ -191,7 +191,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </DesignData>
-    <Page Include="Controls\NumericEntryBox.xaml">
+    <Page Include="Controls\DurationEntryBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RecipeBox3"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:ctrls="clr-namespace:RecipeBox3.Controls"
         mc:Ignorable="d"
         Title="Editing Recipe" Height="600" Width="1000"
         Style="{StaticResource DefaultWindowStyle}"
@@ -72,10 +72,11 @@
                 <TextBox SpellCheck.IsEnabled="True" Text="{Binding MyRecipe.R_Description}" Grid.Column="1" Grid.Row="2"/>
 
                 <Label Content="Prep Time:" Grid.Column="0" Grid.Row="3"/>
-                <xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="3" Value="{Binding MyRecipe.R_PrepTime}"/>
+                <!--<xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="3" Value="{Binding MyRecipe.R_PrepTime}"/>-->
+                <ctrls:DurationEntryBox Grid.Column="1" Grid.Row="3"/>
 
                 <Label Content="Cook Time:" Grid.Column="0" Grid.Row="4"/>
-                <xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="4" Value="{Binding MyRecipe.R_CookTime}"/>
+                <!--<xctk:IntegerUpDown Minimum="0" Grid.Column="1" Grid.Row="4" Value="{Binding MyRecipe.R_CookTime}"/>-->
             </Grid>
 
             <Grid Grid.Column="1" Margin="6,0,0,6">
