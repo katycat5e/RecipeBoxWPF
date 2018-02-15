@@ -8,7 +8,7 @@ using RecipeBox3.SQLiteModel.Data;
 namespace RecipeBox3.SQLiteModel.Adapters
 {
     /// <summary>Abstract adapter for a table in the database</summary>
-    public abstract class SQLiteAdapter<T> where T : CookbookRow
+    public abstract class SQLiteAdapter<T> : ITableAdapter where T : CookbookRow
     {
         /// <summary>Connection string for this adapter</summary>
         protected string _connectionString;
@@ -68,13 +68,13 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected SQLiteCommand LastIDCommand;
 
         /// <summary>Name of the table this adapter manages</summary>
-        protected abstract string TableName { get; }
+        public abstract string TableName { get; }
 
         /// <summary>Name of the primary key ID column for this adapter's table</summary>
-        protected virtual string IDColumn => IDParameter.SourceColumn;
+        public virtual string IDColumn => IDParameter.SourceColumn;
 
         /// <summary>Collection of this adapter's table's data column names</summary>
-        protected virtual IEnumerable<string> DataColumns =>
+        public virtual IEnumerable<string> DataColumns =>
             DataParameters.Select(p => p.SourceColumn).ToList();
 
         /// <summary>Collection of this adapter's parameter names</summary>

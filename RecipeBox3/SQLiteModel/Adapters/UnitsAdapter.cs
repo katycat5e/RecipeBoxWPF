@@ -65,7 +65,6 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <inheritdoc/>
         protected override void SetDataParametersFromRow(Unit row)
         {
-            IDParameter.Value = row.U_ID;
             nameParameter.Value = row.U_Name;
             pluralParameter.Value = row.U_Plural;
             abbrevParameter.Value = row.U_Abbreviation;
