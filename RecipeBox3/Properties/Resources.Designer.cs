@@ -73,7 +73,7 @@ namespace RecipeBox3.Properties {
         ///GO
         ///ALTER DATABASE [Cookbook] SET COMPATIBILITY_LEVEL = 120
         ///GO
-        ///IF (1 = FULLTEXTSERVIC [rest of string was truncated]&quot;;.
+        ///IF (1 = FULLTEXTSERVI [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DBCreateScript {
             get {
