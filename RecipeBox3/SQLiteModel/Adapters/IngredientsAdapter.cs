@@ -12,6 +12,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
         
     }
 
+    /// <summary>Abstract base adapter for the Ingredients table</summary>
+    /// <typeparam name="U">Type of row objects returned by this adapter</typeparam>
     public abstract class IngredientsBaseAdapter<U> : SQLiteAdapter<U> where U : Ingredient
     {
         /// <summary></summary>

@@ -1,60 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
+    /// <summary>Recipe joined with a Category and Image</summary>
     public class DetailRecipe : Recipe
     {
+        /// <summary>Category Name</summary>
         public string C_Name
         {
             get { return (string)GetValue(C_NameProperty); }
             set { SetValue(C_NameProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for C_Name.  This enables animation, styling, binding, etc...
+        /// <summary>Category Name</summary>
         public static readonly DependencyProperty C_NameProperty =
             DependencyProperty.Register("C_Name", typeof(string), typeof(DetailRecipe),
                 new PropertyMetadata("", OnRowChanged));
 
         
+        /// <summary>Binary Image data</summary>
         public byte[] IMG_Data
         {
             get { return (byte[])GetValue(IMG_DataProperty); }
             set { SetValue(IMG_DataProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IMG_Data.  This enables animation, styling, binding, etc...
+        /// <summary>Binary Image data</summary>
         public static readonly DependencyProperty IMG_DataProperty =
             DependencyProperty.Register("IMG_Data", typeof(byte[]), typeof(DetailRecipe),
                 new PropertyMetadata(null, OnRowChanged));
 
-        
 
+        /// <summary>Create a new Recipe (Category and Image data is not set)</summary>
         public DetailRecipe() : base() { }
 
-        public DetailRecipe(Recipe source)
+        /// <summary>Create a new detailed recipe using data from a <see cref="Recipe"/> entry</summary>
+        /// <param name="source"></param>
+        public DetailRecipe(Recipe source) : base(source)
         {
-            R_ID = source.R_ID;
-            R_Name = source.R_Name;
-            R_Description = source.R_Description;
-            R_Modified = source.R_Modified;
-            R_PrepTime = source.R_PrepTime;
-            R_CookTime = source.R_CookTime;
-            R_Steps = source.R_Steps;
-            R_Category = source.R_Category;
-            
             C_Name = null;
             IMG_Data = null;
-
-            Status = source.Status;
         }
 
+        /// <summary>Create a copy of a detailed recipe</summary>
+        /// <param name="source"></param>
         public DetailRecipe(DetailRecipe source) : base(source)
         {
             C_Name = source.C_Name;
