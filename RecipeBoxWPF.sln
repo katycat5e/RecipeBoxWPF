@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeBox3", "RecipeBox3\RecipeBox3.csproj", "{0FFDD964-C4AB-4D3D-9D32-A90410446160}"
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RecipeBoxDocs", "Documentation\RecipeBoxDocs.shfbproj", "{6BE6F895-85A3-48F1-87E8-99DDE304CAE5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0FFDD964-C4AB-4D3D-9D32-A90410446160} = {0FFDD964-C4AB-4D3D-9D32-A90410446160}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

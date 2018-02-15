@@ -55,7 +55,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
             SelectByRecipeCommand.Parameters.Add(recipeParameter);
         }
 
-        /// <inheritdoc/>
+        /// <summary>Fetch the Image for the specified Recipe</summary>
+        /// <param name="recipeID">ID of the Recipe to search for</param>
+        /// <returns>The Image for the desired Recipe, or null if no image was found</returns>
         public ImageRow SelectByRecipe(int recipeID)
         {
             if (SelectByRecipeCommand.Connection == null) return null;

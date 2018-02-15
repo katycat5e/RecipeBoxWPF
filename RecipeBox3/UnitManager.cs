@@ -4,35 +4,46 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using RecipeBox3.SQLiteModel.Adapters;
 using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3
 {
+    /// <summary>
+    /// Provides a cache of the Units table and methods for converting Units
+    /// </summary>
     public class UnitManager : DependencyObject
     {
         private UnitsAdapter unitsAdapter = new UnitsAdapter();
 
-
+        /// <summary>Dictionary of Units in the database keyed by their ID</summary>
         public Dictionary<int, Unit> UnitList
         {
             get { return (Dictionary<int, Unit>)GetValue(UnitListProperty); }
             set { SetValue(UnitListProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for UnitList.  This enables animation, styling, binding, etc...
+        /// <summary>Backing for <see cref="UnitList"/></summary>
         public static readonly DependencyProperty UnitListProperty =
             DependencyProperty.Register("UnitList", typeof(Dictionary<int, Unit>), typeof(UnitManager), new PropertyMetadata(null));
 
 
-
+        /// <summary>Create a new instance of the manager</summary>
         public UnitManager()
         {
             
         }
 
+        /// <summary>Convert an amount in one unit to its equivalent in another unit</summary>
+        /// <param name="amount">Amount in the source unit</param>
+        /// <param name="sourceID">ID of the source unit</param>
+        /// <param name="targetID">ID of the target unit</param>
+        /// <exception cref="UnitNotFoundException">If the source or target units do not exist</exception>
+        /// <exception cref="InvalidUnitException">
+        /// If source or target unit are malformed or incompatible
+        /// </exception>
+        /// <returns>Equivalent amount in the target unit</returns>
         public decimal Convert(decimal amount, int sourceID, int targetID)
         {
             if (!UnitList.TryGetValue(sourceID, out Unit source))
@@ -44,6 +55,14 @@ namespace RecipeBox3
             return Convert(amount, source, target);
         }
 
+        /// <summary>Convert an amount in one unit to its equivalent in another unit</summary>
+        /// <param name="amount">Amount in the source unit</param>
+        /// <param name="source">source unit</param>
+        /// <param name="target">target unit</param>
+        /// <exception cref="InvalidUnitException">
+        /// If source or target unit are malformed or incompatible
+        /// </exception>
+        /// <returns>Equivalent amount in the target unit</returns>
         private decimal Convert(decimal amount, Unit source, Unit target)
         {
             if (source == null || target == null) throw new ArgumentNullException();
@@ -63,6 +82,16 @@ namespace RecipeBox3
             return System.Convert.ToDecimal(source.U_Ratio / target.U_Ratio) * amount;
         }
 
+
+        /// <summary>
+        /// Gets a string representation of an amount in the specified system,
+        /// or the source system if no conversion exists or <see cref="Unit.System.Any"/> is specified
+        /// </summary>
+        /// <param name="amount">Amount in the source unit</param>
+        /// <param name="sourceID">ID of the source unit</param>
+        /// <param name="targetSystem">Desired system for the output</param>
+        /// <exception cref="UnitNotFoundException">If the given source unit does not exist</exception>
+        /// <returns>A string containing an amount with units</returns>
         public string GetString(decimal amount, int sourceID, Unit.System targetSystem)
         {
             if (!UnitList.TryGetValue(sourceID, out Unit sourceUnit))
@@ -71,6 +100,14 @@ namespace RecipeBox3
             return GetString(amount, sourceUnit, targetSystem);
         }
 
+        /// <summary>
+        /// Gets a string representation of an amount in the specified system,
+        /// or the source system if no conversion exists or <see cref="Unit.System.Any"/> is specified
+        /// </summary>
+        /// <param name="amount">Amount in the source unit</param>
+        /// <param name="sourceUnit">Source unit</param>
+        /// <param name="targetSystem">Desired system for the output</param>
+        /// <returns>A string containing an amount with units</returns>
         public string GetString(decimal amount, Unit sourceUnit, Unit.System targetSystem)
         {
             if (targetSystem == Unit.System.Any)
@@ -92,6 +129,11 @@ namespace RecipeBox3
             }
         }
 
+        /// <summary>Attempt to get a string representation of an amount converted to US units</summary>
+        /// <param name="amount">Amount in source unit</param>
+        /// <param name="sourceID">ID of source unit</param>
+        /// <returns>A string containing an amount and unit in US units if possible, otherwise the source unit</returns>
+        /// <exception cref="UnitNotFoundException">If the given source unit does not exist</exception>
         public string GetUSString(decimal amount, int sourceID)
         {
             if (!UnitList.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
@@ -99,6 +141,10 @@ namespace RecipeBox3
             return GetUSString(amount, sourceRow);
         }
 
+        /// <summary>Attempt to get a string representation of an amount converted to US units</summary>
+        /// <param name="amount">Amount in source unit</param>
+        /// <param name="sourceRow">Source unit</param>
+        /// <returns>A string containing an amount and unit in US units if possible, otherwise the source unit</returns>
         public string GetUSString(decimal amount, Unit sourceRow)
         {
             string outputStr = null;
@@ -211,6 +257,11 @@ namespace RecipeBox3
             return outputStr;
         }
 
+        /// <summary>Attempt to get a string representation of an amount converted to metric units</summary>
+        /// <param name="amount">Amount in source unit</param>
+        /// <param name="sourceID">ID of source unit</param>
+        /// <returns>A string containing an amount and unit in metric units if possible, otherwise the source unit</returns>
+        /// <exception cref="UnitNotFoundException">If the given source unit does not exist</exception>
         public string GetMetricString(decimal amount, int sourceID)
         {
             if (!UnitList.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
@@ -218,6 +269,10 @@ namespace RecipeBox3
             return GetMetricString(amount, sourceRow);
         }
 
+        /// <summary>Attempt to get a string representation of an amount converted to metric units</summary>
+        /// <param name="amount">Amount in source unit</param>
+        /// <param name="sourceRow">Source unit</param>
+        /// <returns>A string containing an amount and unit in metric units if possible, otherwise the source unit</returns>
         public string GetMetricString(decimal amount, Unit sourceRow)
         {
             string outputStr = null;
@@ -282,27 +337,41 @@ namespace RecipeBox3
             return outputStr;
         }
 
+        /// <summary>Refresh the contents of the Units table from the database</summary>
         public void UpdateUnitsTable()
         {
             UnitList = unitsAdapter.SelectAll().ToDictionary(p => p.ID, p => p);
         }
 
+        /// <summary>Represents an error that occurs when a requested unit does not exist</summary>
         public class UnitNotFoundException : Exception
         {
+            /// <summary>Create a new instance of the exception with the specified message</summary>
+            /// <param name="message"></param>
             public UnitNotFoundException(string message) : base(message)
             {
 
             }
         }
 
+        /// <summary>Represents an error that occurs when a given unit cannot be used in an operation</summary>
         public class InvalidUnitException : Exception
         {
+            /// <summary>Create a new instance of the exception with the specified message</summary>
+            /// <param name="message"></param>
             public InvalidUnitException(string message) : base(message)
             {
 
             }
         }
 
+        /// <summary>Convert a decimal number to fractional form, optionally rounding to nearest 1/8</summary>
+        /// <param name="amount"></param>
+        /// <param name="roundToEigth">If true, output will be rounded to the nearest 1/8 (0.125)</param>
+        /// <returns>
+        /// A fractional representation of the input or the input rounded to 3 decimal places
+        /// if the fractional part could not be mapped to a power of 2 between -1 and -3
+        /// </returns>
         public static string FormatAsFraction(decimal amount, bool roundToEigth = false)
         {
             var sb = new StringBuilder();
@@ -363,6 +432,9 @@ namespace RecipeBox3
             return sb.ToString();
         }
 
+        /// <summary>Convert a string representation of a fraction to its numeric equivalent</summary>
+        /// <param name="inputStr">String containing the fraction to be parsed</param>
+        /// <returns>The decimal equivalent of the input, or 0 if the input was not a valid fraction</returns>
         public static decimal ParseFraction(string inputStr)
         {
             decimal result = 0.0M;
@@ -397,6 +469,9 @@ namespace RecipeBox3
             return result;
         }
 
+        /// <summary>Try to find a unit in the table with a name or abbreviation matching the given string</summary>
+        /// <param name="input"></param>
+        /// <returns>The matching Unit if one was found, or null</returns>
         public Unit FindUnit(string input)
         {
             input = input.Trim();
@@ -412,6 +487,11 @@ namespace RecipeBox3
             return null;
         }
 
+        /// <summary>Attempt to parse a string into an amount and a unit</summary>
+        /// <param name="input">String containing an amount of a unit</param>
+        /// <param name="unitID">Variable to hold the ID of the parsed unit</param>
+        /// <param name="amount">Variable to hold the parsed amount</param>
+        /// <returns>True if the string was successfully parsed</returns>
         public bool TryParseUnitString(string input, out int unitID, out decimal amount)
         {
             unitID = 0;

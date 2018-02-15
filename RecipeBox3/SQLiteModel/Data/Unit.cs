@@ -145,7 +145,7 @@ namespace RecipeBox3.SQLiteModel.Data
         /// <summary>Systems of units</summary>
         public enum System : int
         {
-            /// <summary></summary>
+            /// <summary>Any/all systems</summary>
             Any = 0,
 
             /// <summary>Metric/SI units</summary>
