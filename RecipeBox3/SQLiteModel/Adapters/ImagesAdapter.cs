@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
+    /// <summary>Adapter for the Images table</summary>
     public class ImagesAdapter : SQLiteAdapter<ImageRow>
     {
         private SQLiteParameter recipeParameter = new SQLiteParameter("@recipe", DbType.Int32, "IMG_RecipeID");
@@ -18,11 +15,14 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected override SQLiteParameter[] DataParameters =>
             new SQLiteParameter[] { recipeParameter, dataParameter };
 
+        /// <inheritdoc/>
         protected override string TableName => "Images";
+        /// <inheritdoc/>
         protected override string IDColumn => "IMG_ID";
 
         private SQLiteCommand SelectByRecipeCommand;
 
+        /// <inheritdoc/>
         protected override SQLiteConnection Connection
         {
             get { return base.Connection; }
@@ -37,8 +37,10 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <summary>Create a new instance of the class</summary>
         public ImagesAdapter() : base() { }
 
+        /// <summary>Create a new instance of the class with the specified connection</summary>
         public ImagesAdapter(string connectionString) : base(connectionString) { }
 
         /// <inheritdoc/>
@@ -53,7 +55,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
             SelectByRecipeCommand.Parameters.Add(recipeParameter);
         }
 
-        /// <inheritdoc/>
+        /// <summary>Fetch the Image for the specified Recipe</summary>
+        /// <param name="recipeID">ID of the Recipe to search for</param>
+        /// <returns>The Image for the desired Recipe, or null if no image was found</returns>
         public ImageRow SelectByRecipe(int recipeID)
         {
             if (SelectByRecipeCommand.Connection == null) return null;
@@ -101,7 +105,10 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// Pull binary image data from the datareader
         /// </summary>
         /// <param name="reader">
-        /// <see cref="SQLiteDataReader"/> returned by a select command to read data from
+        /// <see cref="SQLiteDataReader"/> to read data from
+        /// </param>
+        /// <param name="columnIndex">
+        /// index of column in the <paramref name="reader"/> that holds the image data
         /// </param>
         /// <returns>Array of bytes containing the image data</returns>
         public static byte[] GetIMG_DataFromReader(SQLiteDataReader reader, int columnIndex)

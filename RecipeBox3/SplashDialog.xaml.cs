@@ -19,6 +19,8 @@ namespace RecipeBox3
     public partial class SplashDialog : Window, INotifyPropertyChanged
     {
         private string _StatusText = "Initializing...";
+
+        /// <summary>Status message to be shown</summary>
         public string StatusText
         {
             get { return _StatusText; }
@@ -32,8 +34,10 @@ namespace RecipeBox3
             }
         }
 
+        /// <summary></summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>Create a new instance of the class</summary>
         public SplashDialog()
         {
             InitializeComponent();

@@ -17,11 +17,15 @@ using System.Windows.Documents;
 
 namespace RecipeBox3
 {
+    /// <summary>View model for the recipe viewer</summary>
     public class ViewRecipeViewModel : DependencyObject
     {
+        /// <summary>Recipes database adapter</summary>
         protected DetailRecipesAdapter recipesAdapter;
+        /// <summary>Ingredients database adapter</summary>
         protected DetailIngredientsAdapter ingredientsAdapter;
 
+        /// <summary>Get the ID of the current recipe, or load a different recipe by ID</summary>
         public int? RecipeID
         {
             get { return MyRecipe?.ID; }
@@ -47,42 +51,43 @@ namespace RecipeBox3
             }
         }
 
+        /// <summary>Currently loaded recipe</summary>
         public DetailRecipe MyRecipe
         {
             get { return (DetailRecipe)GetValue(MyRecipeProperty); }
             set { SetValue(MyRecipeProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MyRecipe.  This enables animation, styling, binding, etc...
+        /// <summary>Currently loaded recipe</summary>
         public static readonly DependencyProperty MyRecipeProperty =
             DependencyProperty.Register("MyRecipe", typeof(DetailRecipe), typeof(ViewRecipeViewModel), new PropertyMetadata(null));
 
 
-
+        /// <summary>Collection of ingredients associated with the current recipe</summary>
         public virtual ObservableCollection<DetailIngredient> Ingredients
         {
             get { return (ObservableCollection<DetailIngredient>)GetValue(IngredientsProperty); }
             set { SetValue(IngredientsProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Ingredients.  This enables animation, styling, binding, etc...
+        /// <summary>Collection of ingredients associated with the current recipe</summary>
         public static readonly DependencyProperty IngredientsProperty =
             DependencyProperty.Register("Ingredients", typeof(ObservableCollection<DetailIngredient>), typeof(ViewRecipeViewModel), new PropertyMetadata(new ObservableCollection<DetailIngredient>()));
 
 
-
+        /// <summary>Steps for the current recipe in viewable/editable form</summary>
         public FlowDocument StepsDocument
         {
             get { return (FlowDocument)GetValue(StepsDocumentProperty); }
             set { SetValue(StepsDocumentProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for StepsDocument.  This enables animation, styling, binding, etc...
+        /// <summary>Steps for the current recipe in viewable/editable form</summary>
         public static readonly DependencyProperty StepsDocumentProperty =
             DependencyProperty.Register("StepsDocument", typeof(FlowDocument), typeof(ViewRecipeViewModel), new PropertyMetadata(null));
 
 
-
+        /// <summary>Create a new instance of the class</summary>
         public ViewRecipeViewModel()
         {
             recipesAdapter = new DetailRecipesAdapter();

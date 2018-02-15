@@ -8,6 +8,7 @@ namespace RecipeBox3
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>Main window for the application</summary>
         public static RecipeListWindow RecipeListView;
 
         private static SplashDialog SplashPage;
@@ -39,31 +40,15 @@ namespace RecipeBox3
             Current.Shutdown();
         }
 
-        public static T GetVisualChild<T>(Visual parent) where T : Visual
-        {
-            T child = default(T);
-            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < numVisuals; i++)
-            {
-                Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
-                child = v as T;
-                if (child == null)
-                {
-                    child = GetVisualChild<T>(v);
-                }
-                if (child != null)
-                {
-                    break;
-                }
-            }
-            return child;
-        }
-
+        /// <summary>Log a message the console</summary>
+        /// <param name="message"></param>
         public static void LogMessage(string message)
         {
             System.Console.WriteLine(message);
         }
 
+        /// <summary>Log an exception to the console</summary>
+        /// <param name="e"></param>
         public static void LogException(System.Exception e)
         {
             LogMessage(e.ToString());

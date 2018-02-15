@@ -5,14 +5,18 @@ using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
+    /// <summary>Adapter for the Categories table</summary>
     public sealed class CategoriesAdapter : SQLiteAdapter<Category>
     {
         private SQLiteParameter nameParameter   = new SQLiteParameter("@name", DbType.String, "C_Name");
         private SQLiteParameter editableParameter = new SQLiteParameter("@editable", DbType.Boolean, "C_Editable");
 
+        /// <inheritdoc/>
         protected override string TableName => "Categories";
+        /// <inheritdoc/>
         protected override string IDColumn => "C_ID";
 
+        /// <inheritdoc/>
         protected override SQLiteParameter[] DataParameters =>
             new SQLiteParameter[] { nameParameter, editableParameter };
 

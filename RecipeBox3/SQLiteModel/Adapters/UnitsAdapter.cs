@@ -1,24 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
+    /// <summary>Adapter for the Units table</summary>
     public class UnitsAdapter : SQLiteAdapter<Unit>
     {
+        /// <summary></summary>
         protected SQLiteParameter nameParameter = new SQLiteParameter("@name", DbType.String, "U_Name");
+        /// <summary></summary>
         protected SQLiteParameter pluralParameter = new SQLiteParameter("@plural", DbType.String, "U_Plural");
+        /// <summary></summary>
         protected SQLiteParameter abbrevParameter = new SQLiteParameter("@abbrev", DbType.String, "U_Abbrev");
+        /// <summary></summary>
         protected SQLiteParameter typeParameter = new SQLiteParameter("@typecode", DbType.Int32, "U_Typecode");
+        /// <summary></summary>
         protected SQLiteParameter ratioParamter = new SQLiteParameter("@ratio", DbType.Single, "U_Ratio");
+        /// <summary></summary>
         protected SQLiteParameter systemParameter = new SQLiteParameter("@system", DbType.String, "U_System");
+        /// <summary></summary>
         protected SQLiteParameter editableParameter = new SQLiteParameter("@editable", DbType.Boolean, "U_Editable");
 
+        /// <inheritdoc/>
         protected override SQLiteParameter[] DataParameters =>
             new SQLiteParameter[]
             {
@@ -26,9 +31,12 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 typeParameter, ratioParamter, systemParameter, editableParameter
             };
 
+        /// <inheritdoc/>
         protected override string TableName => "Units";
+        /// <inheritdoc/>
         protected override string IDColumn => "U_ID";
 
+        /// <inheritdoc/>
         protected override Unit GetRowFromReader(SQLiteDataReader reader)
         {
             try
@@ -54,6 +62,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             }
         }
 
+        /// <inheritdoc/>
         protected override void SetDataParametersFromRow(Unit row)
         {
             IDParameter.Value = row.U_ID;

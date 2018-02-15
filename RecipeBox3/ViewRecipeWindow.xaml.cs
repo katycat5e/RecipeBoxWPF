@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace RecipeBox3
 {
@@ -19,11 +8,14 @@ namespace RecipeBox3
     /// </summary>
     public partial class ViewRecipeWindow : Window
     {
+        /// <summary>Create a new blank viewer</summary>
         public ViewRecipeWindow()
         {
             InitializeComponent();
         }
 
+        /// <summary>Create a new viewer for the specified recipe</summary>
+        /// <param name="recipeID">The ID of the desired recipe to view</param>
         public ViewRecipeWindow(int recipeID) : this()
         {
             if (DataContext is ViewRecipeViewModel viewModel)

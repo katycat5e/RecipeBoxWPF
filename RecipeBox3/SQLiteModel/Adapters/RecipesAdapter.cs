@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
+    /// <summary>Adapter for the Recipes table</summary>
     public class RecipesAdapter : RecipesBaseAdapter<Recipe>
     {
         /// <inheritdoc/>
@@ -39,19 +36,31 @@ namespace RecipeBox3.SQLiteModel.Adapters
         }
     }
 
+    /// <summary>Abstract base adapter for the Recipes table</summary>
+    /// <typeparam name="U">Type of row objects returned by this adapter</typeparam>
     public abstract class RecipesBaseAdapter<U> : SQLiteAdapter<U> where U : Recipe
     {
+        /// <summary></summary>
         protected SQLiteParameter nameParameter       = new SQLiteParameter("@name", DbType.String, 50, "R_Name");
+        /// <summary></summary>
         protected SQLiteParameter descParameter       = new SQLiteParameter("@desc", DbType.String, 254, "R_Description");
+        /// <summary></summary>
         protected SQLiteParameter modParameter        = new SQLiteParameter("@modified", DbType.Int64, "R_Modified");
+        /// <summary></summary>
         protected SQLiteParameter prepParameter       = new SQLiteParameter("@prep", DbType.Int32, "R_PrepTime");
+        /// <summary></summary>
         protected SQLiteParameter cookParameter       = new SQLiteParameter("@cook", DbType.Int32, "R_CookTime");
+        /// <summary></summary>
         protected SQLiteParameter stepsParameter      = new SQLiteParameter("@steps", DbType.String, "R_Steps");
+        /// <summary></summary>
         protected SQLiteParameter categoryParameter   = new SQLiteParameter("@category", DbType.Int32, "R_Category");
-        
+
+        /// <inheritdoc/>
         protected override string TableName => "Recipes";
+        /// <inheritdoc/>
         protected override string IDColumn => "R_ID";
 
+        /// <inheritdoc/>
         protected override SQLiteParameter[] DataParameters => new SQLiteParameter[]
             {
                 nameParameter, descParameter, modParameter,
@@ -59,8 +68,10 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 categoryParameter
             };
 
+        /// <summary>Create a new instance of the class</summary>
         public RecipesBaseAdapter() : base() { }
 
+        /// <summary>Create a new instance of the class with the specified connection</summary>
         public RecipesBaseAdapter(string connectionString) : base(connectionString) { }
 
         /// <inheritdoc/>

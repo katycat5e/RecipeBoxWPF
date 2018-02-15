@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Markup;
@@ -10,54 +6,53 @@ using System.Xml;
 
 namespace RecipeBox3.SQLiteModel.Data
 {
-    /// <summary>
-    /// Abstract class for creating joins using the Recipes table
-    /// </summary>
-    /// <typeparam name="U"></typeparam>
+    /// <summary>Row for the Recipes Table</summary>
     public class Recipe : CookbookRow
     {
+        /// <inheritdoc/>
         public override int ID
         {
             get => R_ID;
             set => R_ID = value;
         }
 
+        /// <summary>Recipe ID</summary>
         public int R_ID
         {
             get { return (int)GetValue(R_IDProperty); }
             set { SetValue(R_IDProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for R_ID.  This enables animation, styling, binding, etc...
+        /// <summary>Recipe ID</summary>
         public static readonly DependencyProperty R_IDProperty =
             DependencyProperty.Register("R_ID", typeof(int), typeof(Recipe), new PropertyMetadata(-1, OnRowChanged));
 
 
-
+        /// <summary>Recipe Name</summary>
         public string R_Name
         {
             get { return (string)GetValue(R_NameProperty); }
             set { SetValue(R_NameProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for R_Name.  This enables animation, styling, binding, etc...
+        /// <summary>Recipe Name</summary>
         public static readonly DependencyProperty R_NameProperty =
             DependencyProperty.Register("R_Name", typeof(string), typeof(Recipe), new PropertyMetadata("NewRecipe", OnRowChanged));
 
 
-
+        /// <summary>Recipe Description</summary>
         public string R_Description
         {
             get { return (string)GetValue(R_DescriptionProperty); }
             set { SetValue(R_DescriptionProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for R_Description.  This enables animation, styling, binding, etc...
+        /// <summary>Recipe Description</summary>
         public static readonly DependencyProperty R_DescriptionProperty =
             DependencyProperty.Register("R_Description", typeof(string), typeof(Recipe), new PropertyMetadata("", OnRowChanged));
 
 
-
+        /// <summary>Get/set the last modified time as a date string</summary>
         public string ModifiedDateTime
         {
             get
@@ -76,72 +71,75 @@ namespace RecipeBox3.SQLiteModel.Data
             }
         }
 
+        /// <summary>Last modified timestamp in 64 bit file time, or null if unset</summary>
         public long? R_Modified
         {
             get { return (long?)GetValue(R_ModifiedProperty); }
             set { SetValue(R_ModifiedProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for R_Modified.  This enables animation, styling, binding, etc...
+        /// <summary>Backing for <see cref="R_Modified"/></summary>
         public static readonly DependencyProperty R_ModifiedProperty =
             DependencyProperty.Register("R_Modified", typeof(long?), typeof(Recipe), new PropertyMetadata(null, OnRowChanged));
 
 
-
+        /// <summary>Prep time in minutes</summary>
         public int R_PrepTime
         {
             get { return (int)GetValue(R_PrepTimeProperty); }
             set { SetValue(R_PrepTimeProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for R_PrepTime.  This enables animation, styling, binding, etc...
+        /// <summary>Prep time in minutes</summary>
         public static readonly DependencyProperty R_PrepTimeProperty =
             DependencyProperty.Register("R_PrepTime", typeof(int), typeof(Recipe), new PropertyMetadata(0, OnRowChanged));
 
 
-
+        /// <summary>Cook time in minutes</summary>
         public int R_CookTime
         {
             get { return (int)GetValue(R_CookTimeProperty); }
             set { SetValue(R_CookTimeProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for R_CookTime.  This enables animation, styling, binding, etc...
+        /// <summary>Cook time in minutes</summary>
         public static readonly DependencyProperty R_CookTimeProperty =
             DependencyProperty.Register("R_CookTime", typeof(int), typeof(Recipe), new PropertyMetadata(0, OnRowChanged));
 
 
-
+        /// <summary>Serialized recipe instructions document</summary>
         public string R_Steps
         {
             get { return (string)GetValue(R_StepsProperty); }
             set { SetValue(R_StepsProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for R_Steps.  This enables animation, styling, binding, etc...
+        /// <summary>Serialized recipe instructions document</summary>
         public static readonly DependencyProperty R_StepsProperty =
             DependencyProperty.Register("R_Steps", typeof(string), typeof(Recipe), new PropertyMetadata("", OnRowChanged));
 
 
-
+        /// <summary>Recipe Category</summary>
         public int R_Category
         {
             get { return (int)GetValue(R_CategoryProperty); }
             set { SetValue(R_CategoryProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for R_Category.  This enables animation, styling, binding, etc...
+        /// <summary>Recipe Category</summary>
         public static readonly DependencyProperty R_CategoryProperty =
             DependencyProperty.Register("R_Category", typeof(int), typeof(Recipe), new PropertyMetadata(1, OnRowChanged));
-        
-        
 
+
+        /// <summary>Create a new Recipe with default values</summary>
         public Recipe()
         {
             R_Modified = DateTime.Now.ToFileTime();
             Status = RowStatus.New;
         }
 
+        /// <summary>Create a copy of a Recipe</summary>
+        /// <param name="source"></param>
         public Recipe(Recipe source)
         {
             R_ID = source.R_ID;
@@ -155,6 +153,9 @@ namespace RecipeBox3.SQLiteModel.Data
             Status = source.Status;
         }
 
+        /// <summary>Convert a serialized document from the database into a viewable/editable <see cref="FlowDocument"/></summary>
+        /// <param name="stepsString">string containing XAML representation of a <see cref="FlowDocument"/></param>
+        /// <returns><see cref="FlowDocument"/> constructed from the input</returns>
         public static FlowDocument ParseSteps(string stepsString)
         {
             try
@@ -174,6 +175,9 @@ namespace RecipeBox3.SQLiteModel.Data
             }
         }
 
+        /// <summary>Convert a <see cref="FlowDocument"/> into a database-storable string</summary>
+        /// <param name="document">Document to be serialized</param>
+        /// <returns>A string that can be saved and converted back into a document</returns>
         public static string SerializeSteps(FlowDocument document)
         {
             if (document == null) return null;

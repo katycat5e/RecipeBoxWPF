@@ -9,7 +9,7 @@ using System.Windows.Controls;
 namespace RecipeBox3
 {
     /// <summary>
-    /// Interaction logic for DBTableEditorView.xaml
+    /// Interaction logic for UnitEditorView.xaml
     /// </summary>
     public partial class UnitEditorView : Window
     {
@@ -19,16 +19,20 @@ namespace RecipeBox3
             set => DataContext = value;
         }
 
+        /// <summary>Dictionary of values for unit type selector</summary>
         public static Dictionary<Unit.UnitType, string> UnitTypeDict =
             Enum.GetValues(typeof(Unit.UnitType))
             .Cast<Unit.UnitType>()
             .ToDictionary(p => p, p => p.GetString());
 
+        /// <summary>Dictionary of values for unit system selector</summary>
         public static Dictionary<Unit.System, string> UnitSystemDict =
             Enum.GetValues(typeof(Unit.System))
             .Cast<Unit.System>()
             .ToDictionary(p => p, p => p.GetString());
 
+
+        /// <summary>Create a new instance of the editor</summary>
         public UnitEditorView()
         {
             InitializeComponent();
@@ -77,8 +81,10 @@ namespace RecipeBox3
         }
     }
 
+    /// <summary>View model for editing the Units table</summary>
     public class UnitEditorViewModel : TableEditorViewModel<Unit, UnitsAdapter>
     {
+        /// <summary>Create a new instance of the view model</summary>
         public UnitEditorViewModel() : base()
         {
 

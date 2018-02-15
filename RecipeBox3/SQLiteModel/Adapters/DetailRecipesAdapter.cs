@@ -1,16 +1,15 @@
 ﻿using RecipeBox3.SQLiteModel.Data;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SQLite;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
+    /// <summary>Adapter for Recipes table left joined with Categories, with optional image data</summary>
     public class DetailRecipesAdapter : RecipesBaseAdapter<DetailRecipe>
     {
+        /// <summary>Adapter for images</summary>
         protected ImagesAdapter imagesAdapter = new ImagesAdapter();
 
         /// <inheritdoc/>
@@ -27,6 +26,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     "Recipes LEFT JOIN Categories ON R_Category=C_ID");
         }
         
+        /// <summary>Fetch a recipe by id including image data</summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public DetailRecipe SelectWithImage(int id)
         {
             var recipe = base.Select(id);
@@ -34,6 +36,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
             return recipe;
         }
 
+        /// <summary>Fetch all recipes in the database with image data</summary>
+        /// <returns></returns>
         public IEnumerable<DetailRecipe> SelectAllWithImages()
         {
             List<DetailRecipe> recipeList = base.SelectAll().ToList();

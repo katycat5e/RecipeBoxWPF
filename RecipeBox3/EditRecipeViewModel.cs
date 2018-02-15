@@ -1,44 +1,43 @@
 ﻿using RecipeBox3.SQLiteModel.Adapters;
 using RecipeBox3.SQLiteModel.Data;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace RecipeBox3
 {
+    /// <summary>View model for recipe editor</summary>
     public class EditRecipeViewModel : ViewRecipeViewModel
     {
         private CategoriesAdapter categoriesAdapter;
         
+        /// <summary>List of categories for the category drop-down</summary>
         public Category[] CategoryList
         {
             get { return (Category[])GetValue(CategoryListProperty); }
             set { SetValue(CategoryListProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for CategoryList.  This enables animation, styling, binding, etc...
+        /// <summary>List of categories for the category drop-down</summary>
         public static readonly DependencyProperty CategoryListProperty =
             DependencyProperty.Register("CategoryList", typeof(Category[]), typeof(EditRecipeViewModel), new PropertyMetadata(null));
 
 
-
+        /// <summary>Unit manager for ingredient editing</summary>
         public UnitManager UnitManager
         {
             get { return (UnitManager)GetValue(UnitManagerProperty); }
             set { SetValue(UnitManagerProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for UnitManager.  This enables animation, styling, binding, etc...
+        /// <summary>Unit manager for ingredient editing</summary>
         public static readonly DependencyProperty UnitManagerProperty =
             DependencyProperty.Register("UnitManager", typeof(UnitManager), typeof(EditRecipeViewModel), new PropertyMetadata(null));
 
 
-
+        /// <inheritdoc/>
         public override ObservableCollection<DetailIngredient> Ingredients
         {
             get => base.Ingredients;
@@ -51,6 +50,7 @@ namespace RecipeBox3
 
         private List<DetailIngredient> deletedIngredients = new List<DetailIngredient>();
 
+        /// <summary>Create a new instance of the class</summary>
         public EditRecipeViewModel() : base()
         {
             categoriesAdapter = new CategoriesAdapter();

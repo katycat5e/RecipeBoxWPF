@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
@@ -13,8 +9,10 @@ using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3
 {
+    /// <summary>Class for converting between byte arrays and Image objects</summary>
     public class ByteImageConverter : IValueConverter
     {
+        /// <inheritdoc/>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is byte[] data)
@@ -24,6 +22,9 @@ namespace RecipeBox3
             else return null;
         }
 
+        /// <summary>Convert a byte array of image data to a BitmapImage</summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static BitmapImage ConvertBytesToBitmapImage(byte[] data)
         {
             var ms = new MemoryStream(data);
@@ -35,6 +36,9 @@ namespace RecipeBox3
             return newImage;
         }
 
+        /// <summary>Convert a BitmapImage to a byte array</summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public static byte[] ConvertBitmapImageToBytes(BitmapImage image)
         {
             byte[] buffer = null;
@@ -51,6 +55,9 @@ namespace RecipeBox3
             return buffer;
         }
 
+        /// <summary>Convert a byte array of image data to a Bitmap</summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static System.Drawing.Bitmap ConvertBytesToBitmap(byte[] data)
         {
             using (var ms = new MemoryStream(data))
@@ -60,6 +67,9 @@ namespace RecipeBox3
             }
         }
 
+        /// <summary>Convert a Bitmap to a byte array</summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         public static byte[] ConvertBitmapToBytes(System.Drawing.Bitmap bitmap)
         {
             using (var ms = new MemoryStream())
@@ -69,6 +79,7 @@ namespace RecipeBox3
             }
         }
 
+        /// <inheritdoc/>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
@@ -165,32 +176,39 @@ namespace RecipeBox3
         }
     }
 
+    /// <summary>Class for converting between unit/amount data and a string representation</summary>
     public class AmountStringConverter : DependencyObject, IMultiValueConverter
     {
+        /// <summary>The UnitManager to handle the conversions</summary>
         public UnitManager UnitManager
         {
             get { return (UnitManager)GetValue(UnitManagerProperty); }
             set { SetValue(UnitManagerProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for UnitManager.  This enables animation, styling, binding, etc...
+        /// <summary>Backing for <see cref="UnitManager"/></summary>
         public static readonly DependencyProperty UnitManagerProperty =
             DependencyProperty.Register("UnitManager", typeof(UnitManager), typeof(AmountStringConverter), new PropertyMetadata(null));
 
 
-
+        /// <summary>The Unit system to use for output strings</summary>
         public Unit.System UnitSystem
         {
             get { return (Unit.System)GetValue(UnitSystemProperty); }
             set { SetValue(UnitSystemProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for UnitSystem.  This enables animation, styling, binding, etc...
+        /// <summary>Backing for <see cref="UnitSystem"/></summary>
         public static readonly DependencyProperty UnitSystemProperty =
             DependencyProperty.Register("UnitSystem", typeof(Unit.System), typeof(AmountStringConverter), new PropertyMetadata(Unit.System.Customary));
 
 
-
+        /// <summary>Convert a unitID and amount to a string representation</summary>
+        /// <param name="values">Array containing int unitID at index 0 and decimal amount at index 1</param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns>String representation or null if conversion failed</returns>
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             string outputString = null;
@@ -204,6 +222,15 @@ namespace RecipeBox3
             return outputString;
         }
 
+        /// <summary>Convert a string into a unit and amount</summary>
+        /// <param name="value">String containing an amount and unit</param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns>
+        /// Array containing the unit ID at index 0 and amount at index 1,
+        /// or null if conversion failed
+        /// </returns>
         public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture)
         {
             if (value is string inputString)
