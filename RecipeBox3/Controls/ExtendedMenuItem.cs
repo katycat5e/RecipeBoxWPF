@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace RecipeBox3
+namespace RecipeBox3.Controls
 {
     /// <summary>Extension of the MenuItem class to allow flat styling</summary>
     public class ExtendedMenuItem : MenuItem

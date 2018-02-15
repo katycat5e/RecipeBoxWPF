@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:RecipeBox3">
+                    xmlns:local="clr-namespace:RecipeBox3"
+                    xmlns:ctrls="clr-namespace:RecipeBox3.Controls">
     
     <Style x:Key="FlatMenuItemSeperatorStyle"
        TargetType="Separator">
@@ -21,7 +22,7 @@
 
     <!-- TopLevelHeader -->
     <ControlTemplate x:Key="FlatMenuItemTopHeaderTemplate"
-                 TargetType="{x:Type local:ExtendedMenuItem}">
+                 TargetType="{x:Type ctrls:ExtendedMenuItem}">
         <Border Name="Border" Background="{TemplateBinding Background}">
             <Grid>
                 <ContentPresenter 
@@ -62,7 +63,7 @@
     
     
     <!-- TopLevelItem -->
-    <ControlTemplate x:Key="FlatMenuItemTopItemTemplate" TargetType="{x:Type local:ExtendedMenuItem}">
+    <ControlTemplate x:Key="FlatMenuItemTopItemTemplate" TargetType="{x:Type ctrls:ExtendedMenuItem}">
         <Border Name="Border" Background="{TemplateBinding Background}">
             <Grid>
                 <ContentPresenter 
@@ -146,7 +147,7 @@
 
     
     <!-- SubmenuHeader -->
-    <ControlTemplate x:Key="FlatMenuItemSubHeaderTemplate" TargetType="{x:Type local:ExtendedMenuItem}">
+    <ControlTemplate x:Key="FlatMenuItemSubHeaderTemplate" TargetType="{x:Type ctrls:ExtendedMenuItem}">
         <Border Name="Border" Background="{TemplateBinding Background}">
             <Grid>
                 <Grid.ColumnDefinitions>

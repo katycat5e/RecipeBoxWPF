@@ -21,7 +21,7 @@
             <Setter Property="Background" Value="White"/>
         </Style>
 
-        <Style TargetType="{x:Type local:ExtendedMenuItem}" BasedOn="{StaticResource MenuItemHoverableStyle}"/>
+        <Style TargetType="{x:Type ctrls:ExtendedMenuItem}" BasedOn="{StaticResource MenuItemHoverableStyle}"/>
     </Window.Resources>
 
     <Window.DataContext>
@@ -34,34 +34,34 @@
                 <Menu.Background>
                     <SolidColorBrush Color="{StaticResource ColorPrimaryMidDark}"/>
                 </Menu.Background>
-                <local:ExtendedMenuItem x:Name="RBItem" Header="_RecipeBox">
-                    <local:ExtendedMenuItem x:Name="QuitMenuItem" Header="_Quit" Click="QuitMenuItem_Click"/>
-                </local:ExtendedMenuItem>
-                <local:ExtendedMenuItem Header="_Edit">
-                    <local:ExtendedMenuItem Header="Database">
-                        <local:ExtendedMenuItem Header="Categories" x:Name="EditCategoriesMenuItem" Click="EditCategoriesMenuItem_Click"/>
-                        <local:ExtendedMenuItem Header="Units" x:Name="EditUnitsMenuItem" Click="EditUnitsMenuItem_Click"/>
-                    </local:ExtendedMenuItem>
-                    <local:ExtendedMenuItem Header="Recipe">
-                        <local:ExtendedMenuItem Header="New" x:Name="NewRecipeMenuItem" Click="RecipeMenuItem_Click"/>
-                        <local:ExtendedMenuItem Header="View" x:Name="ViewRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
-                        <local:ExtendedMenuItem Header="Edit" x:Name="EditRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
-                        <local:ExtendedMenuItem Header="Delete" x:Name="DeleteRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
-                    </local:ExtendedMenuItem>
+                <ctrls:ExtendedMenuItem x:Name="RBItem" Header="_RecipeBox">
+                    <ctrls:ExtendedMenuItem x:Name="QuitMenuItem" Header="_Quit" Click="QuitMenuItem_Click"/>
+                </ctrls:ExtendedMenuItem>
+                <ctrls:ExtendedMenuItem Header="_Edit">
+                    <ctrls:ExtendedMenuItem Header="Database">
+                        <ctrls:ExtendedMenuItem Header="Categories" x:Name="EditCategoriesMenuItem" Click="EditCategoriesMenuItem_Click"/>
+                        <ctrls:ExtendedMenuItem Header="Units" x:Name="EditUnitsMenuItem" Click="EditUnitsMenuItem_Click"/>
+                    </ctrls:ExtendedMenuItem>
+                    <ctrls:ExtendedMenuItem Header="Recipe">
+                        <ctrls:ExtendedMenuItem Header="New" x:Name="NewRecipeMenuItem" Click="RecipeMenuItem_Click"/>
+                        <ctrls:ExtendedMenuItem Header="View" x:Name="ViewRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
+                        <ctrls:ExtendedMenuItem Header="Edit" x:Name="EditRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
+                        <ctrls:ExtendedMenuItem Header="Delete" x:Name="DeleteRecipeMenuItem" IsEnabled="False" Click="RecipeMenuItem_Click"/>
+                    </ctrls:ExtendedMenuItem>
                     <Separator Style="{StaticResource FlatMenuItemSeperatorStyle}"/>
-                    <local:ExtendedMenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
-                </local:ExtendedMenuItem>
-                <local:ExtendedMenuItem x:Name="ViewOptionsMenuItem" Header="_View">
-                    <local:ExtendedMenuItem Header="Reload Data" Click="ReloadTable">
+                    <ctrls:ExtendedMenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
+                </ctrls:ExtendedMenuItem>
+                <ctrls:ExtendedMenuItem x:Name="ViewOptionsMenuItem" Header="_View">
+                    <ctrls:ExtendedMenuItem Header="Reload Data" Click="ReloadTable">
                         <MenuItem.Icon>
                             <Image Source="{DynamicResource RefreshIcon}"/>
                         </MenuItem.Icon>
-                    </local:ExtendedMenuItem>
+                    </ctrls:ExtendedMenuItem>
                     <Separator Style="{StaticResource FlatMenuItemSeperatorStyle}"/>
-                    <local:ExtendedMenuItem x:Name="ShowImagesMenuItem" Header="Show Images" IsCheckable="True" IsChecked="{Binding ShowImages, Mode=OneWayToSource}"
+                    <ctrls:ExtendedMenuItem x:Name="ShowImagesMenuItem" Header="Show Images" IsCheckable="True" IsChecked="{Binding ShowImages, Mode=OneWayToSource}"
                               Checked="ShowImagesMenuItem_Checked" Unchecked="ShowImagesMenuItem_Unchecked"/>
-                    <local:ExtendedMenuItem x:Name="ReloadImagesMenuItem" Header="Refresh Images" Click="ImgReload_Click"/>
-                </local:ExtendedMenuItem>
+                    <ctrls:ExtendedMenuItem x:Name="ReloadImagesMenuItem" Header="Refresh Images" Click="ImgReload_Click"/>
+                </ctrls:ExtendedMenuItem>
             </Menu>
 
             <Grid>

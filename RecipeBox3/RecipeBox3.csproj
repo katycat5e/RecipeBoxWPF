@@ -127,7 +127,7 @@
     <Compile Include="Controls\DurationEntryBox.xaml.cs">
       <DependentUpon>DurationEntryBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ExtendedMenuItem.cs" />
+    <Compile Include="Controls\ExtendedMenuItem.cs" />
     <Compile Include="TableEditorViewModel.cs" />
     <Compile Include="UnitEditorView.xaml.cs">
       <DependentUpon>UnitEditorView.xaml</DependentUpon>
