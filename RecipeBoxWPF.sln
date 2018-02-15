@@ -10,6 +10,8 @@ Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RecipeBoxDocs", "Documentat
 		{0FFDD964-C4AB-4D3D-9D32-A90410446160} = {0FFDD964-C4AB-4D3D-9D32-A90410446160}
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "RecipeBoxInstaller", "RecipeBoxInstaller\RecipeBoxInstaller.vdproj", "{454D9A22-CD3B-4BA3-A0BB-2ABEE5159786}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,13 @@ Global
 		{6BE6F895-85A3-48F1-87E8-99DDE304CAE5}.Release|x64.Build.0 = Release|Any CPU
 		{6BE6F895-85A3-48F1-87E8-99DDE304CAE5}.Release|x86.ActiveCfg = Release|Any CPU
 		{6BE6F895-85A3-48F1-87E8-99DDE304CAE5}.Release|x86.Build.0 = Release|Any CPU
+		{454D9A22-CD3B-4BA3-A0BB-2ABEE5159786}.Debug|Any CPU.ActiveCfg = Debug
+		{454D9A22-CD3B-4BA3-A0BB-2ABEE5159786}.Debug|x64.ActiveCfg = Debug
+		{454D9A22-CD3B-4BA3-A0BB-2ABEE5159786}.Debug|x86.ActiveCfg = Debug
+		{454D9A22-CD3B-4BA3-A0BB-2ABEE5159786}.Release|Any CPU.ActiveCfg = Release
+		{454D9A22-CD3B-4BA3-A0BB-2ABEE5159786}.Release|x64.ActiveCfg = Release
+		{454D9A22-CD3B-4BA3-A0BB-2ABEE5159786}.Release|x64.Build.0 = Release
+		{454D9A22-CD3B-4BA3-A0BB-2ABEE5159786}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
