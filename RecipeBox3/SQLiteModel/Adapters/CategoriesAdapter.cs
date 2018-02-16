@@ -12,9 +12,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
         private SQLiteParameter editableParameter = new SQLiteParameter("@editable", DbType.Boolean, "C_Editable");
 
         /// <inheritdoc/>
-        protected override string TableName => "Categories";
+        public override string TableName => "Categories";
         /// <inheritdoc/>
-        protected override string IDColumn => "C_ID";
+        public override string IDColumn => "C_ID";
 
         /// <inheritdoc/>
         protected override SQLiteParameter[] DataParameters =>

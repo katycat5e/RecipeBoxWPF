@@ -16,9 +16,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
             new SQLiteParameter[] { recipeParameter, dataParameter };
 
         /// <inheritdoc/>
-        protected override string TableName => "Images";
+        public override string TableName => "Images";
         /// <inheritdoc/>
-        protected override string IDColumn => "IMG_ID";
+        public override string IDColumn => "IMG_ID";
 
         private SQLiteCommand SelectByRecipeCommand;
 

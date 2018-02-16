@@ -48,6 +48,8 @@ namespace RecipeBox3
             foreach (Type adapterType in RequiredAdapterTypes)
             {
                 ITableAdapter tableAdapter = Activator.CreateInstance(adapterType) as ITableAdapter;
+
+                string idColumn = tableAdapter.IDColumn;
                 var dataColumns = tableAdapter.DataColumns;
                 
             }

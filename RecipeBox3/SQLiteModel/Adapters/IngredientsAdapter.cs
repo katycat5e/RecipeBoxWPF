@@ -38,9 +38,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
         }
 
         /// <inheritdoc/>
-        protected override string TableName => "Ingredients";
+        public override string TableName => "Ingredients";
         /// <inheritdoc/>
-        protected override string IDColumn => "IE_ID";
+        public override string IDColumn => "IE_ID";
 
         /// <summary>Command to select ingredients based on recipe id</summary>
         protected SQLiteCommand SelectByRecipeCommand;

@@ -32,9 +32,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
             };
 
         /// <inheritdoc/>
-        protected override string TableName => "Units";
+        public override string TableName => "Units";
         /// <inheritdoc/>
-        protected override string IDColumn => "U_ID";
+        public override string IDColumn => "U_ID";
 
         /// <inheritdoc/>
         protected override Unit GetRowFromReader(SQLiteDataReader reader)

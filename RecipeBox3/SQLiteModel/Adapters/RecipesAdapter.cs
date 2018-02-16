@@ -56,9 +56,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected SQLiteParameter categoryParameter   = new SQLiteParameter("@category", DbType.Int32, "R_Category");
 
         /// <inheritdoc/>
-        protected override string TableName => "Recipes";
+        public override string TableName => "Recipes";
         /// <inheritdoc/>
-        protected override string IDColumn => "R_ID";
+        public override string IDColumn => "R_ID";
 
         /// <inheritdoc/>
         protected override SQLiteParameter[] DataParameters => new SQLiteParameter[]
