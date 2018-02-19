@@ -40,7 +40,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     U_TypeCode = (Unit.UnitType)reader.GetInt32(4),
                     U_Ratio = reader.GetFloat(5),
                     U_System = (Unit.System)reader.GetInt32(6),
-                    IsUserEditable = reader.GetBoolean(7)
+                    IsUserEditable = reader.GetBoolean(7),
+                    Status = RowStatus.Unchanged,
                 };
 
                 return unit;

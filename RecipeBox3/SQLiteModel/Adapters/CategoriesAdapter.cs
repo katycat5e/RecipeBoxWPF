@@ -48,7 +48,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 {
                     C_ID = reader.GetInt32(0),
                     C_Name = reader.GetString(1),
-                    IsUserEditable = reader.GetBoolean(2)
+                    IsUserEditable = reader.GetBoolean(2),
+                    Status = RowStatus.Unchanged
                 };
 
                 return newCategory;

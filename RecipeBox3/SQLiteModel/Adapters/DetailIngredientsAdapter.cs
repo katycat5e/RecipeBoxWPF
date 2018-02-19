@@ -43,6 +43,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 row.U_TypeCode = (Unit.UnitType)reader.GetInt32(columnOffset + 4);
                 row.U_Ratio = reader.GetFloat(columnOffset + 5);
                 row.U_System = (Unit.System)reader.GetInt32(columnOffset + 6);
+                row.Status = RowStatus.Unchanged;
             }
             catch (InvalidCastException ex)
             {

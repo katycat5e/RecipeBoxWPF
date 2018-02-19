@@ -123,6 +123,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     ingredient.IE_Amount = reader.GetDecimal(2);
                     ingredient.IE_Unit = reader.GetInt32(3);
                     ingredient.IE_RecipeID = reader.GetValue(4) as int?;
+                    ingredient.Status = RowStatus.Unchanged;
 
                     return ingredient;
                 }

@@ -97,6 +97,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 };
 
                 row.IMG_Data = GetIMG_DataFromReader(reader, 2);
+                row.Status = RowStatus.Unchanged;
 
                 return row;
             }
