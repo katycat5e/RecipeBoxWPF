@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using RecipeBox3.SQLiteModel.Data;
@@ -8,65 +9,29 @@ namespace RecipeBox3.SQLiteModel.Adapters
     /// <summary>Adapter for the Recipes table</summary>
     public class RecipesAdapter : RecipesBaseAdapter<Recipe>
     {
-        /// <inheritdoc/>
-        protected override Recipe GetRowFromReader(SQLiteDataReader reader)
-        {
-            try
-            {
-                Recipe nextRow = new Recipe()
-                {
-                    R_ID = reader.GetInt32(0),
-                    R_Name = reader.GetString(1),
-                    R_Description = reader.GetString(2),
-                    R_Modified = reader.GetValue(3) as long?,
-                    R_PrepTime = reader.GetInt32(4),
-                    R_CookTime = reader.GetInt32(5),
-                    R_Steps = reader.GetString(6),
-                    R_Category = reader.GetInt32(7),
-                    Status = RowStatus.Unchanged
-                };
-
-                return nextRow;
-            }
-            catch (InvalidCastException e)
-            {
-                App.LogException(e);
-                return null;
-            }
-        }
+        
     }
 
     /// <summary>Abstract base adapter for the Recipes table</summary>
     /// <typeparam name="U">Type of row objects returned by this adapter</typeparam>
     public abstract class RecipesBaseAdapter<U> : SQLiteAdapter<U> where U : Recipe
     {
-        /// <summary></summary>
-        protected SQLiteParameter nameParameter       = new SQLiteParameter("@name", DbType.String, 50, "R_Name");
-        /// <summary></summary>
-        protected SQLiteParameter descParameter       = new SQLiteParameter("@desc", DbType.String, 254, "R_Description");
-        /// <summary></summary>
-        protected SQLiteParameter modParameter        = new SQLiteParameter("@modified", DbType.Int64, "R_Modified");
-        /// <summary></summary>
-        protected SQLiteParameter prepParameter       = new SQLiteParameter("@prep", DbType.Int32, "R_PrepTime");
-        /// <summary></summary>
-        protected SQLiteParameter cookParameter       = new SQLiteParameter("@cook", DbType.Int32, "R_CookTime");
-        /// <summary></summary>
-        protected SQLiteParameter stepsParameter      = new SQLiteParameter("@steps", DbType.String, "R_Steps");
-        /// <summary></summary>
-        protected SQLiteParameter categoryParameter   = new SQLiteParameter("@category", DbType.Int32, "R_Category");
+        /// <inheritdoc/>
+        public override string TableName => "Recipes";
+        /// <inheritdoc/>
+        public override string IDColumnName => "R_ID";
 
         /// <inheritdoc/>
-        protected override string TableName => "Recipes";
-        /// <inheritdoc/>
-        protected override string IDColumn => "R_ID";
-
-        /// <inheritdoc/>
-        protected override SQLiteParameter[] DataParameters => new SQLiteParameter[]
-            {
-                nameParameter, descParameter, modParameter,
-                prepParameter, cookParameter, stepsParameter,
-                categoryParameter
-            };
+        public override IEnumerable<TableColumn> DataColumns => new TableColumn[]
+        {
+            new TableColumn("R_Name", DbType.String, "New Recipe", true, true),
+            new TableColumn("R_Description", DbType.String, ""),
+            new TableColumn("R_Modified", DbType.Int64, null),
+            new TableColumn("R_PrepTime", DbType.Int32, 0),
+            new TableColumn("R_CookTime", DbType.Int32, 0),
+            new TableColumn("R_Steps", DbType.String, ""),
+            new TableColumn("R_Category", DbType.Int32, 1)
+        };
 
         /// <summary>Create a new instance of the class</summary>
         public RecipesBaseAdapter() : base() { }
@@ -77,13 +42,41 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <inheritdoc/>
         protected override void SetDataParametersFromRow(U recipe)
         {
-            nameParameter.Value = recipe.R_Name;
-            descParameter.Value = recipe.R_Description;
-            modParameter.Value = recipe.R_Modified;
-            prepParameter.Value = recipe.R_PrepTime;
-            cookParameter.Value = recipe.R_CookTime;
-            stepsParameter.Value = recipe.R_Steps;
-            categoryParameter.Value = recipe.R_Category;
+            TrySetParameterValue("R_Name", recipe.R_Name);
+            TrySetParameterValue("R_Description", recipe.R_Description);
+            TrySetParameterValue("R_Modified", recipe.R_Modified);
+            TrySetParameterValue("R_PrepTime", recipe.R_PrepTime);
+            TrySetParameterValue("R_CookTime", recipe.R_CookTime);
+            TrySetParameterValue("R_Steps", recipe.R_Steps);
+            TrySetParameterValue("R_Category", recipe.R_Category);
+        }
+
+        /// <inheritdoc/>
+        protected override U GetRowFromReader(SQLiteDataReader reader)
+        {
+            try
+            {
+                if (Activator.CreateInstance(typeof(U)) is U recipe)
+                {
+                    recipe.R_ID = reader.GetInt32(0);
+                    recipe.R_Name = reader.GetString(1);
+                    recipe.R_Description = reader.GetString(2);
+                    recipe.R_Modified = reader.GetValue(3) as long?;
+                    recipe.R_PrepTime = reader.GetInt32(4);
+                    recipe.R_CookTime = reader.GetInt32(5);
+                    recipe.R_Steps = reader.GetString(6);
+                    recipe.R_Category = reader.GetInt32(7);
+                    recipe.Status = RowStatus.Unchanged;
+
+                    return recipe;
+                }
+                else return null;
+            }
+            catch (InvalidCastException e)
+            {
+                App.LogException(e);
+                return null;
+            }
         }
     }
 }

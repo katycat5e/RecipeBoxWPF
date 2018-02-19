@@ -16,31 +16,19 @@ namespace RecipeBox3.SQLiteModel.Adapters
     /// <typeparam name="U">Type of row objects returned by this adapter</typeparam>
     public abstract class IngredientsBaseAdapter<U> : SQLiteAdapter<U> where U : Ingredient
     {
-        /// <summary></summary>
-        protected SQLiteParameter nameParameter = new SQLiteParameter("@name", DbType.String, "IE_Name");
-        /// <summary></summary>
-        protected SQLiteParameter amountParameter = new SQLiteParameter("@amount", DbType.Decimal, "IE_Amount");
-        /// <summary></summary>
-        protected SQLiteParameter unitParameter = new SQLiteParameter("@unit", DbType.Int32, "IE_Unit");
-        /// <summary></summary>
-        protected SQLiteParameter recipeParameter = new SQLiteParameter("@recipe", DbType.Int32, "IE_RecipeID");
-
         /// <inheritdoc/>
-        protected override SQLiteParameter[] DataParameters
+        public override IEnumerable<TableColumn> DataColumns => new TableColumn[]
         {
-            get
-            {
-                return new SQLiteParameter[]
-                {
-                    nameParameter, amountParameter, unitParameter, recipeParameter
-                };
-            }
-        }
+            new TableColumn("IE_Name", DbType.String, "New Ingredient"),
+            new TableColumn("IE_Amount", DbType.Decimal, 0.000M),
+            new TableColumn("IE_Unit", DbType.Int32, 1),
+            new TableColumn("IE_RecipeID", DbType.Int32, null)
+        };
 
         /// <inheritdoc/>
-        protected override string TableName => "Ingredients";
+        public override string TableName => "Ingredients";
         /// <inheritdoc/>
-        protected override string IDColumn => "IE_ID";
+        public override string IDColumnName => "IE_ID";
 
         /// <summary>Command to select ingredients based on recipe id</summary>
         protected SQLiteCommand SelectByRecipeCommand;
@@ -71,12 +59,18 @@ namespace RecipeBox3.SQLiteModel.Adapters
         {
             base.Initialize(connectionString);
 
+            string recipeParam = TableColumnExtensions.GetParameterName("IE_RecipeID");
+
             SelectByRecipeCommand = new SQLiteCommand(
                 String.Format(
-                    "SELECT {0}, {1} FROM {2} WHERE IE_RecipeID=@recipeid",
-                    IDColumn, String.Join(", ", DataColumns), TableName),
+                    "SELECT {0}, {1} FROM {2} WHERE IE_RecipeID={3}",
+                    IDColumnName, String.Join(", ", DataColumnNames), TableName, recipeParam),
                 Connection);
-            SelectByRecipeCommand.Parameters.Add(recipeParameter);
+
+            if (DataParameters.TryGetValue("IE_RecipeID", out SQLiteParameter recipeParameter))
+            {
+                SelectByRecipeCommand.Parameters.Add(recipeParameter);
+            }
         }
 
         /// <summary>Retrieve all ingredients for a recipe</summary>
@@ -87,7 +81,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             if (SelectByRecipeCommand?.Connection == null) return null;
             else
             {
-                recipeParameter.Value = recipeID;
+                TrySetParameterValue("IE_RecipeID", recipeID);
 
                 List<U> results = new List<U>();
 
@@ -112,9 +106,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <inheritdoc/>
         protected override void SetDataParametersFromRow(U row)
         {
-            nameParameter.Value = row.IE_Name;
-            amountParameter.Value = row.IE_Amount;
-            unitParameter.Value = row.IE_Unit;
+            TrySetParameterValue("IE_Name", row.IE_Name);
+            TrySetParameterValue("IE_Amount", row.IE_Amount);
+            TrySetParameterValue("IE_Unit", row.IE_Unit);
         }
 
         /// <inheritdoc/>
@@ -122,18 +116,17 @@ namespace RecipeBox3.SQLiteModel.Adapters
         {
             try
             {
-                U ingredient = Activator.CreateInstance(typeof(U)) as U;
-
-                if (ingredient != null)
+                if (Activator.CreateInstance(typeof(U)) is U ingredient)
                 {
                     ingredient.IE_ID = reader.GetInt32(0);
                     ingredient.IE_Name = reader.GetString(1);
                     ingredient.IE_Amount = reader.GetDecimal(2);
                     ingredient.IE_Unit = reader.GetInt32(3);
                     ingredient.IE_RecipeID = reader.GetValue(4) as int?;
-                }
 
-                return ingredient;
+                    return ingredient;
+                }
+                else return null;
             }
             catch (InvalidCastException ex)
             {

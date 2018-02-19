@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using RecipeBox3.SQLiteModel.Data;
@@ -8,33 +9,22 @@ namespace RecipeBox3.SQLiteModel.Adapters
     /// <summary>Adapter for the Units table</summary>
     public class UnitsAdapter : SQLiteAdapter<Unit>
     {
-        /// <summary></summary>
-        protected SQLiteParameter nameParameter = new SQLiteParameter("@name", DbType.String, "U_Name");
-        /// <summary></summary>
-        protected SQLiteParameter pluralParameter = new SQLiteParameter("@plural", DbType.String, "U_Plural");
-        /// <summary></summary>
-        protected SQLiteParameter abbrevParameter = new SQLiteParameter("@abbrev", DbType.String, "U_Abbrev");
-        /// <summary></summary>
-        protected SQLiteParameter typeParameter = new SQLiteParameter("@typecode", DbType.Int32, "U_Typecode");
-        /// <summary></summary>
-        protected SQLiteParameter ratioParamter = new SQLiteParameter("@ratio", DbType.Single, "U_Ratio");
-        /// <summary></summary>
-        protected SQLiteParameter systemParameter = new SQLiteParameter("@system", DbType.String, "U_System");
-        /// <summary></summary>
-        protected SQLiteParameter editableParameter = new SQLiteParameter("@editable", DbType.Boolean, "U_Editable");
+        /// <inheritdoc/>
+        public override IEnumerable<TableColumn> DataColumns => new TableColumn[]
+        {
+            new TableColumn("U_Name", DbType.String, "New Unit", true),
+            new TableColumn("U_Plural", DbType.String, null),
+            new TableColumn("U_Abbrev", DbType.String, null),
+            new TableColumn("U_Typecode", DbType.Int32, Unit.UnitType.Mass),
+            new TableColumn("U_Ratio", DbType.Single, 1.0F),
+            new TableColumn("U_System", DbType.Int32, Unit.System.Any),
+            new TableColumn("U_Editable", DbType.Boolean, true)
+        };
 
         /// <inheritdoc/>
-        protected override SQLiteParameter[] DataParameters =>
-            new SQLiteParameter[]
-            {
-                nameParameter, pluralParameter, abbrevParameter,
-                typeParameter, ratioParamter, systemParameter, editableParameter
-            };
-
+        public override string TableName => "Units";
         /// <inheritdoc/>
-        protected override string TableName => "Units";
-        /// <inheritdoc/>
-        protected override string IDColumn => "U_ID";
+        public override string IDColumnName => "U_ID";
 
         /// <inheritdoc/>
         protected override Unit GetRowFromReader(SQLiteDataReader reader)
@@ -65,13 +55,13 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <inheritdoc/>
         protected override void SetDataParametersFromRow(Unit row)
         {
-            nameParameter.Value = row.U_Name;
-            pluralParameter.Value = row.U_Plural;
-            abbrevParameter.Value = row.U_Abbreviation;
-            typeParameter.Value = (int)row.U_TypeCode;
-            ratioParamter.Value = row.U_Ratio;
-            systemParameter.Value = (int)row.U_System;
-            editableParameter.Value = row.IsUserEditable;
+            TrySetParameterValue("U_Name", row.U_Name);
+            TrySetParameterValue("U_Plural", row.U_Plural);
+            TrySetParameterValue("U_Abbrev", row.U_Abbreviation);
+            TrySetParameterValue("U_Typecode", (int)row.U_TypeCode);
+            TrySetParameterValue("U_Ratio", row.U_Ratio);
+            TrySetParameterValue("U_System", (int)row.U_System);
+            TrySetParameterValue("U_Editable", row.IsUserEditable);
         }
     }
 }
