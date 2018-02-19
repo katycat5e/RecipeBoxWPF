@@ -164,6 +164,7 @@ namespace RecipeBox3
                           p.Key == sourceRow.ID
                 )
                 .Select(p => p.Value)
+                .OrderBy(p => p.U_Ratio)
                 .ToList();
 
             if (rows.Count <= 1)
@@ -292,6 +293,7 @@ namespace RecipeBox3
                           p.Key == sourceRow.ID
                 )
                 .Select(p => p.Value)
+                .OrderBy(p => p.U_Ratio)
                 .ToList();
 
             if (rows.Count <= 1)
