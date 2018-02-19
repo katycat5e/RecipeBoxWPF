@@ -130,8 +130,6 @@
             </Style>
 
             <local:UnitManager x:Key="GlobalUnitManager"/>
-            <local:CategoriesEditorView x:Key="GlobalCategoryEditor" WindowStartupLocation="CenterOwner"/>
-            <local:UnitEditorView x:Key="GlobalUnitEditor" WindowStartupLocation="CenterOwner"/>
 
         </ResourceDictionary>
     </Application.Resources>
