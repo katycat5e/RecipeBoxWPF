@@ -13,6 +13,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         public override string TableName => "Categories";
         /// <inheritdoc/>
         public override string IDColumnName => "C_ID";
+
         /// <inheritdoc/>
         public override IEnumerable<TableColumn> DataColumns => new TableColumn[]
         {
