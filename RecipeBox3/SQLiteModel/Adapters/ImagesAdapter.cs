@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using RecipeBox3.SQLiteModel.Data;
@@ -8,17 +9,17 @@ namespace RecipeBox3.SQLiteModel.Adapters
     /// <summary>Adapter for the Images table</summary>
     public class ImagesAdapter : SQLiteAdapter<ImageRow>
     {
-        private SQLiteParameter recipeParameter = new SQLiteParameter("@recipe", DbType.Int32, "IMG_RecipeID");
-        private SQLiteParameter dataParameter   = new SQLiteParameter("@data", DbType.Binary, "IMG_Data");
-        
         /// <inheritdoc/>
-        protected override SQLiteParameter[] DataParameters =>
-            new SQLiteParameter[] { recipeParameter, dataParameter };
+        public override IEnumerable<TableColumn> DataColumns => new TableColumn[]
+        {
+            new TableColumn("IMG_RecipeID", DbType.Int32),
+            new TableColumn("IMG_Data", DbType.Binary)
+        };
 
         /// <inheritdoc/>
         public override string TableName => "Images";
         /// <inheritdoc/>
-        public override string IDColumn => "IMG_ID";
+        public override string IDColumnName => "IMG_ID";
 
         private SQLiteCommand SelectByRecipeCommand;
 
@@ -47,12 +48,17 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected override void Initialize(string connectionString)
         {
             base.Initialize(connectionString);
-            
+
+            string recipeParam = TableColumnExtensions.GetParameterName("IMG_RecipeID");
+
             SelectByRecipeCommand = new SQLiteCommand(
-                "SELECT IMG_ID, IMG_RecipeID, IMG_Data FROM IMAGES WHERE IMG_RecipeID=@recipe",
+                $"SELECT IMG_ID, IMG_RecipeID, IMG_Data FROM IMAGES WHERE IMG_RecipeID={recipeParam}",
                 Connection);
 
-            SelectByRecipeCommand.Parameters.Add(recipeParameter);
+            if (DataParameters.TryGetValue("IMG_RecipeID", out SQLiteParameter recipeParameter))
+            {
+                SelectByRecipeCommand.Parameters.Add(recipeParameter);
+            }
         }
 
         /// <summary>Fetch the Image for the specified Recipe</summary>
@@ -63,7 +69,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             if (SelectByRecipeCommand.Connection == null) return null;
             else
             {
-                recipeParameter.Value = recipeID;
+                TrySetParameterValue("IMG_RecipeID", recipeID);
                 ImageRow row = null;
 
                 using (var reader = ExecuteCommandReader(SelectByRecipeCommand))
@@ -141,8 +147,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <inheritdoc/>
         protected override void SetDataParametersFromRow(ImageRow row)
         {
-            recipeParameter.Value = row.IMG_RecipeID;
-            dataParameter.Value = row.IMG_Data;
+            TrySetParameterValue("IMG_RecipeID", row.IMG_RecipeID);
+            TrySetParameterValue("IMG_Data", row.IMG_Data);
         }
     }
 }

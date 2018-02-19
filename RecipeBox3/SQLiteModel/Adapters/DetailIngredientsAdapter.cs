@@ -17,20 +17,22 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 String.Format(
                     "SELECT {0}, {1}, U_ID, U_Name, U_Plural, U_Abbrev, U_Typecode, U_Ratio, U_System " +
                     "FROM Ingredients LEFT JOIN Units ON IE_Unit=U_ID WHERE (@id IS NULL) OR ({0} = @id)",
-                    IDColumn, DataColumns);
+                    IDColumnName, DataColumnNames);
+
+            string recipeParam = TableColumnExtensions.GetParameterName("IE_RecipeID");
 
             SelectByRecipeCommand.CommandText =
                 String.Format(
                     "SELECT {0}, {1}, U_ID, U_Name, U_Plural, U_Abbrev, U_Typecode, U_Ratio, U_System " +
-                    "FROM Ingredients LEFT JOIN Units ON IE_Unit=U_ID WHERE IE_RecipeID=@recipe",
-                    IDColumn, String.Join(", ", DataColumns));
+                    "FROM Ingredients LEFT JOIN Units ON IE_Unit=U_ID WHERE IE_RecipeID={2}",
+                    IDColumnName, String.Join(", ", DataColumnNames), recipeParam);
         }
 
         /// <inheritdoc/>
         protected override DetailIngredient GetRowFromReader(SQLiteDataReader reader)
         {
             var row = base.GetRowFromReader(reader);
-            int columnOffset = base.DataColumns.Count() + 1;
+            int columnOffset = DataColumnNames.Count() + 1;
 
             try
             {
