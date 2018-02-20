@@ -176,6 +176,42 @@ namespace RecipeBox3
         }
     }
 
+    /// <summary>Class for converting between fractions and decimal</summary>
+    public class FractionDecimalConverter : IValueConverter
+    {
+        /// <summary>Convert a decimal amount to fraction string</summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is decimal amount)
+            {
+                if (((App)Application.Current).UnitSystem == Unit.System.Customary)
+                    return UnitManager.FormatAsFraction(amount);
+                else return amount.ToString();
+            }
+            else return "";
+        }
+
+        /// <summary>Convert a fraction string to a decimal amount</summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string fraction)
+            {
+                return UnitManager.ParseFraction(fraction);
+            }
+            else return 0.0M;
+        }
+    }
+
     /// <summary>Class for converting between unit/amount data and a string representation</summary>
     public class AmountStringConverter : DependencyObject, IMultiValueConverter
     {

@@ -8,15 +8,23 @@
         xmlns:Properties="clr-namespace:RecipeBox3.Properties"
         x:Class="RecipeBox3.EditSettingsDialog"
         mc:Ignorable="d"
-        Title="EditSettingsDialog" Height="300" Width="300" WindowStartupLocation="CenterOwner">
+        Title="EditSettingsDialog" Height="300" Width="300" WindowStartupLocation="CenterOwner"
+        Style="{StaticResource DefaultWindowStyle}">
+
+    <Window.DataContext>
+        <local:EditSettingsViewModel/>
+    </Window.DataContext>
+    
     <DockPanel LastChildFill="True">
         <Grid DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="SaveButton" Grid.Column="0" Content="Save" Click="SaveButton_Click" IsDefault="True"/>
-            <Button x:Name="CancelButton" Grid.Column="1" Content="Cancel" IsCancel="True"/>
+            <Button x:Name="SaveButton" Grid.Column="0" Content="Save" Click="SaveButton_Click" IsDefault="True"
+                    Style="{StaticResource FlatButtonHoverableStyle}"/>
+            <Button x:Name="CancelButton" Grid.Column="1" Content="Cancel" IsCancel="True"
+                    Style="{StaticResource FlatButtonHoverableStyle}"/>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -24,13 +32,16 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="8*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Label Grid.Column="0" Grid.Row="0" Content="Show Preview Images"/>
-            <ComboBox Grid.Column="1" Grid.Row="0" SelectedValue="{Binding ShowPreviewImages, Source={x:Static Properties:Settings.Default}}" SelectedValuePath="Tag">
+            <ComboBox Grid.Column="1" Grid.Row="0"
+                      Style="{StaticResource ComboBoxHoverableStyle}"
+                      SelectedValue="{Binding ShowPreviewImages, Mode=TwoWay}"
+                      SelectedValuePath="Tag">
                 <ComboBoxItem Content="Yes">
                     <ComboBoxItem.Tag>
                         <core:Boolean>true</core:Boolean>
@@ -44,14 +55,12 @@
             </ComboBox>
 
             <Label Grid.Column="0" Grid.Row="1" Content="Unit System"/>
-            <ComboBox Grid.Column="1" Grid.Row="1" SelectedValue="{Binding SelectedUnitSystem, Source={x:Static Properties:Settings.Default}}" SelectedValuePath="Tag">
-                <ComboBoxItem Content="US Customary">
-                    <ComboBoxItem.Tag>USC</ComboBoxItem.Tag>
-                </ComboBoxItem>
-                <ComboBoxItem Content="Metric">
-                    <ComboBoxItem.Tag>MET</ComboBoxItem.Tag>
-                </ComboBoxItem>
-            </ComboBox>
+            <ComboBox Grid.Column="1" Grid.Row="1" IsEditable="False"
+                      Style="{StaticResource ComboBoxHoverableStyle}"
+                      ItemsSource="{x:Static local:EditSettingsDialog.UnitSystemDict}"
+                      DisplayMemberPath="Value"
+                      SelectedValue="{Binding SelectedUnitSystem, Mode=TwoWay}"
+                      SelectedValuePath="Key"/>
         </Grid>
 
     </DockPanel>

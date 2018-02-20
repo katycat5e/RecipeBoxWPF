@@ -1,17 +1,60 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Media;
+using RecipeBox3.SQLiteModel.Data;
 
 namespace RecipeBox3
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, INotifyPropertyChanged
     {
         /// <summary>Main window for the application</summary>
         public static RecipeListWindow RecipeListView;
 
         private static SplashDialog SplashPage;
+
+        /// <inheritdoc/>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private Unit.System _UnitSystem = Unit.System.Any;
+        /// <summary>Setting for which Unit system to be displayed</summary>
+        public Unit.System UnitSystem
+        {
+            get => _UnitSystem;
+            set
+            {
+                if (value != _UnitSystem)
+                {
+                    _UnitSystem = value;
+                    RecipeBox3.Properties.Settings.Default.SelectedUnitSystem = value.GetString();
+                    OnPropertyChanged("UnitSystem");
+                }
+            }
+        }
+
+        private bool _ShowPreviewImages = true;
+        /// <summary>Setting of whether to show preview images in recipe list</summary>
+        public bool ShowPreviewImages
+        {
+            get => _ShowPreviewImages;
+            set
+            {
+                if (value != _ShowPreviewImages)
+                {
+                    _ShowPreviewImages = value;
+                    RecipeBox3.Properties.Settings.Default.ShowPreviewImages = value;
+                    OnPropertyChanged("ShowPreviewImages");
+                }
+            }
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private void Program_Startup(object sender, StartupEventArgs e)
         {
@@ -19,7 +62,10 @@ namespace RecipeBox3
             SplashPage.Show();
 
             //if (!EnsureDBExists()) Shutdown();
-            
+
+            if (Enum.TryParse(RecipeBox3.Properties.Settings.Default.SelectedUnitSystem, out Unit.System system))
+                UnitSystem = system;
+
             if (TryFindResource("GlobalUnitManager") is UnitManager unitManager)
             {
                 unitManager.UpdateUnitsTable();
@@ -49,7 +95,7 @@ namespace RecipeBox3
 
         /// <summary>Log an exception to the console</summary>
         /// <param name="e"></param>
-        public static void LogException(System.Exception e)
+        public static void LogException(Exception e)
         {
             LogMessage(e.ToString());
         }

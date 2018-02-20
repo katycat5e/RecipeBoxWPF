@@ -37,7 +37,7 @@ namespace RecipeBox3.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("USC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Customary")]
         public string SelectedUnitSystem {
             get {
                 return ((string)(this["SelectedUnitSystem"]));

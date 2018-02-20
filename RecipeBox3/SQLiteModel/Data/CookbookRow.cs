@@ -48,5 +48,13 @@ namespace RecipeBox3.SQLiteModel.Data
                 if (row.Status == RowStatus.Unchanged) row.Status = RowStatus.Modified;
             }
         }
+
+        /// <summary>Force a refresh on one of this row's properties</summary>
+        /// <param name="property"></param>
+        public void RefreshProperty(DependencyProperty property)
+        {
+            object value = GetValue(property);
+            OnPropertyChanged(new DependencyPropertyChangedEventArgs(property, value, value));
+        }
     }
 }

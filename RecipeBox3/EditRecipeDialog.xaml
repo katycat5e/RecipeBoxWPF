@@ -11,11 +11,12 @@
         d:DataContext="{d:DesignData Source=./DesignData/EditRecipeWindowData.xaml, IsDesignTimeCreatable=True}">
 
     <Window.Resources>
+        <local:FractionDecimalConverter x:Key="FractionDecimalConverter"/>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
         <SolidColorBrush x:Key="PrimaryMDBrush" Color="{StaticResource ColorPrimaryMidDark}"/>
         <SolidColorBrush x:Key="SecondaryDarkBrush" Color="{StaticResource ColorSecondary2Dark}"/>
 
-        
+
     </Window.Resources>
     <Window.DataContext>
         <local:EditRecipeViewModel UnitManager="{StaticResource GlobalUnitManager}"/>
@@ -99,7 +100,7 @@
             <DataGrid x:Name="IngredGrid" Margin="3" ItemsSource="{Binding Ingredients}"
                       Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Amount" Binding="{Binding IE_Amount}" Width="1*"/>
+                    <DataGridTextColumn Header="Amount" Binding="{Binding IE_Amount, Converter={StaticResource FractionDecimalConverter}, Mode=TwoWay}" Width="1*"/>
                     <DataGridComboBoxColumn
                         Header="Unit" Width="2*"
                         SelectedValueBinding="{Binding IE_Unit}"

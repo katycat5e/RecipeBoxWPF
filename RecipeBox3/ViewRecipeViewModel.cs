@@ -73,7 +73,19 @@ namespace RecipeBox3
         /// <summary>Collection of ingredients associated with the current recipe</summary>
         public static readonly DependencyProperty IngredientsProperty =
             DependencyProperty.Register("Ingredients", typeof(ObservableCollection<DetailIngredient>), typeof(ViewRecipeViewModel), new PropertyMetadata(new ObservableCollection<DetailIngredient>()));
+        
+        
+        /// <summary>System of units to use for ingredient display</summary>
+        public Unit.System UnitSystem
+        {
+            get { return (Unit.System)GetValue(UnitSystemProperty); }
+            set { SetValue(UnitSystemProperty, value); }
+        }
 
+        /// <summary>Property store for <see cref='UnitSystem'/></summary>
+        public static readonly DependencyProperty UnitSystemProperty =
+            DependencyProperty.Register("UnitSystem", typeof(Unit.System), typeof(ViewRecipeViewModel), new PropertyMetadata(Unit.System.Any, OnUnitSystemChanged));
+        
 
         /// <summary>Steps for the current recipe in viewable/editable form</summary>
         public FlowDocument StepsDocument
@@ -92,6 +104,19 @@ namespace RecipeBox3
         {
             recipesAdapter = new DetailRecipesAdapter();
             ingredientsAdapter = new DetailIngredientsAdapter();
+        }
+
+        public event EventHandler UnitSystemChanged;
+
+        /// <summary>Callback for when the desired unit system changes</summary>
+        /// <param name="d"></param>
+        /// <param name="e"></param>
+        protected static void OnUnitSystemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ViewRecipeViewModel viewModel)
+            {
+                viewModel.UnitSystemChanged?.Invoke(viewModel, new EventArgs());
+            }
         }
     }
 }
