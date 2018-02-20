@@ -12,9 +12,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <inheritdoc/>
         public override IEnumerable<TableColumn> DataColumns => new TableColumn[]
         {
-            new TableColumn("U_Name", DbType.String, "New Unit", true),
+            new TableColumn("U_Name", DbType.String, "New Unit", ColumnOptions.NotNull | ColumnOptions.Unique),
             new TableColumn("U_Plural", DbType.String, null),
-            new TableColumn("U_Abbrev", DbType.String, null),
+            new TableColumn("U_Abbrev", DbType.String, "nu", ColumnOptions.NotNull | ColumnOptions.Unique),
             new TableColumn("U_Typecode", DbType.Int32, Unit.UnitType.Mass),
             new TableColumn("U_Ratio", DbType.Single, 1.0F),
             new TableColumn("U_System", DbType.Int32, Unit.System.Any),

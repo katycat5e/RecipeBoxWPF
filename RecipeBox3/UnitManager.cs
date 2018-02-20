@@ -29,6 +29,12 @@ namespace RecipeBox3
             DependencyProperty.Register("UnitList", typeof(Dictionary<int, Unit>), typeof(UnitManager), new PropertyMetadata(null));
 
 
+        /// <summary>Dictionary of units keyed by name</summary>
+        public Dictionary<string, Unit> UnitNameMap;
+
+        /// <summary>Dictionary of units keyed by abbreviation</summary>
+        public Dictionary<string, Unit> UnitAbbrevMap;
+
         /// <summary>Create a new instance of the manager</summary>
         public UnitManager()
         {
@@ -189,17 +195,20 @@ namespace RecipeBox3
                 else
                 {
                     Unit target = null;
+                    int targetIndex = 0;
 
                     if (sourceIndex == 0)
                     {
                         // no smaller, use larger
-                        target = rows[1];
+                        targetIndex = 1;
                     }
                     else if (sourceIndex > 0 && sourceIndex < rows.Count)
                     {
                         // use smaller
-                        target = rows[sourceIndex - 1];
+                        targetIndex = sourceIndex - 1;
                     }
+
+                    target = rows[targetIndex];
 
                     decimal newAmount = Convert(amount, sourceRow, target);
                     decimal fPart = newAmount % 1;
@@ -214,7 +223,10 @@ namespace RecipeBox3
                         decimal subAmount = 0.0M;
                         string subTargetAbbrev = null;
 
-                        for (int j = sourceIndex; j >= 0 && !smallerUnitFound; j--)
+                        int startIndex = Math.Min(sourceIndex, targetIndex) - 1;
+                        startIndex = (startIndex >= 0) ? startIndex : 0;
+
+                        for (int j = startIndex; j >= 0 && !smallerUnitFound; j--)
                         {
                             // traverse back down the list to find the sub unit
                             if (rows[j] is Unit subTarget)
@@ -342,7 +354,11 @@ namespace RecipeBox3
         /// <summary>Refresh the contents of the Units table from the database</summary>
         public void UpdateUnitsTable()
         {
-            UnitList = unitsAdapter.SelectAll().ToDictionary(p => p.ID, p => p);
+            IEnumerable<Unit> units = unitsAdapter.SelectAll();
+
+            UnitNameMap = units.ToDictionary(unit => unit.U_Name, unit => unit);
+            UnitAbbrevMap = units.ToDictionary(unit => unit.U_Abbreviation, unit => unit);
+            UnitList = units.ToDictionary(unit => unit.ID, unit => unit);
         }
 
         /// <summary>Represents an error that occurs when a requested unit does not exist</summary>
@@ -478,13 +494,8 @@ namespace RecipeBox3
         {
             input = input.Trim();
 
-            foreach (Unit unit in UnitList.Values)
-            {
-                if (input == unit.U_Name || input == unit.U_Plural || input == unit.U_Abbreviation)
-                {
-                    return unit;
-                }
-            }
+            if (UnitAbbrevMap.TryGetValue(input, out Unit fromAbbrev)) return fromAbbrev;
+            if (UnitNameMap.TryGetValue(input, out Unit fromName)) return fromName;
 
             return null;
         }

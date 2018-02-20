@@ -10,14 +10,12 @@ namespace RecipeBox3.SQLiteModel.Adapters
         public abstract string TableName { get; }
 
         /// <summary>Identity column for the table</summary>
-        public TableColumn IDColumn => new TableColumn()
-        {
-            ColumnName = IDColumnName,
-            DataType = System.Data.DbType.Int32,
-            NotNull = true,
-            DefaultValue = -1,
-            PrimaryKey = true
-        };
+        public TableColumn IDColumn => new TableColumn(
+            IDColumnName,
+            System.Data.DbType.Int32,
+            -1,
+            ColumnOptions.NotNull | ColumnOptions.PrimaryKey
+        );
 
         /// <summary>Name of the table's primary key column</summary>
         public virtual string IDColumnName => "ID";

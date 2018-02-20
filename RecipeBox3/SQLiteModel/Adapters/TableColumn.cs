@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace RecipeBox3.SQLiteModel.Adapters
 {
@@ -26,19 +27,34 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <summary>Create a new column struct</summary>
         /// <param name="name"></param>
         /// <param name="dataType"></param>
-        /// <param name="notNull"></param>
-        /// <param name="unique"></param>
         /// <param name="defaultValue"></param>
-        /// <param name="primaryKey"></param>
-        public TableColumn(string name, DbType dataType, object defaultValue = null, bool notNull = false, bool unique = false, bool primaryKey = false)
+        /// <param name="options"></param>
+        public TableColumn(string name, DbType dataType, object defaultValue = null, ColumnOptions options = ColumnOptions.None)
         {
             ColumnName = name;
             DataType = dataType;
-            NotNull = notNull;
-            Unique = unique;
             DefaultValue = defaultValue;
-            PrimaryKey = primaryKey;
+            NotNull = options.HasFlag(ColumnOptions.NotNull);
+            Unique = options.HasFlag(ColumnOptions.Unique);
+            PrimaryKey = options.HasFlag(ColumnOptions.PrimaryKey);
         }
+    }
+
+    /// <summary>Optional modifiers to be applied to a column</summary>
+    [Flags]
+    public enum ColumnOptions
+    {
+        /// <summary>No options defined</summary>
+        None = 0,
+
+        /// <summary>Column does not accept null values</summary>
+        NotNull = 1,
+
+        /// <summary>Column values must be unique</summary>
+        Unique = 2,
+
+        /// <summary>Column contains primary keys</summary>
+        PrimaryKey = 4
     }
 
     /// <summary>Extension methods for <see cref="TableColumn"/></summary>

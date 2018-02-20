@@ -24,7 +24,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <inheritdoc/>
         public override IEnumerable<TableColumn> DataColumns => new TableColumn[]
         {
-            new TableColumn("R_Name", DbType.String, "New Recipe", true, true),
+            new TableColumn("R_Name", DbType.String, "New Recipe", ColumnOptions.NotNull | ColumnOptions.Unique),
             new TableColumn("R_Description", DbType.String, ""),
             new TableColumn("R_Modified", DbType.Int64, null),
             new TableColumn("R_PrepTime", DbType.Int32, 0),
