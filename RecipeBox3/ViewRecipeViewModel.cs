@@ -84,7 +84,7 @@ namespace RecipeBox3
 
         /// <summary>Property store for <see cref='UnitSystem'/></summary>
         public static readonly DependencyProperty UnitSystemProperty =
-            DependencyProperty.Register("UnitSystem", typeof(Unit.System), typeof(ViewRecipeViewModel), new PropertyMetadata(Unit.System.Any, OnUnitSystemChanged));
+            DependencyProperty.Register("UnitSystem", typeof(Unit.System), typeof(ViewRecipeViewModel), new PropertyMetadata(Unit.System.Any));
         
 
         /// <summary>Steps for the current recipe in viewable/editable form</summary>
@@ -104,19 +104,6 @@ namespace RecipeBox3
         {
             recipesAdapter = new DetailRecipesAdapter();
             ingredientsAdapter = new DetailIngredientsAdapter();
-        }
-
-        public event EventHandler UnitSystemChanged;
-
-        /// <summary>Callback for when the desired unit system changes</summary>
-        /// <param name="d"></param>
-        /// <param name="e"></param>
-        protected static void OnUnitSystemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is ViewRecipeViewModel viewModel)
-            {
-                viewModel.UnitSystemChanged?.Invoke(viewModel, new EventArgs());
-            }
         }
     }
 }
