@@ -100,7 +100,7 @@
             <DataGrid x:Name="IngredGrid" Margin="3" ItemsSource="{Binding Ingredients}"
                       Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Amount" Binding="{Binding IE_Amount, Converter={StaticResource FractionDecimalConverter}, Mode=TwoWay}" Width="1*"/>
+                    <DataGridTextColumn Header="Amount" Binding="{Binding IE_Amount, Mode=TwoWay}" Width="1*"/>
                     <DataGridComboBoxColumn
                         Header="Unit" Width="2*"
                         SelectedValueBinding="{Binding IE_Unit}"

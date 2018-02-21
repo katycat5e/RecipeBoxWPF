@@ -206,7 +206,7 @@ namespace RecipeBox3
         {
             if (value is string fraction)
             {
-                return UnitManager.ParseFraction(fraction);
+                return UnitManager.ParseAmount(fraction);
             }
             else return 0.0M;
         }
@@ -240,7 +240,7 @@ namespace RecipeBox3
 
 
         /// <summary>Convert a unitID and amount to a string representation</summary>
-        /// <param name="values">Array containing int unitID at index 0 and decimal amount at index 1</param>
+        /// <param name="values">Array containing int unitID at index 0 and <see cref="Fraction"/> amount at index 1</param>
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
@@ -250,7 +250,7 @@ namespace RecipeBox3
             string outputString = null;
             if (values.Length < 2) return null;
 
-            if (values[0] is int unitID && values[1] is decimal amount)
+            if (values[0] is int unitID && values[1] is Fraction amount)
             {
                 return UnitManager.GetString(amount, unitID, UnitSystem);
             }

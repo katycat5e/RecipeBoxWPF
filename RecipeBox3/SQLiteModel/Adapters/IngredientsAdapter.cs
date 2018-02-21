@@ -20,7 +20,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         public override IEnumerable<TableColumn> DataColumns => new TableColumn[]
         {
             new TableColumn("IE_Name", DbType.String, "New Ingredient"),
-            new TableColumn("IE_Amount", DbType.Decimal, 0.000M),
+            new TableColumn("IE_Amount", DbType.String, "0"),
             new TableColumn("IE_Unit", DbType.Int32, 1),
             new TableColumn("IE_RecipeID", DbType.Int32, null)
         };
@@ -107,7 +107,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected override void SetDataParametersFromRow(U row)
         {
             TrySetParameterValue("IE_Name", row.IE_Name);
-            TrySetParameterValue("IE_Amount", row.IE_Amount);
+            TrySetParameterValue("IE_Amount", row.IE_Amount.ToString());
             TrySetParameterValue("IE_Unit", row.IE_Unit);
         }
 
@@ -120,7 +120,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 {
                     ingredient.IE_ID = reader.GetInt32(0);
                     ingredient.IE_Name = reader.GetString(1);
-                    ingredient.IE_Amount = reader.GetDecimal(2);
+                    ingredient.IE_Amount = Fraction.Parse(reader.GetString(2));
                     ingredient.IE_Unit = reader.GetInt32(3);
                     ingredient.IE_RecipeID = reader.GetValue(4) as int?;
                     ingredient.Status = RowStatus.Unchanged;
