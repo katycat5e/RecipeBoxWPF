@@ -177,9 +177,9 @@ namespace RecipeBox3
     }
 
     /// <summary>Class for converting between fractions and decimal</summary>
-    public class FractionDecimalConverter : IValueConverter
+    public class FractionStringConverter : IValueConverter
     {
-        /// <summary>Convert a decimal amount to fraction string</summary>
+        /// <summary>Convert a fraction to a string</summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
@@ -187,16 +187,16 @@ namespace RecipeBox3
         /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is decimal amount)
+            if (value is Fraction amount)
             {
                 if (((App)Application.Current).UnitSystem == Unit.System.Customary)
-                    return UnitManager.FormatAsFraction(amount);
-                else return amount.ToString();
+                    return amount.ToString();
+                else return Math.Round(amount.ApproximateValue, 3).ToString("0.###");
             }
             else return "";
         }
 
-        /// <summary>Convert a fraction string to a decimal amount</summary>
+        /// <summary>Convert a string to a fraction amount</summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
@@ -206,9 +206,9 @@ namespace RecipeBox3
         {
             if (value is string fraction)
             {
-                return UnitManager.ParseAmount(fraction);
+                return Fraction.Parse(fraction);
             }
-            else return 0.0M;
+            else return Fraction.Zero;
         }
     }
 

@@ -81,6 +81,7 @@ namespace RecipeBox3
         /// <inheritdoc/>
         public override string ToString()
         {
+            if (Denominator == 1) return Math.Round(Numerator, 3).ToString("0.###");
             if (Numerator > Denominator)
             {
                 int wholePart = (int)Math.Truncate(Numerator / Denominator);
@@ -285,8 +286,19 @@ namespace RecipeBox3
         /// <returns></returns>
         public Fraction Round(Fraction precision)
         {
-            // FIXME
-            return new Fraction((float)Math.Round(ApproximateValue / precision.ApproximateValue) / 8);
+            Fraction output = ChangeDenominator(precision.Denominator);
+            if (precision.Numerator == 0) return output;
+
+            output.Numerator = (float)Math.Round(output.Numerator / precision.Numerator) * precision.Numerator;
+            return output;
+        }
+
+        /// <summary>Convert a fraction to the equivalent value with the specified denominator</summary>
+        /// <param name="newDenominator"></param>
+        /// <returns></returns>
+        public Fraction ChangeDenominator(float newDenominator)
+        {
+            return new Fraction(Numerator * (newDenominator / Denominator), newDenominator);
         }
 
         private static float FindGCD(float a, float b)

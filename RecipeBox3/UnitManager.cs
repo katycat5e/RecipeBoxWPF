@@ -250,17 +250,34 @@ namespace RecipeBox3
 
                         if (smallerUnitFound)
                         {
-                            outputStr = String.Format("{0} {1}, {2} {3}", newAmount.IntegerPart, targetAbbrev, subAmount, subTargetAbbrev);
+                            subAmount = RoundFractionToClosest(subAmount, "1/8", "1/3");
+
+                            outputStr = String.Format(
+                                "{0} {1}, {2} {3}",
+                                newAmount.IntegerPart,
+                                targetAbbrev,
+                                subAmount.Simplify(),
+                                subTargetAbbrev);
                         }
                         else
                         {
-                            outputStr = String.Format("{0} {1}", newAmount, targetAbbrev);
+                            newAmount = RoundFractionToClosest(newAmount, "1/8", "1/3");
+
+                            outputStr = String.Format(
+                                "{0} {1}",
+                                newAmount.Simplify(),
+                                targetAbbrev);
                         }
                     }
                     else
                     {
                         // no fractional part
-                        outputStr = String.Format("{0} {1}", newAmount, targetAbbrev);
+                        newAmount = RoundFractionToClosest(newAmount, "1/8", "1/3");
+
+                        outputStr = String.Format(
+                            "{0} {1}",
+                            newAmount.Round("1/8").Simplify(),
+                            targetAbbrev);
                     }
                     
                 }
@@ -268,6 +285,17 @@ namespace RecipeBox3
             
 
             return outputStr;
+        }
+
+        private static Fraction RoundFractionToClosest(Fraction amount, Fraction precisionA, Fraction precisionB)
+        {
+            Fraction roundedA = amount.Round(precisionA);
+            Fraction roundedB = amount.Round(precisionB);
+
+            if (Math.Abs((roundedA - amount).ApproximateValue) < Math.Abs((roundedB - amount).ApproximateValue))
+                return roundedA;
+            else
+                return roundedB;
         }
 
         /// <summary>Attempt to get a string representation of an amount converted to metric units</summary>

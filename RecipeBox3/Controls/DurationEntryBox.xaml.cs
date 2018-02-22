@@ -69,6 +69,18 @@ namespace RecipeBox3.Controls
             DependencyProperty.Register("InvalidColor", typeof(Color), typeof(DurationEntryBox), new PropertyMetadata(Colors.DarkRed));
 
 
+        /// <summary></summary>
+        public SolidColorBrush OutlineBrush
+        {
+            get { return (SolidColorBrush)GetValue(OutlineBrushProperty); }
+            set { SetValue(OutlineBrushProperty, value); }
+        }
+
+        /// <summary>Property store for <see cref='OutlineBrush'/></summary>
+        public static readonly DependencyProperty OutlineBrushProperty =
+            DependencyProperty.Register("OutlineBrush", typeof(SolidColorBrush), typeof(DurationEntryBox), new PropertyMetadata(new SolidColorBrush(Colors.Transparent)));
+
+
         /// <inheritdoc/>
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
@@ -77,6 +89,11 @@ namespace RecipeBox3.Controls
             if (e.Property.Name == "MinuteValue" && e.NewValue is int newVal)
             {
                 InputBox.Text = TimeStringConverter.ConvertMinutesToString(newVal, true);
+            }
+            else if (e.Property.Name == "ValidInput" && e.NewValue is bool valid && !(valid.Equals(e.OldValue)))
+            {
+                if (valid) OutlineBrush = new SolidColorBrush(ValidColor);
+                else OutlineBrush = new SolidColorBrush(InvalidColor);
             }
         }
 
@@ -90,38 +107,16 @@ namespace RecipeBox3.Controls
     }
 
     /// <summary>Turns a boolean into a valid/invalid indication color</summary>
-    public class ValidValueBrushConverter : DependencyObject, IValueConverter
+    public class ColorBrushConverter : IValueConverter
     {
-        /// <summary>Color given when input value is true</summary>
-        public Color TrueColor
-        {
-            get { return (Color)GetValue(TrueColorProperty); }
-            set { SetValue(TrueColorProperty, value); }
-        }
-
-        /// <summary>Color given when input value is true</summary>
-        public static readonly DependencyProperty TrueColorProperty =
-            DependencyProperty.Register("TrueColor", typeof(Color), typeof(ValidValueBrushConverter), new PropertyMetadata(Colors.Transparent));
-
-
-        /// <summary>Color given when input value is false</summary>
-        public Color FalseColor
-        {
-            get { return (Color)GetValue(FalseColorProperty); }
-            set { SetValue(FalseColorProperty, value); }
-        }
-
-        /// <summary>Color given when input value is false</summary>
-        public static readonly DependencyProperty FalseColorProperty =
-            DependencyProperty.Register("FalseColor", typeof(Color), typeof(ValidValueBrushConverter), new PropertyMetadata(Colors.Red));
-
-
-
         /// <inheritdoc/>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool boolValue && boolValue == true) return TrueColor;
-            else return FalseColor;
+            if (value is Color color)
+            {
+                return new SolidColorBrush(color);
+            }
+            else return null;
         }
 
         /// <inheritdoc/>
