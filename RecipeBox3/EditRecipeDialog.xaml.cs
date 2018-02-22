@@ -148,51 +148,165 @@ namespace RecipeBox3
         }
         
 
-        private void NewOrderedListButton_Click(object sender, RoutedEventArgs e)
+        private void ToggleOrderedListButton_Click(object sender, RoutedEventArgs e)
         {
-            Block nextBlock = null;
-            Block selectedBlock = GetBlockAroundPosition(StepsEditor.Document.Blocks, StepsEditor.Selection.Start);
+            List<Block> selectedBlocks = GetBlocksBetween(StepsEditor.Document.Blocks, StepsEditor.Selection.Start, StepsEditor.Selection.End);
+            if (selectedBlocks.Count < 1) return;
 
-            if (selectedBlock is Paragraph)
+            if (selectedBlocks[0] is Paragraph startParagraph)
             {
-                nextBlock = selectedBlock.NextBlock;
-
-                var newList = new List(new ListItem(selectedBlock as Paragraph))
+                var newList = new List()
                 {
                     MarkerStyle = TextMarkerStyle.Decimal,
                     StartIndex = 1
                 };
 
-                StepsEditor.Document.Blocks.Remove(selectedBlock);
+                Block nextBlock = selectedBlocks.Last().NextBlock;
+
+                if (selectedBlocks.Count(block => block is List) > 0)
+                {
+                    // part of the selection is a list, so combine into a single list
+                    selectedBlocks.RemoveAt(0);
+                    StepsEditor.Document.Blocks.Remove(startParagraph);
+                    newList.ListItems.Add(new ListItem(startParagraph));
+                    CombineItemsIntoList(newList, selectedBlocks);
+                }
+                else
+                {
+                    List<object> selectedContentItems = GetAllContentItems(selectedBlocks);
+                    newList.ListItems.AddRange(selectedContentItems.Select(
+                        content =>
+                        {
+                            if (content is Paragraph p) return new ListItem(p);
+                            else if (content is List<Block> blocks)
+                            {
+                                var newItem = new ListItem();
+                                newItem.Blocks.AddRange(blocks);
+                                return newItem;
+                            }
+                            else return null;
+                        }
+                        ).Where(item => item != null));
+
+                    foreach (Block selectedBlock in selectedBlocks)
+                    {
+                        StepsEditor.Document.Blocks.Remove(selectedBlock);
+                    }
+                }
 
                 if (nextBlock != null)
                     StepsEditor.Document.Blocks.InsertBefore(nextBlock, newList);
                 else
                     StepsEditor.Document.Blocks.Add(newList);
+
+                StepsEditor.Selection.Select(newList.ContentStart, newList.ContentEnd);
             }
-            else if (selectedBlock is List selectedList)
+            else if (selectedBlocks[0] is List masterList)
             {
-                nextBlock = selectedBlock.NextBlock;
-
-                StepsEditor.Document.Blocks.Remove(selectedBlock);
-
-                var children = selectedList.ListItems.ToList();
-                Action<Block> addMethod;
-                if (nextBlock != null)
-                    addMethod = newItem => StepsEditor.Document.Blocks.InsertBefore(nextBlock, newItem);
-                else
-                    addMethod = StepsEditor.Document.Blocks.Add;
-
-                foreach (ListItem item in children)
+                if (selectedBlocks.Count == 1)
                 {
-                    var itemChildren = item.Blocks.ToList();
-                    foreach (Block child in itemChildren)
+                    // Only 1 list selected, just pop selected items out of it
+                    List<ListItem> selectedItems = GetListItemsBetween(masterList, StepsEditor.Selection.Start, StepsEditor.Selection.End);
+
+                    if (selectedItems.Count == masterList.ListItems.Count)
                     {
-                        item.Blocks.Remove(child);
-                        addMethod(child);
+                        // remove whole list
+                        var listContents = GetAllListItemContents(masterList.ListItems.ToList(), true).OfType<List<Block>>();
+
+                        Block nextBlock = masterList.NextBlock;
+                        StepsEditor.Document.Blocks.Remove(masterList);
+
+                        Action<Block> addMethod;
+                        if (nextBlock != null)
+                            addMethod = newItem => StepsEditor.Document.Blocks.InsertBefore(nextBlock, newItem);
+                        else
+                            addMethod = StepsEditor.Document.Blocks.Add;
+
+                        foreach (List<Block> contentItem in listContents)
+                        {
+                            if (contentItem != null)
+                                foreach (Block block in contentItem)
+                                    addMethod(block);
+                        }
+
+                        if (listContents.Count() > 0)
+                        {
+                            var contentStart = listContents.First().First().ContentStart;
+                            var contentEnd = listContents.Last().Last().ContentEnd;
+                            StepsEditor.Selection.Select(contentStart, contentEnd);
+                        }
+                    }
+                    else
+                    {
+                        // not the whole list is selected
+                        ListItem prevItem = selectedItems.First().PreviousListItem;
+                        ListItem nextItem = selectedItems.Last().NextListItem;
+
+                        Action<Block> addMethod;
+                        if (prevItem == null && nextItem != null)
+                        {
+                            // we're taking out the start of the list
+                            addMethod = newBlock => StepsEditor.Document.Blocks.InsertBefore(masterList, newBlock);
+                        }
+                        else
+                        {
+                            // we're taking out the end or middle of the list
+                            addMethod = newBlock => StepsEditor.Document.Blocks.InsertAfter(masterList, newBlock);
+
+                            if (nextItem != null)
+                            {
+                                // not going to the end of the list, need to split it
+                                List<ListItem> newListItems = masterList.ListItems.Where(
+                                    item =>
+                                        item.ContentStart.CompareTo(nextItem.ContentStart) >= 0)
+                                    .ToList();
+
+                                foreach (ListItem item in newListItems)
+                                {
+                                    masterList.ListItems.Remove(item);
+                                }
+
+                                List newList = new List()
+                                {
+                                    MarkerStyle = TextMarkerStyle.Decimal,
+                                    StartIndex = 1
+                                };
+
+                                newList.ListItems.AddRange(newListItems);
+                                addMethod(newList);
+                            }
+                        }
+
+                        foreach (ListItem item in selectedItems)
+                        {
+                            masterList.ListItems.Remove(item);
+                        }
+
+                        var selectedContents = GetAllListItemContents(selectedItems, true).OfType<List<Block>>();
+                        foreach (List<Block> content in selectedContents)
+                        {
+                            foreach (Block block in content)
+                                addMethod(block);
+                        }
+
+                        if (selectedContents.Count() > 0)
+                        {
+                            var contentStart = selectedContents.First().First().ContentStart;
+                            var contentEnd = selectedContents.Last().Last().ContentEnd;
+                            StepsEditor.Selection.Select(contentStart, contentEnd);
+                        }
                     }
                 }
+                else
+                {
+                    // multiple blocks selected, combine them into the master list
+                    selectedBlocks.Remove(masterList);
+                    CombineItemsIntoList(masterList, selectedBlocks);
+                    StepsEditor.Selection.Select(masterList.ContentStart, masterList.ContentEnd);
+                }
             }
+            
+            StepsEditor.Focus();
         }
 
         private static Block GetBlockAroundPosition(IEnumerable<Block> blocks, TextPointer position)
@@ -202,6 +316,76 @@ namespace RecipeBox3
                     block.ContentStart.CompareTo(position) == -1 &&
                     block.ContentEnd.CompareTo(position) == 1)
                 .FirstOrDefault();
+        }
+
+        private static List<Block> GetBlocksBetween(IEnumerable<Block> blocks, TextPointer start, TextPointer end)
+        {
+            return blocks.Where(
+                block =>
+                    (block.ContentStart.CompareTo(start) == -1 && block.ContentEnd.CompareTo(start) == 1) || // selection starts inside
+                    (block.ContentStart.CompareTo(end) == -1 && block.ContentEnd.CompareTo(end) == 1) || // selection ends inside
+                    (block.ContentStart.CompareTo(start) == 1 && block.ContentEnd.CompareTo(end) == -1) // block is inside selection
+                ).ToList();
+        }
+
+        private static List<ListItem> GetListItemsBetween(List list, TextPointer start, TextPointer end)
+        {
+            return list.ListItems.Where(
+                item =>
+                    (item.ContentStart.CompareTo(start) == -1 && item.ContentEnd.CompareTo(start) == 1) || // selection starts inside
+                    (item.ContentStart.CompareTo(end) == -1 && item.ContentEnd.CompareTo(end) == 1) || // selection ends inside
+                    (item.ContentStart.CompareTo(start) == 1 && item.ContentEnd.CompareTo(end) == -1) // item is inside selection
+                ).ToList();
+        }
+
+        private static List<object> GetAllContentItems(IEnumerable<Block> blocks)
+        {
+            var results = new List<object>();
+
+            foreach (Block block in blocks)
+            {
+                if (block is Paragraph paragraph)
+                    results.Add(paragraph);
+                else if (block is List list)
+                    results.Add(GetAllListItemContents(list.ListItems));
+            }
+
+            return results;
+        }
+
+        private static List<object> GetAllListItemContents(IEnumerable<ListItem> items, bool popItems = false)
+        {
+            var results = new List<object>();
+
+            foreach (ListItem item in items)
+            {
+                results.Add(new List<Block>(item.Blocks));
+                if (popItems) item.Blocks.Clear();
+            }
+
+            return results;
+        }
+
+        private void CombineItemsIntoList(List masterList, IEnumerable<Block> blocks)
+        {
+            foreach (Block block in blocks)
+            {
+                if (block is Paragraph paragraph)
+                {
+                    masterList.ListItems.Add(new ListItem(paragraph));
+                }
+                else if (block is List list)
+                {
+                    List<ListItem> items = list.ListItems.ToList();
+                    foreach (ListItem item in items)
+                    {
+                        list.ListItems.Remove(item);
+                        masterList.ListItems.Add(item);
+                    }
+                }
+
+                StepsEditor.Document.Blocks.Remove(block);
+            }
         }
     }
 }

@@ -156,7 +156,7 @@
                           SelectionChanged="FontSizeSelector_SelectionChanged"
                           Style="{StaticResource ComboBoxHoverableStyle}"/>
                 
-                <Button x:Name="ToggleListButton" Content="Toggle List" Margin="3" Click="NewOrderedListButton_Click"
+                <Button x:Name="ToggleListButton" Content="Ordered List" Margin="3" Click="ToggleOrderedListButton_Click"
                         Style="{StaticResource FlatButtonHoverableStyle}"/>
             </StackPanel>
             <RichTextBox
