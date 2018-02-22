@@ -8,7 +8,7 @@ using RecipeBox3.SQLiteModel.Data;
 namespace RecipeBox3.SQLiteModel.Adapters
 {
     /// <summary>Abstract adapter for a table in the database</summary>
-    public abstract class SQLiteAdapter<T> where T : CookbookRow
+    public abstract class SQLiteAdapter<T> : TableAdapter where T : CookbookRow
     {
         /// <summary>Connection string for this adapter</summary>
         protected string _connectionString;
@@ -54,7 +54,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         protected SQLiteParameter IDParameter = new SQLiteParameter("@id", DbType.Int32);
 
         /// <summary>An array of non-identity parameters for insert and update queries</summary>
-        protected abstract SQLiteParameter[] DataParameters { get; }
+        protected Dictionary<string, SQLiteParameter> DataParameters = null;
 
         /// <summary>Command to select one (by id) or all rows from the table</summary>
         protected SQLiteCommand SelectCommand;
@@ -67,19 +67,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <summary>Command to fetch the primary key ID of the last row inserted into the table</summary>
         protected SQLiteCommand LastIDCommand;
 
-        /// <summary>Name of the table this adapter manages</summary>
-        protected abstract string TableName { get; }
-
-        /// <summary>Name of the primary key ID column for this adapter's table</summary>
-        protected virtual string IDColumn => IDParameter.SourceColumn;
-
-        /// <summary>Collection of this adapter's table's data column names</summary>
-        protected virtual IEnumerable<string> DataColumns =>
-            DataParameters.Select(p => p.SourceColumn).ToList();
-
         /// <summary>Collection of this adapter's parameter names</summary>
         protected virtual IEnumerable<string> DataParamNames =>
-            DataParameters.Select(p => p.ParameterName).ToList();
+            DataParameters?.Select(p => p.Value.ParameterName).ToList();
 
         /// <summary>
         /// Value of the last autoincrement primary key inserted into this table
@@ -122,13 +112,20 @@ namespace RecipeBox3.SQLiteModel.Adapters
         {
             _connectionString = connectionString;
 
+            // Setup data parameters
+            DataParameters = DataColumns.Select(
+                column => new SQLiteParameter(
+                    TableColumnExtensions.GetParameterName(column.ColumnName),
+                    column.DataType, column.ColumnName)
+                ).ToDictionary(p => p.SourceColumn.ToLower(), p => p, StringComparer.OrdinalIgnoreCase);
+
             // Setup Select command
             SelectCommand = new SQLiteCommand()
             {
                 CommandText = String.Format(
                     "SELECT {0}, {1} FROM {2} WHERE (@id IS NULL) OR ({0} = @id)",
-                    IDColumn,
-                    String.Join(", ", DataColumns),
+                    IDColumnName,
+                    String.Join(", ", DataColumnNames),
                     TableName)
             };
 
@@ -140,25 +137,25 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 CommandText = String.Format(
                     "INSERT INTO {0} ({1}) VALUES ({2})",
                     TableName,
-                    String.Join(", ", DataColumns),
+                    String.Join(", ", DataColumnNames),
                     String.Join(", ", DataParamNames))
             };
 
             InsertCommand.Parameters.Add(IDParameter);
-            InsertCommand.Parameters.AddRange(DataParameters);
+            InsertCommand.Parameters.AddRange(DataParameters.Values.ToArray());
 
             // Setup Update command
             UpdateCommand = new SQLiteCommand();
 
-            var columnAssignments = DataParameters.Select(p => String.Format("{0}={1}", p.SourceColumn, p.ParameterName));
+            var columnAssignments = DataParameters.Select(p => String.Format("{0}={1}", p.Value.SourceColumn, p.Value.ParameterName));
             
             UpdateCommand.CommandText = String.Format("UPDATE {0} SET {1} WHERE ({2}=@id)",
                 TableName,
                 String.Join(", ", columnAssignments),
-                IDColumn);
+                IDColumnName);
 
             UpdateCommand.Parameters.Add(IDParameter);
-            UpdateCommand.Parameters.AddRange(DataParameters);
+            UpdateCommand.Parameters.AddRange(DataParameters.Values.ToArray());
 
             // Setup Delete Command
             DeleteCommand = new SQLiteCommand()
@@ -166,7 +163,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 CommandText = String.Format(
                     "DELETE FROM {0} WHERE ({1} = @id)",
                     TableName,
-                    IDColumn)
+                    IDColumnName)
             };
 
             DeleteCommand.Parameters.Add(IDParameter);
@@ -243,6 +240,17 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// </summary>
         /// <param name="row">Row object to pull values from</param>
         protected abstract void SetDataParametersFromRow(T row);
+
+        /// <summary>Try to set the value of a parameter</summary>
+        /// <param name="columnName"></param>
+        /// <param name="value"></param>
+        protected void TrySetParameterValue(string columnName, object value)
+        {
+            if (DataParameters.TryGetValue(columnName, out SQLiteParameter parameter))
+            {
+                parameter.Value = value;
+            }
+        }
         
         /// <summary>
         /// Perform an update command on a row in the database
@@ -270,7 +278,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <summary>
         /// Delete a row from the database by id
         /// </summary>
-        /// <param name="id">id to match in <see cref="IDColumn"/></param>
+        /// <param name="id">id to match in the table</param>
         /// <returns>true if one or more rows were deleted</returns>
         public virtual bool Delete(int? id)
         {

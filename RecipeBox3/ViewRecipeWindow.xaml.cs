@@ -1,5 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace RecipeBox3
 {
@@ -12,6 +15,8 @@ namespace RecipeBox3
         public ViewRecipeWindow()
         {
             InitializeComponent();
+            
+            ((App)Application.Current).PropertyChanged += App_PropertyChanged;
         }
 
         /// <summary>Create a new viewer for the specified recipe</summary>
@@ -29,6 +34,20 @@ namespace RecipeBox3
                 {
                     App.LogException(e);
                     StepsViewer.Document = null;
+                }
+            }
+        }
+
+        private void App_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "UnitSystem")
+            {
+                foreach (object item in IngredientsGrid.Items)
+                {
+                    if (UnitStringColumn.GetCellContent(item) is TextBlock content)
+                    {
+                        BindingOperations.GetMultiBindingExpression(content, TextBlock.TextProperty).UpdateTarget();
+                    }
                 }
             }
         }

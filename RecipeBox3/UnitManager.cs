@@ -29,6 +29,12 @@ namespace RecipeBox3
             DependencyProperty.Register("UnitList", typeof(Dictionary<int, Unit>), typeof(UnitManager), new PropertyMetadata(null));
 
 
+        /// <summary>Dictionary of units keyed by name</summary>
+        public Dictionary<string, Unit> UnitNameMap;
+
+        /// <summary>Dictionary of units keyed by abbreviation</summary>
+        public Dictionary<string, Unit> UnitAbbrevMap;
+
         /// <summary>Create a new instance of the manager</summary>
         public UnitManager()
         {
@@ -44,7 +50,7 @@ namespace RecipeBox3
         /// If source or target unit are malformed or incompatible
         /// </exception>
         /// <returns>Equivalent amount in the target unit</returns>
-        public decimal Convert(decimal amount, int sourceID, int targetID)
+        public Fraction Convert(Fraction amount, int sourceID, int targetID)
         {
             if (!UnitList.TryGetValue(sourceID, out Unit source))
                 throw new UnitNotFoundException("Source unit was not found in the unit table");
@@ -63,7 +69,7 @@ namespace RecipeBox3
         /// If source or target unit are malformed or incompatible
         /// </exception>
         /// <returns>Equivalent amount in the target unit</returns>
-        private decimal Convert(decimal amount, Unit source, Unit target)
+        private Fraction Convert(Fraction amount, Unit source, Unit target)
         {
             if (source == null || target == null) throw new ArgumentNullException();
 
@@ -79,7 +85,7 @@ namespace RecipeBox3
                         )
                     );
 
-            return System.Convert.ToDecimal(source.U_Ratio / target.U_Ratio) * amount;
+            return amount * (source.U_Ratio / target.U_Ratio);
         }
 
 
@@ -92,7 +98,7 @@ namespace RecipeBox3
         /// <param name="targetSystem">Desired system for the output</param>
         /// <exception cref="UnitNotFoundException">If the given source unit does not exist</exception>
         /// <returns>A string containing an amount with units</returns>
-        public string GetString(decimal amount, int sourceID, Unit.System targetSystem)
+        public string GetString(Fraction amount, int sourceID, Unit.System targetSystem)
         {
             if (!UnitList.TryGetValue(sourceID, out Unit sourceUnit))
                 throw new UnitNotFoundException("Source unit was not found in the unit table");
@@ -108,7 +114,7 @@ namespace RecipeBox3
         /// <param name="sourceUnit">Source unit</param>
         /// <param name="targetSystem">Desired system for the output</param>
         /// <returns>A string containing an amount with units</returns>
-        public string GetString(decimal amount, Unit sourceUnit, Unit.System targetSystem)
+        public string GetString(Fraction amount, Unit sourceUnit, Unit.System targetSystem)
         {
             if (targetSystem == Unit.System.Any)
             {
@@ -134,7 +140,7 @@ namespace RecipeBox3
         /// <param name="sourceID">ID of source unit</param>
         /// <returns>A string containing an amount and unit in US units if possible, otherwise the source unit</returns>
         /// <exception cref="UnitNotFoundException">If the given source unit does not exist</exception>
-        public string GetUSString(decimal amount, int sourceID)
+        public string GetUSString(Fraction amount, int sourceID)
         {
             if (!UnitList.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
 
@@ -145,14 +151,14 @@ namespace RecipeBox3
         /// <param name="amount">Amount in source unit</param>
         /// <param name="sourceRow">Source unit</param>
         /// <returns>A string containing an amount and unit in US units if possible, otherwise the source unit</returns>
-        public string GetUSString(decimal amount, Unit sourceRow)
+        public string GetUSString(Fraction amount, Unit sourceRow)
         {
             string outputStr = null;
 
             if (sourceRow.U_System == Unit.System.Customary)
             {
                 // already in US units
-                outputStr = FormatAsFraction(amount) + " " + sourceRow.U_Abbreviation;
+                outputStr = amount.ToString() + " " + sourceRow.U_Abbreviation;
                 return outputStr;
             }
 
@@ -164,11 +170,12 @@ namespace RecipeBox3
                           p.Key == sourceRow.ID
                 )
                 .Select(p => p.Value)
+                .OrderBy(p => p.U_Ratio)
                 .ToList();
 
             if (rows.Count <= 1)
             {
-                return FormatAsFraction(amount) + " " + sourceRow.U_Abbreviation;
+                return amount.ToString() + " " + sourceRow.U_Abbreviation;
             }
             else
             {
@@ -188,20 +195,23 @@ namespace RecipeBox3
                 else
                 {
                     Unit target = null;
+                    int targetIndex = 0;
 
                     if (sourceIndex == 0)
                     {
                         // no smaller, use larger
-                        target = rows[1];
+                        targetIndex = 1;
                     }
                     else if (sourceIndex > 0 && sourceIndex < rows.Count)
                     {
                         // use smaller
-                        target = rows[sourceIndex - 1];
+                        targetIndex = sourceIndex - 1;
                     }
 
-                    decimal newAmount = Convert(amount, sourceRow, target);
-                    decimal fPart = newAmount % 1;
+                    target = rows[targetIndex];
+
+                    Fraction newAmount = Convert(amount, sourceRow, target);
+                    Fraction fPart = newAmount.FractionPart;
 
                     string targetAbbrev = target.U_Abbreviation;
 
@@ -210,10 +220,13 @@ namespace RecipeBox3
                         // not exact
 
                         bool smallerUnitFound = false;
-                        decimal subAmount = 0.0M;
+                        Fraction subAmount = Fraction.Zero;
                         string subTargetAbbrev = null;
 
-                        for (int j = sourceIndex; j >= 0 && !smallerUnitFound; j--)
+                        int startIndex = Math.Min(sourceIndex, targetIndex) - 1;
+                        startIndex = (startIndex >= 0) ? startIndex : 0;
+
+                        for (int j = startIndex; j >= 0 && !smallerUnitFound; j--)
                         {
                             // traverse back down the list to find the sub unit
                             if (rows[j] is Unit subTarget)
@@ -237,17 +250,34 @@ namespace RecipeBox3
 
                         if (smallerUnitFound)
                         {
-                            outputStr = String.Format("{0} {1}, {2} {3}", decimal.Round(newAmount), targetAbbrev, FormatAsFraction(subAmount, true), subTargetAbbrev);
+                            subAmount = RoundFractionToClosest(subAmount, "1/8", "1/3");
+
+                            outputStr = String.Format(
+                                "{0} {1}, {2} {3}",
+                                newAmount.IntegerPart,
+                                targetAbbrev,
+                                subAmount.Simplify(),
+                                subTargetAbbrev);
                         }
                         else
                         {
-                            outputStr = String.Format("{0} {1}", FormatAsFraction(newAmount, true), targetAbbrev);
+                            newAmount = RoundFractionToClosest(newAmount, "1/8", "1/3");
+
+                            outputStr = String.Format(
+                                "{0} {1}",
+                                newAmount.Simplify(),
+                                targetAbbrev);
                         }
                     }
                     else
                     {
                         // no fractional part
-                        outputStr = String.Format("{0} {1}", newAmount, targetAbbrev);
+                        newAmount = RoundFractionToClosest(newAmount, "1/8", "1/3");
+
+                        outputStr = String.Format(
+                            "{0} {1}",
+                            newAmount.Round("1/8").Simplify(),
+                            targetAbbrev);
                     }
                     
                 }
@@ -257,12 +287,23 @@ namespace RecipeBox3
             return outputStr;
         }
 
+        private static Fraction RoundFractionToClosest(Fraction amount, Fraction precisionA, Fraction precisionB)
+        {
+            Fraction roundedA = amount.Round(precisionA);
+            Fraction roundedB = amount.Round(precisionB);
+
+            if (Math.Abs((roundedA - amount).ApproximateValue) < Math.Abs((roundedB - amount).ApproximateValue))
+                return roundedA;
+            else
+                return roundedB;
+        }
+
         /// <summary>Attempt to get a string representation of an amount converted to metric units</summary>
         /// <param name="amount">Amount in source unit</param>
         /// <param name="sourceID">ID of source unit</param>
         /// <returns>A string containing an amount and unit in metric units if possible, otherwise the source unit</returns>
         /// <exception cref="UnitNotFoundException">If the given source unit does not exist</exception>
-        public string GetMetricString(decimal amount, int sourceID)
+        public string GetMetricString(Fraction amount, int sourceID)
         {
             if (!UnitList.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
 
@@ -273,14 +314,14 @@ namespace RecipeBox3
         /// <param name="amount">Amount in source unit</param>
         /// <param name="sourceRow">Source unit</param>
         /// <returns>A string containing an amount and unit in metric units if possible, otherwise the source unit</returns>
-        public string GetMetricString(decimal amount, Unit sourceRow)
+        public string GetMetricString(Fraction amount, Unit sourceRow)
         {
             string outputStr = null;
 
             if (sourceRow.U_System == Unit.System.Metric)
             {
                 // already in metric units
-                outputStr = decimal.Round(amount, 3).ToString("0.###") + " " + sourceRow.U_Abbreviation;
+                outputStr = Math.Round(amount.ApproximateValue, 3).ToString("0.###") + " " + sourceRow.U_Abbreviation;
                 return outputStr;
             }
 
@@ -292,11 +333,12 @@ namespace RecipeBox3
                           p.Key == sourceRow.ID
                 )
                 .Select(p => p.Value)
+                .OrderBy(p => p.U_Ratio)
                 .ToList();
 
             if (rows.Count <= 1)
             {
-                outputStr = decimal.Round(amount, 3).ToString("0.###");
+                outputStr = Math.Round(amount.ApproximateValue, 3).ToString("0.###");
             }
             else
             {
@@ -328,9 +370,9 @@ namespace RecipeBox3
                         target = rows[sourceIndex - 1];
                     }
 
-                    decimal newAmount = Convert(amount, sourceRow, target);
+                    Fraction newAmount = Convert(amount, sourceRow, target);
 
-                    outputStr = decimal.Round(newAmount, 3).ToString("0.###") + " " + target.U_Abbreviation;
+                    outputStr = Math.Round(newAmount.ApproximateValue, 3).ToString("0.###") + " " + target.U_Abbreviation;
                 }
             }
 
@@ -340,7 +382,11 @@ namespace RecipeBox3
         /// <summary>Refresh the contents of the Units table from the database</summary>
         public void UpdateUnitsTable()
         {
-            UnitList = unitsAdapter.SelectAll().ToDictionary(p => p.ID, p => p);
+            IEnumerable<Unit> units = unitsAdapter.SelectAll();
+
+            UnitNameMap = units.ToDictionary(unit => unit.U_Name, unit => unit);
+            UnitAbbrevMap = units.ToDictionary(unit => unit.U_Abbreviation, unit => unit);
+            UnitList = units.ToDictionary(unit => unit.ID, unit => unit);
         }
 
         /// <summary>Represents an error that occurs when a requested unit does not exist</summary>
@@ -435,7 +481,7 @@ namespace RecipeBox3
         /// <summary>Convert a string representation of a fraction to its numeric equivalent</summary>
         /// <param name="inputStr">String containing the fraction to be parsed</param>
         /// <returns>The decimal equivalent of the input, or 0 if the input was not a valid fraction</returns>
-        public static decimal ParseFraction(string inputStr)
+        public static decimal ParseAmount(string inputStr)
         {
             decimal result = 0.0M;
             string[] parts;
@@ -476,13 +522,8 @@ namespace RecipeBox3
         {
             input = input.Trim();
 
-            foreach (Unit unit in UnitList.Values)
-            {
-                if (input == unit.U_Name || input == unit.U_Plural || input == unit.U_Abbreviation)
-                {
-                    return unit;
-                }
-            }
+            if (UnitAbbrevMap.TryGetValue(input, out Unit fromAbbrev)) return fromAbbrev;
+            if (UnitNameMap.TryGetValue(input, out Unit fromName)) return fromName;
 
             return null;
         }
@@ -504,7 +545,7 @@ namespace RecipeBox3
             var match = Regex.Match(input, pattern);
             if (match.Success && match.Groups.Count == 2)
             {
-                amount = ParseFraction(match.Groups[0].Value);
+                amount = ParseAmount(match.Groups[0].Value);
                 var unit = FindUnit(match.Groups[1].Value);
 
                 if (unit != null)

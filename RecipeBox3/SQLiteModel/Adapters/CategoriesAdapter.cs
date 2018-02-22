@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using RecipeBox3.SQLiteModel.Data;
@@ -8,17 +9,17 @@ namespace RecipeBox3.SQLiteModel.Adapters
     /// <summary>Adapter for the Categories table</summary>
     public sealed class CategoriesAdapter : SQLiteAdapter<Category>
     {
-        private SQLiteParameter nameParameter   = new SQLiteParameter("@name", DbType.String, "C_Name");
-        private SQLiteParameter editableParameter = new SQLiteParameter("@editable", DbType.Boolean, "C_Editable");
+        /// <inheritdoc/>
+        public override string TableName => "Categories";
+        /// <inheritdoc/>
+        public override string IDColumnName => "C_ID";
 
         /// <inheritdoc/>
-        protected override string TableName => "Categories";
-        /// <inheritdoc/>
-        protected override string IDColumn => "C_ID";
-
-        /// <inheritdoc/>
-        protected override SQLiteParameter[] DataParameters =>
-            new SQLiteParameter[] { nameParameter, editableParameter };
+        public override IEnumerable<TableColumn> DataColumns => new TableColumn[]
+        {
+            new TableColumn("C_Name", DbType.String, "New Category", ColumnOptions.NotNull | ColumnOptions.Unique),
+            new TableColumn("C_Editable", DbType.Boolean, true)
+        };
 
         /// <summary>
         /// Create a new adapter with the application default connection string
@@ -34,7 +35,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <inheritdoc/>
         protected override void SetDataParametersFromRow(Category row)
         {
-            nameParameter.Value = row.C_Name;
+            TrySetParameterValue("C_Name", row.C_Name);
+            TrySetParameterValue("C_Editable", row.IsUserEditable);
         }
 
         /// <inheritdoc/>
@@ -46,7 +48,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 {
                     C_ID = reader.GetInt32(0),
                     C_Name = reader.GetString(1),
-                    IsUserEditable = reader.GetBoolean(2)
+                    IsUserEditable = reader.GetBoolean(2),
+                    Status = RowStatus.Unchanged
                 };
 
                 return newCategory;

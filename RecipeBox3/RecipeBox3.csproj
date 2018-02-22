@@ -127,7 +127,10 @@
     <Compile Include="Controls\DurationEntryBox.xaml.cs">
       <DependentUpon>DurationEntryBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ExtendedMenuItem.cs" />
+    <Compile Include="Controls\ExtendedMenuItem.cs" />
+    <Compile Include="Fraction.cs" />
+    <Compile Include="SQLiteModel\Adapters\TableAdapter.cs" />
+    <Compile Include="SQLiteModel\Adapters\TableColumn.cs" />
     <Compile Include="TableEditorViewModel.cs" />
     <Compile Include="UnitEditorView.xaml.cs">
       <DependentUpon>UnitEditorView.xaml</DependentUpon>
@@ -317,9 +320,6 @@
     <Resource Include="Resources\bold_16x.png" />
     <Resource Include="Resources\italic_16x.png" />
     <Resource Include="Resources\underline_16x.png" />
-    <Content Include="SQLite.Interop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.107.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.107.0\build\net45\System.Data.SQLite.Core.targets')" />

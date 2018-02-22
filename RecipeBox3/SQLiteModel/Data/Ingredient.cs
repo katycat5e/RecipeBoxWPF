@@ -37,15 +37,15 @@ namespace RecipeBox3.SQLiteModel.Data
 
 
         /// <summary>Ingredient Amount</summary>
-        public decimal IE_Amount
+        public Fraction IE_Amount
         {
-            get { return (decimal)GetValue(IE_AmountProperty); }
+            get { return (Fraction)GetValue(IE_AmountProperty); }
             set { SetValue(IE_AmountProperty, value); }
         }
 
         /// <summary>Ingredient Amount</summary>
         public static readonly DependencyProperty IE_AmountProperty =
-            DependencyProperty.Register("IE_Amount", typeof(decimal), typeof(Ingredient), new PropertyMetadata(0.000M, OnRowChanged));
+            DependencyProperty.Register("IE_Amount", typeof(Fraction), typeof(Ingredient), new PropertyMetadata(new Fraction(0F), OnRowChanged));
 
 
         /// <summary>Ingredient Unit ID</summary>

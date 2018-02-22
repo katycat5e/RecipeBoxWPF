@@ -15,7 +15,8 @@
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
         <local:AmountStringConverter 
             x:Key="UnitStringConverter"
-            UnitManager="{Binding Mode=OneWay, Source={StaticResource GlobalUnitManager}}"/>
+            UnitManager="{Binding Mode=OneWay, Source={StaticResource GlobalUnitManager}}"
+            UnitSystem="{Binding Mode=OneWay, Path=UnitSystem, Source={x:Static Application.Current}}"/>
 
         <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -24,7 +25,8 @@
     </Window.Resources>
 
     <Window.DataContext>
-        <local:ViewRecipeViewModel/>
+        <local:ViewRecipeViewModel
+            UnitSystem="{Binding Source={x:Static Application.Current}, Path=UnitSystem, Mode=OneWay}"/>
     </Window.DataContext>
 
     <Grid>
@@ -58,10 +60,10 @@
 
         <DockPanel Grid.Row="2" Grid.Column="0">
             <Label Content="Ingredients" FontSize="14pt" DockPanel.Dock="Top"/>
-            <DataGrid ItemsSource="{Binding Ingredients}" Margin="6" AutoGenerateColumns="False"
+            <DataGrid x:Name="IngredientsGrid" ItemsSource="{Binding Ingredients}" Margin="6" AutoGenerateColumns="False"
                       HeadersVisibility="None" Style="{StaticResource DefaultDataGridStyle}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="2*">
+                    <DataGridTextColumn Width="2*" x:Name="UnitStringColumn">
                         <DataGridTextColumn.CellStyle>
                             <Style>
                                 <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>

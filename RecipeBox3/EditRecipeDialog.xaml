@@ -11,11 +11,12 @@
         d:DataContext="{d:DesignData Source=./DesignData/EditRecipeWindowData.xaml, IsDesignTimeCreatable=True}">
 
     <Window.Resources>
+        <local:FractionStringConverter x:Key="FractionStringConverter"/>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
         <SolidColorBrush x:Key="PrimaryMDBrush" Color="{StaticResource ColorPrimaryMidDark}"/>
         <SolidColorBrush x:Key="SecondaryDarkBrush" Color="{StaticResource ColorSecondary2Dark}"/>
 
-        
+
     </Window.Resources>
     <Window.DataContext>
         <local:EditRecipeViewModel UnitManager="{StaticResource GlobalUnitManager}"/>
@@ -73,11 +74,13 @@
 
                 <Label Content="Prep Time:" Grid.Column="0" Grid.Row="3"/>
                 <ctrls:DurationEntryBox x:Name="PrepTimeInput" Grid.Column="1" Grid.Row="3"
-                                        MinuteValue="{Binding MyRecipe.R_PrepTime}"/>
+                                        MinuteValue="{Binding MyRecipe.R_PrepTime}"
+                                        InvalidColor="Red"/>
 
                 <Label Content="Cook Time:" Grid.Column="0" Grid.Row="4"/>
                 <ctrls:DurationEntryBox x:Name="CookTimeInput" Grid.Column="1" Grid.Row="4"
-                                        MinuteValue="{Binding MyRecipe.R_CookTime}"/>
+                                        MinuteValue="{Binding MyRecipe.R_CookTime}"
+                                        InvalidColor="Red"/>
             </Grid>
 
             <Grid Grid.Column="1" Margin="6,0,0,6">
@@ -99,7 +102,7 @@
             <DataGrid x:Name="IngredGrid" Margin="3" ItemsSource="{Binding Ingredients}"
                       Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Amount" Binding="{Binding IE_Amount}" Width="1*"/>
+                    <DataGridTextColumn Header="Amount" Binding="{Binding IE_Amount, Mode=TwoWay, Converter={StaticResource FractionStringConverter}}" Width="1*"/>
                     <DataGridComboBoxColumn
                         Header="Unit" Width="2*"
                         SelectedValueBinding="{Binding IE_Unit}"
@@ -153,7 +156,7 @@
                           SelectionChanged="FontSizeSelector_SelectionChanged"
                           Style="{StaticResource ComboBoxHoverableStyle}"/>
                 
-                <Button x:Name="ToggleListButton" Content="Toggle List" Margin="3" Click="NewOrderedListButton_Click"
+                <Button x:Name="ToggleListButton" Content="Ordered List" Margin="3" Click="ToggleOrderedListButton_Click"
                         Style="{StaticResource FlatButtonHoverableStyle}"/>
             </StackPanel>
             <RichTextBox

@@ -6,7 +6,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="SelectedUnitSystem" Type="System.String" Scope="User">
-      <Value Profile="(Default)">USC</Value>
+      <Value Profile="(Default)">Customary</Value>
     </Setting>
     <Setting Name="SQLiteConnectionString" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;

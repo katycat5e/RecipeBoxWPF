@@ -176,6 +176,42 @@ namespace RecipeBox3
         }
     }
 
+    /// <summary>Class for converting between fractions and decimal</summary>
+    public class FractionStringConverter : IValueConverter
+    {
+        /// <summary>Convert a fraction to a string</summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Fraction amount)
+            {
+                if (((App)Application.Current).UnitSystem == Unit.System.Customary)
+                    return amount.ToString();
+                else return Math.Round(amount.ApproximateValue, 3).ToString("0.###");
+            }
+            else return "";
+        }
+
+        /// <summary>Convert a string to a fraction amount</summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string fraction)
+            {
+                return Fraction.Parse(fraction);
+            }
+            else return Fraction.Zero;
+        }
+    }
+
     /// <summary>Class for converting between unit/amount data and a string representation</summary>
     public class AmountStringConverter : DependencyObject, IMultiValueConverter
     {
@@ -204,7 +240,7 @@ namespace RecipeBox3
 
 
         /// <summary>Convert a unitID and amount to a string representation</summary>
-        /// <param name="values">Array containing int unitID at index 0 and decimal amount at index 1</param>
+        /// <param name="values">Array containing int unitID at index 0 and <see cref="Fraction"/> amount at index 1</param>
         /// <param name="targetType"></param>
         /// <param name="parameter"></param>
         /// <param name="culture"></param>
@@ -214,7 +250,7 @@ namespace RecipeBox3
             string outputString = null;
             if (values.Length < 2) return null;
 
-            if (values[0] is int unitID && values[1] is decimal amount)
+            if (values[0] is int unitID && values[1] is Fraction amount)
             {
                 return UnitManager.GetString(amount, unitID, UnitSystem);
             }

@@ -133,20 +133,24 @@ namespace RecipeBox3
 
         private void EditCategoriesMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (Application.Current.TryFindResource("GlobalCategoryEditor") is CategoriesEditorView categoryEditor)
+            var categoryEditor = new CategoriesEditorView
             {
-                categoryEditor.Owner = this;
-                categoryEditor.ShowDialog();
-            }
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            categoryEditor.ShowDialog();
         }
 
         private void EditUnitsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (Application.Current.TryFindResource("GlobalUnitEditor") is UnitEditorView unitEditor)
+            var unitEditor = new UnitEditorView
             {
-                unitEditor.Owner = this;
-                unitEditor.ShowDialog();
-            }
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            unitEditor.ShowDialog();
         }
 
         private void ShowImagesMenuItem_Checked(object sender, RoutedEventArgs e)

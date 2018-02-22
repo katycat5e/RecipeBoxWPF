@@ -21,8 +21,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
             SelectCommand.CommandText =
                 String.Format(
                     "SELECT {0}, {1}, C_Name FROM {2} WHERE (@id IS NULL) OR ({0} = @id)",
-                    IDColumn,
-                    String.Join(", ", DataColumns),
+                    IDColumnName,
+                    String.Join(", ", DataColumnNames),
                     "Recipes LEFT JOIN Categories ON R_Category=C_ID");
         }
         

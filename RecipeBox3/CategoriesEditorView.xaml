@@ -43,7 +43,7 @@
         </DataGrid>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-            <Button x:Name="AddRowButton" Content="Add Catgory" Click="AddRowButton_Click"/>
+            <Button x:Name="AddRowButton" Content="Add Category" Click="AddRowButton_Click"/>
             <Button x:Name="DeleteRowButton" Content="Delete Selected" Click="DeleteRowButton_Click"/>
         </StackPanel>
 
