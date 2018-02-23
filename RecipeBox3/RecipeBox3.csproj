@@ -129,8 +129,10 @@
     </Compile>
     <Compile Include="Controls\ExtendedMenuItem.cs" />
     <Compile Include="Fraction.cs" />
+    <Compile Include="SQLiteModel\Adapters\PropertiesAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\TableAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\TableColumn.cs" />
+    <Compile Include="SQLiteModel\Data\PropertyRow.cs" />
     <Compile Include="TableEditorViewModel.cs" />
     <Compile Include="UnitEditorView.xaml.cs">
       <DependentUpon>UnitEditorView.xaml</DependentUpon>

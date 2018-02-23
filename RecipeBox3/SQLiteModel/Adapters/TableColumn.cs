@@ -38,6 +38,55 @@ namespace RecipeBox3.SQLiteModel.Adapters
             Unique = options.HasFlag(ColumnOptions.Unique);
             PrimaryKey = options.HasFlag(ColumnOptions.PrimaryKey);
         }
+
+        /// <summary>Get the equivalent sqlite affinity for a data type</summary>
+        /// <returns></returns>
+        public string GetSQLiteAffinity()
+        {
+            switch (DataType)
+            {
+                case DbType.Int32:
+                case DbType.Int64:
+                    return "INTEGER";
+
+                case DbType.Single:
+                case DbType.Double:
+                    return "REAL";
+
+                case DbType.Decimal:
+                    return "NUMERIC";
+
+                case DbType.String:
+                    return "TEXT";
+
+                case DbType.Binary:
+                default:
+                    return "BLOB";
+            }
+        }
+
+        /// <summary>Get the CREATE TABLE syntax column declaration</summary>
+        /// <returns></returns>
+        public string GetColumnDeclaration()
+        {
+            var sb = new System.Text.StringBuilder();
+            string affinity = GetSQLiteAffinity();
+            sb.AppendFormat("`{0}` {1}", ColumnName, affinity);
+            if (NotNull) sb.Append(" NOT NULL");
+
+            sb.Append(" DEFAULT ");
+            if (DefaultValue == null)
+                sb.Append("NULL");
+            else if (affinity == "TEXT" || affinity == "BLOB")
+                sb.Append($"'{DefaultValue}'");
+            else
+                sb.Append(DefaultValue.ToString());
+
+            if (Unique) sb.Append(" UNIQUE");
+            if (PrimaryKey) sb.Append(" PRIMARY KEY AUTOINCREMENT");
+
+            return sb.ToString();
+        }
     }
 
     /// <summary>Optional modifiers to be applied to a column</summary>
@@ -68,31 +117,6 @@ namespace RecipeBox3.SQLiteModel.Adapters
             return "@" + columnName.ToLower();
         }
 
-        /// <summary>Get the equivalent sqlite affinity for a data type</summary>
-        /// <param name="dbType"></param>
-        /// <returns></returns>
-        public static string GetSQLiteAffinity(DbType dbType)
-        {
-            switch (dbType)
-            {
-                case DbType.Int32:
-                case DbType.Int64:
-                    return "INTEGER";
-
-                case DbType.Single:
-                case DbType.Double:
-                    return "REAL";
-
-                case DbType.Decimal:
-                    return "NUMERIC";
-
-                case DbType.String:
-                    return "TEXT";
-
-                case DbType.Binary:
-                default:
-                    return "BLOB";
-            }
-        }
+        
     }
 }
