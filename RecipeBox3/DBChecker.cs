@@ -265,6 +265,8 @@ namespace RecipeBox3
 
             TableNameParameter.Value = tableName;
 
+            var uniqueColumns = GetTableUniqueColumns();
+
             using (var reader = GetColumnsCommand.ExecuteReader())
             {
                 if (reader.HasRows)
@@ -281,17 +283,40 @@ namespace RecipeBox3
                             PrimaryKey = reader.GetBoolean(4)
                         };
 
+                        tempRow.Unique = uniqueColumns.Contains(tempRow.Name);
+
                         results.Add(tempRow.Name, tempRow);
                     }
                 }
             }
+            
+            
 
             return results;
         }
 
         private List<string> GetTableUniqueColumns()
         {
+            var indices = new List<string>();
+            using (var indexReader = GetIndexesCommand.ExecuteReader())
+            {
+                if (indexReader.HasRows)
+                {
+                    indexReader.Read();
+                    indices.Add(indexReader.GetString(0));
+                }
+            }
 
+            var results = new List<string>(indices.Count);
+
+            foreach (string index in indices)
+            {
+                IndexNameParameter.Value = index;
+                string indexColumn = Convert.ToString(GetIndexColumnCommand.ExecuteScalar());
+                if (indexColumn != null) results.Add(indexColumn);
+            }
+
+            return results;
         }
 
         /// <summary>Create a new table in the database</summary>
