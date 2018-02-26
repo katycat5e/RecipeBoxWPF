@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 using RecipeBox3.SQLiteModel.Data;
 
@@ -61,7 +62,21 @@ namespace RecipeBox3
             SplashPage = new SplashDialog();
             SplashPage.Show();
 
-            //if (!EnsureDBExists()) Shutdown();
+            var dbChecker = new DBChecker(RecipeBox3.Properties.Settings.Default.SQLiteConnectionString);
+            var progressBinding = new Binding
+            {
+                Source = dbChecker,
+                Path = new PropertyPath(DBChecker.OperationProgressProperty),
+                Mode = BindingMode.OneWay
+            };
+
+            
+
+            if (!dbChecker.CheckDatabase())
+            {
+                Shutdown();
+                return;
+            }
 
             if (Enum.TryParse(RecipeBox3.Properties.Settings.Default.SelectedUnitSystem, out Unit.System system))
                 UnitSystem = system;
@@ -90,7 +105,7 @@ namespace RecipeBox3
         /// <param name="message"></param>
         public static void LogMessage(string message)
         {
-            System.Console.WriteLine(message);
+            Console.WriteLine(message);
         }
 
         /// <summary>Log an exception to the console</summary>

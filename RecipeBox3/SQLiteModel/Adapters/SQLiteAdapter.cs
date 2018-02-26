@@ -375,4 +375,35 @@ namespace RecipeBox3.SQLiteModel.Adapters
             return result;
         }
     }
+
+    /// <summary>Extension methods for </summary>
+    public static class SQLiteDataReaderExtensions
+    {
+        /// <summary>Get an int value that might be DBNull</summary>
+        /// <param name="reader"></param>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public static Int32? GetNullableInt(this SQLiteDataReader reader, int i)
+        {
+            return reader[i] == DBNull.Value ? null : new Int32?(reader.GetInt32(i));
+        }
+
+        /// <summary>Get a long value that might be DBNull</summary>
+        /// <param name="reader"></param>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public static Int64? GetNullableLong(this SQLiteDataReader reader, int i)
+        {
+            return reader[i] == DBNull.Value ? null : new Int64?(reader.GetInt64(i));
+        }
+
+        /// <summary>Get a string value that might be DBNull</summary>
+        /// <param name="reader"></param>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public static string GetNullableString(this SQLiteDataReader reader, int i)
+        {
+            return reader[i] == DBNull.Value ? null : reader.GetString(i);
+        }
+    }
 }

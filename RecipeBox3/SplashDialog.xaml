@@ -4,7 +4,7 @@
 	Title="StartupSplashDialog"
     Height="200" Width="400" ShowInTaskbar="False" WindowStartupLocation="CenterScreen" WindowStyle="None" Cursor="Wait" ResizeMode="NoResize"
     >
-    <DockPanel LastChildFill="True">
+    <DockPanel>
         <DockPanel.Background>
             <SolidColorBrush Color="{StaticResource ColorSecondary1Light}"/>
         </DockPanel.Background>
@@ -15,6 +15,21 @@
             Recipe Box
         </Label>
         <Label x:Name="VersionLabel" Height="33" DockPanel.Dock="Top"/>
+
+
+        <ProgressBar x:Name="ProgressIndicator" DockPanel.Dock="Bottom" Height="15" Margin="5,10"
+                     Minimum="0" Maximum="100" Value="{Binding ElementName=window, Path=ProgressPercent}"
+                     Visibility="Collapsed">
+            <ProgressBar.Style>
+                <Style TargetType="ProgressBar">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=window, Path=ShowProgressBar}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ProgressBar.Style>
+        </ProgressBar>
         <Label x:Name="StatusLabel" DockPanel.Dock="Bottom" Content="{Binding StatusText, ElementName=window}"/>
     </DockPanel>
 

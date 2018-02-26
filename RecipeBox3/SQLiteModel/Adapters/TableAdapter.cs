@@ -23,6 +23,18 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <summary>Columns in this table</summary>
         public abstract IEnumerable<TableColumn> DataColumns { get; }
 
+        /// <summary>All of the columns in this table</summary>
+        public virtual List<TableColumn> Columns
+        {
+            get
+            {
+                IEnumerable<TableColumn> datacolumns = DataColumns;
+                var columns = new List<TableColumn>(datacolumns.Count() + 1) { IDColumn };
+                columns.AddRange(datacolumns);
+                return columns;
+            }
+        }
+
         /// <summary>Names of non-identity columns for insert and update queries</summary>
         public IEnumerable<string> DataColumnNames => DataColumns.Select(c => c.ColumnName).ToList();
     }

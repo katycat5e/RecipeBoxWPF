@@ -140,19 +140,19 @@ namespace RecipeBox3.SQLiteModel.Adapters
         {
             try
             {
-                var nextRow = new DetailRecipe()
+                var nextRow = new DetailRecipe
                 {
                     R_ID = reader.GetInt32(0),
                     R_Name = reader.GetString(1),
                     R_Description = reader.GetString(2),
-                    R_Modified = reader.GetValue(3) as long?,
+                    R_Modified = reader.GetNullableLong(3),
                     R_PrepTime = reader.GetInt32(4),
                     R_CookTime = reader.GetInt32(5),
                     R_Steps = reader.GetString(6),
                     R_Category = reader.GetInt32(7),
-                    C_Name = reader.GetString(8),
+                    C_Name = reader.GetNullableString(8),
                     IMG_Data = null,
-                    Status = RowStatus.Unchanged,
+                    Status = RowStatus.Unchanged
                 };
 
                 return nextRow;
