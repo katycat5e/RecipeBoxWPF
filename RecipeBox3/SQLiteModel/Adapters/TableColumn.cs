@@ -47,6 +47,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             {
                 case DbType.Int32:
                 case DbType.Int64:
+                case DbType.Boolean:
                     return "INTEGER";
 
                 case DbType.Single:
@@ -79,6 +80,8 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 sb.Append("NULL");
             else if (affinity == "TEXT" || affinity == "BLOB")
                 sb.Append($"'{DefaultValue}'");
+            else if (DataType == DbType.Boolean)
+                sb.Append(Convert.ToInt32(DefaultValue));
             else
                 sb.Append(DefaultValue.ToString());
 

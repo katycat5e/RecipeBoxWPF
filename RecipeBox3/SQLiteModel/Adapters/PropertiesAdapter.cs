@@ -51,7 +51,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
             base.Initialize(connectionString);
 
             var nameParam = TableColumnExtensions.GetParameterName("Name");
-            SelectByNameCommand = new SQLiteCommand($"SELECT Name, Value FROM `{TableName}` WHERE `Name`={nameParam}", Connection);
+            SelectByNameCommand = new SQLiteCommand($"SELECT ID, Name, Value FROM `{TableName}` WHERE `Name`={nameParam}", Connection);
 
             if (DataParameters.TryGetValue("Name", out SQLiteParameter nameParameter))
                 SelectByNameCommand.Parameters.Add(nameParameter);
@@ -88,8 +88,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
             {
                 return new PropertyRow()
                 {
-                    Name = reader.GetString(0),
-                    Value = reader.GetString(1),
+                    ID = reader.GetInt32(0),
+                    Name = reader.GetString(1),
+                    Value = reader.GetString(2),
                     Status = RowStatus.Unchanged
                 };
             }

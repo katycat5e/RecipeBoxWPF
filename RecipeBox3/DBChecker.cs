@@ -19,7 +19,7 @@ namespace RecipeBox3
             "The current database (version ~VERSION~) is not compatible with this version of RecipeBox. " +
             "To continue with this version of RecipeBox, the database must be upgraded to version ~NEWVERSION~.\n\n" +
             "Selecting 'Yes' will backup the existing database and attempt the upgrade\n\n" +
-            "Selecting 'No' will leave the data unaffected and quit the appliction. RecipeBox version ~VERSION~ or a compatible update must be installed to access the data";
+            "Selecting 'No' will leave the data unaffected and quit the appliction.";
 
         private SQLiteConnection Connection;
         SQLiteCommand CheckTableExistsCommand;
@@ -274,14 +274,19 @@ namespace RecipeBox3
                     // table exists, get the columns
                     while (reader.Read())
                     {
-                        tempRow = new TableInfoRow()
+                        tempRow = new TableInfoRow
                         {
                             Name = reader.GetString(0),
                             DataType = reader.GetString(1),
                             NotNull = reader.GetBoolean(2),
-                            Default = reader.GetString(3),
                             PrimaryKey = reader.GetBoolean(4)
                         };
+
+                        object defaultValue = reader.GetValue(3);
+                        if (defaultValue == DBNull.Value)
+                            tempRow.Default = null;
+                        else
+                            tempRow.Default = defaultValue.ToString();
 
                         tempRow.Unique = uniqueColumns.Contains(tempRow.Name);
 
@@ -302,8 +307,10 @@ namespace RecipeBox3
             {
                 if (indexReader.HasRows)
                 {
-                    indexReader.Read();
-                    indices.Add(indexReader.GetString(0));
+                    while (indexReader.Read())
+                    {
+                        indices.Add(indexReader.GetString(0));
+                    }
                 }
             }
 
@@ -363,7 +370,7 @@ namespace RecipeBox3
         {
             string commandText =
                 String.Format(
-                    "INSERT INTO `{0}` SELECT {1} FROM `{1}`",
+                    "INSERT INTO `{0}` SELECT {1} FROM `{2}`",
                     destTableName,
                     String.Join(", ", columnNames),
                     sourceTableName);
@@ -449,7 +456,12 @@ namespace RecipeBox3
             {
                 bool columnsMatch = (column.GetSQLiteAffinity() == DataType);
                 columnsMatch &= (column.NotNull == NotNull);
-                columnsMatch &= (column.DefaultValue.ToString() == Default);
+
+                if (column.DataType == DbType.Boolean)
+                    columnsMatch &= (Convert.ToInt32(column.DefaultValue).ToString() == Default);
+                else
+                    columnsMatch &= (column.DefaultValue?.ToString() == Default);
+
                 columnsMatch &= (column.Unique == Unique);
                 columnsMatch &= (column.PrimaryKey == PrimaryKey);
                 return columnsMatch;
