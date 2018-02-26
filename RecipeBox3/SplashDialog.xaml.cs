@@ -58,9 +58,7 @@ namespace RecipeBox3
         public SplashDialog()
         {
             InitializeComponent();
-            //VersionLabel.Text = Application.Current;
+            VersionLabel.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
-
-        
     }
 }

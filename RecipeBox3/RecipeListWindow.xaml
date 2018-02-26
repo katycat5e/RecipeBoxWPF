@@ -16,6 +16,7 @@
 
         <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="{StaticResource ControlTextBrush}"/>
         </Style>
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="Background" Value="White"/>
@@ -30,10 +31,9 @@
 
     <Grid>
         <DockPanel LastChildFill="True">
-            <Menu DockPanel.Dock="Top" BorderThickness="0" FontSize="{Binding ElementName=RecipeListView, Path=FontSize, Mode=OneWay}">
-                <Menu.Background>
-                    <SolidColorBrush Color="{StaticResource ColorPrimaryMidDark}"/>
-                </Menu.Background>
+            <Menu DockPanel.Dock="Top" BorderThickness="0"
+                  FontSize="{Binding ElementName=RecipeListView, Path=FontSize, Mode=OneWay}"
+                  Background="{StaticResource ControlMenuBrush}">
                 <ctrls:ExtendedMenuItem x:Name="RBItem" Header="_RecipeBox">
                     <ctrls:ExtendedMenuItem x:Name="QuitMenuItem" Header="_Quit" Click="QuitMenuItem_Click"/>
                 </ctrls:ExtendedMenuItem>
@@ -94,30 +94,35 @@
                     </DataGrid.Columns>
 
                     <DataGrid.ContextMenu>
-                        <ContextMenu Focusable="False">
-                            <MenuItem x:Name="ViewRecipeContextItem" Header="View" Click="RecipeMenuItem_Click" Focusable="False"/>
-                            <MenuItem x:Name="EditRecipeContextItem" Header="Edit" Click="RecipeMenuItem_Click" Focusable="False"/>
-                            <MenuItem x:Name="DeleteRecipeContextItem" Header="Delete" Click="RecipeMenuItem_Click" Focusable="False"/>
+                        <ContextMenu Focusable="False" Style="{StaticResource FlatContextMenuStyle}">
+                            <ctrls:ExtendedMenuItem x:Name="ViewRecipeContextItem" Header="View" Click="RecipeMenuItem_Click" Focusable="False"/>
+                            <ctrls:ExtendedMenuItem x:Name="EditRecipeContextItem" Header="Edit" Click="RecipeMenuItem_Click" Focusable="False"/>
+                            <ctrls:ExtendedMenuItem x:Name="DeleteRecipeContextItem" Header="Delete" Click="RecipeMenuItem_Click" Focusable="False"/>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                 </DataGrid>
 
                 <DockPanel x:Name="SearchPanel" LastChildFill="False" Grid.Column="1"  >
-                    <DockPanel.Background>
-                        <SolidColorBrush Color="{StaticResource ColorPrimary}"/>
-                    </DockPanel.Background>
-                    <DockPanel.DataContext>
-                        <local:SearchItems/>
-                    </DockPanel.DataContext>
+
                     <Label Content="Search Options" DockPanel.Dock="Top" Height="Auto" FontSize="16 pt" HorizontalAlignment="Center"/>
                     <Label Content="Name:" DockPanel.Dock="Top"/>
                     <TextBox x:Name="NameInput" DockPanel.Dock="Top" Text="{Binding SearchName}"/>
+                    
                     <Label Content="Ingredients:" DockPanel.Dock="Top"/>
                     <TextBox x:Name="IngredientsInput" DockPanel.Dock="Top"/>
+                    
                     <Label Content="Max Time:" DockPanel.Dock="Top"/>
-                    <ctrls:DurationEntryBox x:Name="MaxTimeInput" DockPanel.Dock="Top" MinuteValue="{Binding SearchMaxTime}"/>
+                    <ctrls:DurationEntryBox x:Name="MaxTimeInput"
+                        Style="{StaticResource DurationEntryStyle}"
+                        DockPanel.Dock="Top" MinuteValue="{Binding SearchMaxTime}"/>
+                    
                     <Label Content="Category:" DockPanel.Dock="Top"/>
-                    <ComboBox x:Name="CategorySelect" DockPanel.Dock="Top" ItemsSource="{Binding CategoryOptions}" SelectedValuePath="Value" SelectedValue="{Binding SearchCategory}" DisplayMemberPath="Key"/>
+                    <ComboBox x:Name="CategorySelect" DockPanel.Dock="Top"
+                              Style="{StaticResource ComboBoxHoverableStyle}"
+                              ItemsSource="{Binding CategoryOptions}"
+                              SelectedValuePath="Value" DisplayMemberPath="Key"
+                              SelectedValue="{Binding SearchCategory}"/>
+                    
                     <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10" Style="{StaticResource FlatButtonHoverableStyle}" />
                     <Button x:Name="ClearSearchButton" Content="Clear Search" DockPanel.Dock="Top" Margin="0,10,0,0" Style="{StaticResource FlatButtonHoverableStyle}"/>
                 </DockPanel>

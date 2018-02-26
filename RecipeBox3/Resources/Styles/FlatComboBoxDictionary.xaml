@@ -10,7 +10,10 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="20"/>
             </Grid.ColumnDefinitions>
-            <Border Background="{TemplateBinding Background}" Grid.ColumnSpan="2">
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Grid.ColumnSpan="2">
                 <ContentPresenter
                         Margin="{TemplateBinding Padding}"
                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -35,6 +38,8 @@
                 Template="{StaticResource FlatComboBoxToggleButton}"
                 Foreground="{TemplateBinding Foreground}"
                 Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
                 Grid.Column="2" Focusable="False" ClickMode="Press"
                 IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
 
@@ -89,10 +94,6 @@
             </Trigger>
             <Trigger Property="IsGrouping" Value="true">
                 <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-            </Trigger>
-            <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
-                <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="4"/>
-                <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0"/>
             </Trigger>
             <Trigger Property="IsEditable"
                Value="true">

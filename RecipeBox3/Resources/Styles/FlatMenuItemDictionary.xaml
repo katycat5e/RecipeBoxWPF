@@ -38,7 +38,7 @@
                     Focusable="False"
                     PopupAnimation="Fade"
                     MinWidth="{TemplateBinding ActualWidth}">
-                
+
                     <Border 
                         Name="SubmenuBorder"
                         SnapsToDevicePixels="True"
@@ -57,6 +57,10 @@
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Foreground" Value="Gray"/>
+            </Trigger>
+
+            <Trigger SourceName="Popup" Property="IsMouseOver" Value="True">
+                <Setter Property="IsMouseOverSubMenu" Value="True"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -186,7 +190,6 @@
                 <Popup 
                     Name="Popup"
                     Placement="Right"
-                    HorizontalOffset="-4" 
                     IsOpen="{TemplateBinding IsSubmenuOpen}"
                     AllowsTransparency="True" 
                     Focusable="False"
@@ -207,12 +210,12 @@
             <Trigger Property="Icon" Value="{x:Null}">
                 <Setter TargetName="Icon" Property="Visibility" Value="Collapsed"/>
             </Trigger>
-            <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="True">
-                <Setter TargetName="SubmenuBorder" Property="CornerRadius" Value="4"/>
-                <Setter TargetName="SubmenuBorder" Property="Padding" Value="0,3,0,3"/>
-            </Trigger>
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Foreground" Value="Gray"/>
+            </Trigger>
+
+            <Trigger SourceName="Popup" Property="IsMouseOver" Value="True">
+                <Setter Property="IsMouseOverSubMenu" Value="True"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>

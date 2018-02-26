@@ -13,10 +13,10 @@
     <Window.Resources>
         <local:FractionStringConverter x:Key="FractionStringConverter"/>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
-        <SolidColorBrush x:Key="PrimaryMDBrush" Color="{StaticResource ColorPrimaryMidDark}"/>
-        <SolidColorBrush x:Key="SecondaryDarkBrush" Color="{StaticResource ColorSecondary2Dark}"/>
 
-
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="Foreground" Value="{StaticResource ControlTextBrush}"/>
+        </Style>
     </Window.Resources>
     <Window.DataContext>
         <local:EditRecipeViewModel UnitManager="{StaticResource GlobalUnitManager}"/>
@@ -75,12 +75,12 @@
                 <Label Content="Prep Time:" Grid.Column="0" Grid.Row="3"/>
                 <ctrls:DurationEntryBox x:Name="PrepTimeInput" Grid.Column="1" Grid.Row="3"
                                         MinuteValue="{Binding MyRecipe.R_PrepTime}"
-                                        InvalidColor="Red"/>
+                                        Style="{StaticResource DurationEntryStyle}"/>
 
                 <Label Content="Cook Time:" Grid.Column="0" Grid.Row="4"/>
                 <ctrls:DurationEntryBox x:Name="CookTimeInput" Grid.Column="1" Grid.Row="4"
                                         MinuteValue="{Binding MyRecipe.R_CookTime}"
-                                        InvalidColor="Red"/>
+                                        Style="{StaticResource DurationEntryStyle}"/>
             </Grid>
 
             <Grid Grid.Column="1" Margin="6,0,0,6">
