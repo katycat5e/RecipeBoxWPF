@@ -42,7 +42,12 @@ namespace RecipeBox3.Controls
 
         /// <summary>Current numeric value of the input</summary>
         public static readonly DependencyProperty MinuteValueProperty =
-            DependencyProperty.Register("MinuteValue", typeof(int), typeof(DurationEntryBox), new PropertyMetadata(0));
+            DependencyProperty.Register("MinuteValue", typeof(int), typeof(DurationEntryBox),
+                new FrameworkPropertyMetadata(0)
+                {
+                    BindsTwoWayByDefault = true,
+                    DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                });
 
 
         /// <summary>Outline color to use when input is a valid duration</summary>
@@ -100,7 +105,7 @@ namespace RecipeBox3.Controls
         private void InputBox_LostFocus(object sender, RoutedEventArgs e)
         {
             bool validInput = TimeStringConverter.TryGetMinutes(InputBox.Text, out int minutes);
-            if (validInput) MinuteValue = minutes;
+            if (validInput) SetCurrentValue(MinuteValueProperty, minutes); //MinuteValue = minutes;
 
             ValidInput = validInput;
         }

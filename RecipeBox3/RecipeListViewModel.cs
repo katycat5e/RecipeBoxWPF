@@ -20,16 +20,29 @@ namespace RecipeBox3
         /// <summary>Container for search parameters</summary>
         public SearchItems SearchItems { get; set; }
 
-        /// <summary>List of recipes to show in the grid</summary>
-        public ObservableCollection<DetailRecipe> Recipes
+        /// <summary></summary>
+        public ObservableCollection<DetailRecipe> RecipeCollection
         {
-            get { return (ObservableCollection<DetailRecipe>)GetValue(RecipesProperty); }
+            get { return (ObservableCollection<DetailRecipe>)GetValue(RecipeCollectionProperty); }
+            set { SetValue(RecipeCollectionProperty, value); }
+        }
+
+        /// <summary>Property store for <see cref='RecipeCollection'/></summary>
+        public static readonly DependencyProperty RecipeCollectionProperty =
+            DependencyProperty.Register("RecipeCollection", typeof(ObservableCollection<DetailRecipe>), typeof(RecipeListViewModel), new PropertyMetadata(null));
+
+
+
+        /// <summary>List of recipes to show in the grid</summary>
+        public List<DetailRecipe> Recipes
+        {
+            get { return (List<DetailRecipe>)GetValue(RecipesProperty); }
             set { SetValue(RecipesProperty, value); }
         }
 
         /// <summary>List of recipes to show in the grid</summary>
         public static readonly DependencyProperty RecipesProperty =
-            DependencyProperty.Register("Recipes", typeof(ObservableCollection<DetailRecipe>), typeof(RecipeListViewModel), new PropertyMetadata(null));
+            DependencyProperty.Register("Recipes", typeof(List<DetailRecipe>), typeof(RecipeListViewModel), new PropertyMetadata(null));
 
 
         /// <summary>Currently selected item in the recipe list</summary>
@@ -76,7 +89,22 @@ namespace RecipeBox3
         /// <summary>Fetch complete list of recipes from the database</summary>
         public void GetAllRecipes()
         {
-            Recipes = new ObservableCollection<DetailRecipe>(recipesAdapter.SelectAll());
+            RecipeCollection = new ObservableCollection<DetailRecipe>(recipesAdapter.SelectAll());
+            Recipes = RecipeCollection.ToList();
+            UpdateImages();
+        }
+
+        /// <summary>Apply search parameters to recipe list</summary>
+        public void FilterRecipes()
+        {
+            Recipes = SearchItems.FilterRecipes(RecipeCollection);
+        }
+
+        /// <summary>Reset search parameters</summary>
+        public void ClearSearch()
+        {
+            SearchItems.ClearParameters();
+            GetAllRecipes();
         }
 
         /// <summary>Delete a recipe from the database by id</summary>
@@ -138,7 +166,7 @@ namespace RecipeBox3
 
             switch (e.Property.Name)
             {
-                case "Recipes":
+                case "RecipeCollection":
                     if (e.OldValue is ObservableCollection<DetailRecipe> oldval)
                         oldval.CollectionChanged -= Recipes_CollectionChanged;
                     if (e.NewValue is ObservableCollection<DetailRecipe> newval)
