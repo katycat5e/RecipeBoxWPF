@@ -17,6 +17,9 @@ namespace RecipeBox3
 
         private BackgroundWorker getImageWorker;
 
+        /// <summary>Container for search parameters</summary>
+        public SearchItems SearchItems { get; set; }
+
         /// <summary>List of recipes to show in the grid</summary>
         public ObservableCollection<DetailRecipe> Recipes
         {
@@ -52,7 +55,7 @@ namespace RecipeBox3
         public static readonly DependencyProperty ShowImagesProperty =
             DependencyProperty.Register("ShowImages", typeof(bool), typeof(RecipeListViewModel), new PropertyMetadata(true));
 
-
+        
         /// <summary>Create a new instance of the window, loading all recipes</summary>
         public RecipeListViewModel()
         {

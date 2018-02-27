@@ -9,7 +9,8 @@
         Title="RecipeBox" Height="800" Width="1400"
         WindowStartupLocation="CenterScreen"
         Closed="RecipeListView_Closed"
-        Style="{StaticResource DefaultWindowStyle}">
+        Style="{StaticResource DefaultWindowStyle}"
+        d:DataContext="{d:DesignData IsDesignTimeCreatable=True, Source=./DesignData/RecipeListWindowData.xaml}">
 
     <Window.Resources>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
@@ -26,7 +27,11 @@
     </Window.Resources>
 
     <Window.DataContext>
-        <local:RecipeListViewModel/>
+        <local:RecipeListViewModel>
+            <local:RecipeListViewModel.SearchItems>
+                <local:SearchItems CategoryManager="{StaticResource GlobalCategoryManager}"/>
+            </local:RecipeListViewModel.SearchItems>
+        </local:RecipeListViewModel>
     </Window.DataContext>
 
     <Grid>
@@ -102,7 +107,8 @@
                     </DataGrid.ContextMenu>
                 </DataGrid>
 
-                <DockPanel x:Name="SearchPanel" LastChildFill="False" Grid.Column="1"  >
+                <DockPanel x:Name="SearchPanel" LastChildFill="False" Grid.Column="1"
+                           DataContext="{Binding SearchItems, Mode=OneWay}">
 
                     <Label Content="Search Options" DockPanel.Dock="Top" Height="Auto" FontSize="16 pt" HorizontalAlignment="Center"/>
                     <Label Content="Name:" DockPanel.Dock="Top"/>
@@ -119,8 +125,8 @@
                     <Label Content="Category:" DockPanel.Dock="Top"/>
                     <ComboBox x:Name="CategorySelect" DockPanel.Dock="Top"
                               Style="{StaticResource ComboBoxHoverableStyle}"
-                              ItemsSource="{Binding CategoryOptions}"
-                              SelectedValuePath="Value" DisplayMemberPath="Key"
+                              ItemsSource="{Binding CategoryManager.Items, Mode=OneWay}"
+                              SelectedValuePath="Key" DisplayMemberPath="Value.C_Name"
                               SelectedValue="{Binding SearchCategory}"/>
                     
                     <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10" Style="{StaticResource FlatButtonHoverableStyle}" />

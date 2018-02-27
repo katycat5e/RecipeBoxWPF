@@ -45,7 +45,7 @@ namespace RecipeBox3
             ViewModel?.SaveItems();
             if (Application.Current.TryFindResource("GlobalUnitManager") is UnitManager unitManager)
             {
-                unitManager.UpdateUnitsTable();
+                unitManager.UpdateTable();
             }
 
             DialogResult = true;

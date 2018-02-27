@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows;
 using RecipeBox3.SQLiteModel.Adapters;
 using RecipeBox3.SQLiteModel.Data;
 
@@ -13,20 +12,18 @@ namespace RecipeBox3
     /// <summary>
     /// Provides a cache of the Units table and methods for converting Units
     /// </summary>
-    public class UnitManager : DependencyObject
+    public class UnitManager : StaticTableManager<UnitsAdapter, Unit>
     {
-        private UnitsAdapter unitsAdapter = new UnitsAdapter();
+        ///// <summary>Dictionary of Units in the database keyed by their ID</summary>
+        //public Dictionary<int, Unit> UnitList
+        //{
+        //    get { return (Dictionary<int, Unit>)GetValue(UnitListProperty); }
+        //    set { SetValue(UnitListProperty, value); }
+        //}
 
-        /// <summary>Dictionary of Units in the database keyed by their ID</summary>
-        public Dictionary<int, Unit> UnitList
-        {
-            get { return (Dictionary<int, Unit>)GetValue(UnitListProperty); }
-            set { SetValue(UnitListProperty, value); }
-        }
-
-        /// <summary>Backing for <see cref="UnitList"/></summary>
-        public static readonly DependencyProperty UnitListProperty =
-            DependencyProperty.Register("UnitList", typeof(Dictionary<int, Unit>), typeof(UnitManager), new PropertyMetadata(null));
+        ///// <summary>Backing for <see cref="UnitList"/></summary>
+        //public static readonly DependencyProperty UnitListProperty =
+        //    DependencyProperty.Register("UnitList", typeof(Dictionary<int, Unit>), typeof(UnitManager), new PropertyMetadata(null));
 
 
         /// <summary>Dictionary of units keyed by name</summary>
@@ -36,7 +33,7 @@ namespace RecipeBox3
         public Dictionary<string, Unit> UnitAbbrevMap;
 
         /// <summary>Create a new instance of the manager</summary>
-        public UnitManager()
+        public UnitManager() : base()
         {
             
         }
@@ -52,10 +49,10 @@ namespace RecipeBox3
         /// <returns>Equivalent amount in the target unit</returns>
         public Fraction Convert(Fraction amount, int sourceID, int targetID)
         {
-            if (!UnitList.TryGetValue(sourceID, out Unit source))
+            if (!Items.TryGetValue(sourceID, out Unit source))
                 throw new UnitNotFoundException("Source unit was not found in the unit table");
 
-            if (!UnitList.TryGetValue(targetID, out Unit target))
+            if (!Items.TryGetValue(targetID, out Unit target))
                 throw new UnitNotFoundException("Target unit was not found in the unit table");
 
             return Convert(amount, source, target);
@@ -100,7 +97,7 @@ namespace RecipeBox3
         /// <returns>A string containing an amount with units</returns>
         public string GetString(Fraction amount, int sourceID, Unit.System targetSystem)
         {
-            if (!UnitList.TryGetValue(sourceID, out Unit sourceUnit))
+            if (!Items.TryGetValue(sourceID, out Unit sourceUnit))
                 throw new UnitNotFoundException("Source unit was not found in the unit table");
 
             return GetString(amount, sourceUnit, targetSystem);
@@ -142,7 +139,7 @@ namespace RecipeBox3
         /// <exception cref="UnitNotFoundException">If the given source unit does not exist</exception>
         public string GetUSString(Fraction amount, int sourceID)
         {
-            if (!UnitList.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
+            if (!Items.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
 
             return GetUSString(amount, sourceRow);
         }
@@ -163,7 +160,7 @@ namespace RecipeBox3
             }
 
             //var rows = _UnitsTable.Select("U_System = 'USC' AND U_Typecode = " + sourceRow.U_Typecode + " OR U_ID = " + sourceRow.U_ID, "U_Ratio ASC");
-            var rows = UnitList
+            var rows = Items
                 .Where(
                     p => (p.Value.U_System == Unit.System.Customary &&
                           p.Value.U_TypeCode == sourceRow.U_TypeCode) ||
@@ -305,7 +302,7 @@ namespace RecipeBox3
         /// <exception cref="UnitNotFoundException">If the given source unit does not exist</exception>
         public string GetMetricString(Fraction amount, int sourceID)
         {
-            if (!UnitList.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
+            if (!Items.TryGetValue(sourceID, out Unit sourceRow)) throw new UnitNotFoundException("Source unit was not found in the unit table");
 
             return GetMetricString(amount, sourceRow);
         }
@@ -326,7 +323,7 @@ namespace RecipeBox3
             }
 
             //var rows = _UnitsTable.Select("U_System = 'MET' AND U_Typecode = " + sourceRow.U_Typecode + " OR U_ID = " + sourceRow.U_ID, "U_Ratio ASC");
-            var rows = UnitList
+            var rows = Items
                 .Where(
                     p => (p.Value.U_System == Unit.System.Metric &&
                           p.Value.U_TypeCode == sourceRow.U_TypeCode) ||
@@ -380,13 +377,12 @@ namespace RecipeBox3
         }
 
         /// <summary>Refresh the contents of the Units table from the database</summary>
-        public void UpdateUnitsTable()
+        public override void UpdateTable()
         {
-            IEnumerable<Unit> units = unitsAdapter.SelectAll();
+            base.UpdateTable();
 
-            UnitNameMap = units.ToDictionary(unit => unit.U_Name, unit => unit);
-            UnitAbbrevMap = units.ToDictionary(unit => unit.U_Abbreviation, unit => unit);
-            UnitList = units.ToDictionary(unit => unit.ID, unit => unit);
+            UnitNameMap = Items?.ToDictionary(kvp => kvp.Value.U_Name, kvp => kvp.Value);
+            UnitAbbrevMap = Items?.ToDictionary(kvp => kvp.Value.U_Abbreviation, kvp => kvp.Value);
         }
 
         /// <summary>Represents an error that occurs when a requested unit does not exist</summary>

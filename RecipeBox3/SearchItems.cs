@@ -54,17 +54,17 @@ namespace RecipeBox3
             DependencyProperty.Register("SearchCategory", typeof(int), typeof(SearchItems), new PropertyMetadata(0));
 
 
-        /// <summary>Set of categories for the category selector</summary>
-        public Dictionary<string, int> CategoryOptions
+        /// <summary></summary>
+        public CategoryManager CategoryManager
         {
-            get { return (Dictionary<string, int>)GetValue(CategoryOptionsProperty); }
-            set { SetValue(CategoryOptionsProperty, value); }
+            get { return (CategoryManager)GetValue(CategoryManagerProperty); }
+            set { SetValue(CategoryManagerProperty, value); }
         }
 
-        /// <summary>Set of categories for the category selector</summary>
-        public static readonly DependencyProperty CategoryOptionsProperty =
-            DependencyProperty.Register("CategoryOptions", typeof(Dictionary<string, int>), typeof(SearchItems), new PropertyMetadata(new Dictionary<string, int>()));
-        
+        /// <summary>Property store for <see cref='CategoryManager'/></summary>
+        public static readonly DependencyProperty CategoryManagerProperty =
+            DependencyProperty.Register("CategoryManager", typeof(CategoryManager), typeof(SearchItems), new PropertyMetadata(null));
+
 
     }
 }
