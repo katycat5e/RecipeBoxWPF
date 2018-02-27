@@ -19,7 +19,9 @@
         </Style>
     </Window.Resources>
     <Window.DataContext>
-        <local:EditRecipeViewModel UnitManager="{StaticResource GlobalUnitManager}"/>
+        <local:EditRecipeViewModel
+            UnitManager="{StaticResource GlobalUnitManager}"
+            CategoryManager="{StaticResource GlobalCategoryManager}"/>
     </Window.DataContext>
 
     <Grid>
@@ -65,8 +67,9 @@
 
                 <Label Content="Category:" Grid.Column="0" Grid.Row="1"/>
                 <ComboBox Grid.Column="1" Grid.Row="1"
-                          ItemsSource="{Binding CategoryList}" DisplayMemberPath="C_Name"
-                          SelectedValuePath="C_ID" SelectedValue="{Binding MyRecipe.R_Category}"
+                          ItemsSource="{Binding Path=CategoryManager.Items, Mode=OneWay}"
+                          DisplayMemberPath="Value.C_Name"
+                          SelectedValuePath="Key" SelectedValue="{Binding MyRecipe.R_Category}"
                           Style="{StaticResource ComboBoxHoverableStyle}"/>
 
                 <Label Content="Description:" Grid.Column="0" Grid.Row="2"/>
@@ -106,16 +109,16 @@
                     <DataGridComboBoxColumn
                         Header="Unit" Width="2*"
                         SelectedValueBinding="{Binding IE_Unit}"
-                        DisplayMemberPath="U_Name" SelectedValuePath="U_ID">
+                        DisplayMemberPath="Value.U_Name" SelectedValuePath="Key">
                         <DataGridComboBoxColumn.ElementStyle>
                             <Style TargetType="ComboBox">
-                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.UnitList.Values}"/>
+                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.Items}"/>
                                 <Setter Property="IsReadOnly" Value="True"/>
                             </Style>
                         </DataGridComboBoxColumn.ElementStyle>
                         <DataGridComboBoxColumn.EditingElementStyle>
                             <Style TargetType="ComboBox">
-                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.UnitList.Values}"/>
+                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.Items}"/>
                             </Style>
                         </DataGridComboBoxColumn.EditingElementStyle>
                     </DataGridComboBoxColumn>

@@ -11,18 +11,16 @@ namespace RecipeBox3
     /// <summary>View model for recipe editor</summary>
     public class EditRecipeViewModel : ViewRecipeViewModel
     {
-        private CategoriesAdapter categoriesAdapter;
-        
-        /// <summary>List of categories for the category drop-down</summary>
-        public Category[] CategoryList
+        /// <summary>Category manager for category dropdown</summary>
+        public CategoryManager CategoryManager
         {
-            get { return (Category[])GetValue(CategoryListProperty); }
-            set { SetValue(CategoryListProperty, value); }
+            get { return (CategoryManager)GetValue(CategoryManagerProperty); }
+            set { SetValue(CategoryManagerProperty, value); }
         }
 
-        /// <summary>List of categories for the category drop-down</summary>
-        public static readonly DependencyProperty CategoryListProperty =
-            DependencyProperty.Register("CategoryList", typeof(Category[]), typeof(EditRecipeViewModel), new PropertyMetadata(null));
+        /// <summary>Category manager for category dropdown</summary>
+        public static readonly DependencyProperty CategoryManagerProperty =
+            DependencyProperty.Register("CategoryList", typeof(CategoryManager), typeof(EditRecipeViewModel), new PropertyMetadata(null));
 
 
         /// <summary>Unit manager for ingredient editing</summary>
@@ -53,9 +51,7 @@ namespace RecipeBox3
         /// <summary>Create a new instance of the class</summary>
         public EditRecipeViewModel() : base()
         {
-            categoriesAdapter = new CategoriesAdapter();
 
-            CategoryList = categoriesAdapter.SelectAll().ToArray();
         }
 
         /// <summary>

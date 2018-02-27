@@ -63,6 +63,7 @@ namespace RecipeBox3
             SplashPage.Show();
 
             var dbChecker = new DBChecker(RecipeBox3.Properties.Settings.Default.SQLiteConnectionString);
+            // TODO fix this binding
             var progressBinding = new Binding
             {
                 Source = dbChecker,
@@ -81,10 +82,12 @@ namespace RecipeBox3
             if (Enum.TryParse(RecipeBox3.Properties.Settings.Default.SelectedUnitSystem, out Unit.System system))
                 UnitSystem = system;
 
+            // Update table caches
             if (TryFindResource("GlobalUnitManager") is UnitManager unitManager)
-            {
-                unitManager.UpdateUnitsTable();
-            }
+                unitManager.UpdateTable();
+
+            if (TryFindResource("GlobalCategoryManager") is CategoryManager categoryManager)
+                categoryManager.UpdateTable();
 
             RecipeListView = new RecipeListWindow();
             RecipeListView.ReloadTable(null, null);

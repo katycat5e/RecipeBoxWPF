@@ -26,6 +26,8 @@ namespace RecipeBox3
         {
             // Update DB
             ViewModel?.SaveItems();
+            if (Application.Current.TryFindResource("GlobalCategoryManager") is CategoryManager categoryManager)
+                categoryManager.UpdateTable();
 
             DialogResult = true;
             Close();

@@ -146,7 +146,7 @@
             </Style>
 
             <local:UnitManager x:Key="GlobalUnitManager"/>
-
+            <local:CategoryManager x:Key="GlobalCategoryManager"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -124,6 +124,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CategoryManager.cs" />
     <Compile Include="Controls\DurationEntryBox.xaml.cs">
       <DependentUpon>DurationEntryBox.xaml</DependentUpon>
     </Compile>
@@ -133,6 +134,7 @@
     <Compile Include="SQLiteModel\Adapters\TableAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\TableColumn.cs" />
     <Compile Include="SQLiteModel\Data\PropertyRow.cs" />
+    <Compile Include="StaticTableManager.cs" />
     <Compile Include="TableEditorViewModel.cs" />
     <Compile Include="UnitEditorView.xaml.cs">
       <DependentUpon>UnitEditorView.xaml</DependentUpon>

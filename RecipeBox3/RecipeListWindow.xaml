@@ -26,7 +26,11 @@
     </Window.Resources>
 
     <Window.DataContext>
-        <local:RecipeListViewModel/>
+        <local:RecipeListViewModel>
+            <local:RecipeListViewModel.SearchItems>
+                <local:SearchItems CategoryManager="{StaticResource GlobalCategoryManager}"/>
+            </local:RecipeListViewModel.SearchItems>
+        </local:RecipeListViewModel>
     </Window.DataContext>
 
     <Grid>
@@ -102,29 +106,35 @@
                     </DataGrid.ContextMenu>
                 </DataGrid>
 
-                <DockPanel x:Name="SearchPanel" LastChildFill="False" Grid.Column="1"  >
+                <DockPanel x:Name="SearchPanel" LastChildFill="False" Grid.Column="1"
+                           DataContext="{Binding SearchItems}">
 
                     <Label Content="Search Options" DockPanel.Dock="Top" Height="Auto" FontSize="16 pt" HorizontalAlignment="Center"/>
                     <Label Content="Name:" DockPanel.Dock="Top"/>
                     <TextBox x:Name="NameInput" DockPanel.Dock="Top" Text="{Binding SearchName}"/>
                     
                     <Label Content="Ingredients:" DockPanel.Dock="Top"/>
-                    <TextBox x:Name="IngredientsInput" DockPanel.Dock="Top"/>
+                    <TextBox x:Name="IngredientsInput" DockPanel.Dock="Top" Text="{Binding SearchIngredients}"/>
                     
                     <Label Content="Max Time:" DockPanel.Dock="Top"/>
                     <ctrls:DurationEntryBox x:Name="MaxTimeInput"
                         Style="{StaticResource DurationEntryStyle}"
-                        DockPanel.Dock="Top" MinuteValue="{Binding SearchMaxTime}"/>
+                        DockPanel.Dock="Top" MinuteValue="{Binding SearchMaxTime, Mode=TwoWay}"/>
                     
                     <Label Content="Category:" DockPanel.Dock="Top"/>
                     <ComboBox x:Name="CategorySelect" DockPanel.Dock="Top"
                               Style="{StaticResource ComboBoxHoverableStyle}"
-                              ItemsSource="{Binding CategoryOptions}"
-                              SelectedValuePath="Value" DisplayMemberPath="Key"
+                              ItemsSource="{Binding CategoryManager.Items, Mode=OneWay}"
+                              SelectedValuePath="Key" DisplayMemberPath="Value.C_Name"
                               SelectedValue="{Binding SearchCategory}"/>
                     
-                    <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10" Style="{StaticResource FlatButtonHoverableStyle}" />
-                    <Button x:Name="ClearSearchButton" Content="Clear Search" DockPanel.Dock="Top" Margin="0,10,0,0" Style="{StaticResource FlatButtonHoverableStyle}"/>
+                    <Button x:Name="SubmitSearchButton" Content="Search" DockPanel.Dock="Top" Margin="0,40,0,10"
+                            Style="{StaticResource FlatButtonHoverableStyle}"
+                            Click="SubmitSearchButton_Click"/>
+                    
+                    <Button x:Name="ClearSearchButton" Content="Clear Search" DockPanel.Dock="Top" Margin="0,10,0,0"
+                            Style="{StaticResource FlatButtonHoverableStyle}"
+                            Click="ClearSearchButton_Click"/>
                 </DockPanel>
             </Grid>
         </DockPanel>
