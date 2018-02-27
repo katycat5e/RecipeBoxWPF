@@ -124,6 +124,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CategoryManager.cs" />
     <Compile Include="Controls\DurationEntryBox.xaml.cs">
       <DependentUpon>DurationEntryBox.xaml</DependentUpon>
     </Compile>
@@ -133,6 +134,7 @@
     <Compile Include="SQLiteModel\Adapters\TableAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\TableColumn.cs" />
     <Compile Include="SQLiteModel\Data\PropertyRow.cs" />
+    <Compile Include="StaticTableManager.cs" />
     <Compile Include="TableEditorViewModel.cs" />
     <Compile Include="UnitEditorView.xaml.cs">
       <DependentUpon>UnitEditorView.xaml</DependentUpon>
@@ -183,23 +185,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\Colors.xaml">
+    <Page Include="Resources\Styles\Colors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\FlatButtonDictionary.xaml">
+    <Page Include="Resources\Styles\FlatButtonDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\FlatComboBoxDictionary.xaml">
+    <Page Include="Resources\Styles\FlatComboBoxDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\FlatMenuItemDictionary.xaml">
+    <Page Include="Resources\Styles\FlatContextMenuDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\Images.xaml">
+    <Page Include="Resources\Styles\FlatMenuItemDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\Images.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

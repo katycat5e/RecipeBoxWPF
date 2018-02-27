@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:RecipeBox3">
+
+    <Color x:Key="PurpleAccentLightColor" A="#FF" R="#BE" G="#B9" B="#E0"/>
+    <SolidColorBrush x:Key="PurpleAccentLightBrush" Color="{StaticResource PurpleAccentLightColor}"/>
+    <Color x:Key="PurpleAccentDarkColor" A="#FF" R="#7D" G="#74" B="#BD"/>
+    <SolidColorBrush x:Key="PurpleAccentDarkBrush" Color="{StaticResource PurpleAccentDarkColor}"/>
+
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="White"/>
+    <SolidColorBrush x:Key="GridBackgroundBrush" Color="White"/>
+
+    <Color x:Key="ControlTextColor" A="#FF" R="#24" G="#28" B="#2A"/>
+    <SolidColorBrush x:Key="ControlTextBrush" Color="{StaticResource ControlTextColor}"/>
+
+    <SolidColorBrush x:Key="ControlBrush" Color="#82AFFF"/>
+    <SolidColorBrush x:Key="ControlHoverBrush" Color="#759DE5"/>
+
+    <Color x:Key="ControlLightColor" A="#FF" R="#B4" G="#CF" B="#FF"/>
+    <SolidColorBrush x:Key="ControlMenuBrush" Color="{StaticResource ControlLightColor}"/>
+    <SolidColorBrush x:Key="ControlMenuHoverBrush" Color="#A2BAE6"/>
+    <SolidColorBrush x:Key="ControlMenuHoverBrush2" Color="#90A6CC"/>
+</ResourceDictionary>

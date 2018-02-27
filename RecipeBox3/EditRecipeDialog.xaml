@@ -13,13 +13,15 @@
     <Window.Resources>
         <local:FractionStringConverter x:Key="FractionStringConverter"/>
         <local:ByteImageConverter x:Key="ByteImageConverter"/>
-        <SolidColorBrush x:Key="PrimaryMDBrush" Color="{StaticResource ColorPrimaryMidDark}"/>
-        <SolidColorBrush x:Key="SecondaryDarkBrush" Color="{StaticResource ColorSecondary2Dark}"/>
 
-
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="Foreground" Value="{StaticResource ControlTextBrush}"/>
+        </Style>
     </Window.Resources>
     <Window.DataContext>
-        <local:EditRecipeViewModel UnitManager="{StaticResource GlobalUnitManager}"/>
+        <local:EditRecipeViewModel
+            UnitManager="{StaticResource GlobalUnitManager}"
+            CategoryManager="{StaticResource GlobalCategoryManager}"/>
     </Window.DataContext>
 
     <Grid>
@@ -65,8 +67,9 @@
 
                 <Label Content="Category:" Grid.Column="0" Grid.Row="1"/>
                 <ComboBox Grid.Column="1" Grid.Row="1"
-                          ItemsSource="{Binding CategoryList}" DisplayMemberPath="C_Name"
-                          SelectedValuePath="C_ID" SelectedValue="{Binding MyRecipe.R_Category}"
+                          ItemsSource="{Binding Path=CategoryManager.Items, Mode=OneWay}"
+                          DisplayMemberPath="Value.C_Name"
+                          SelectedValuePath="Key" SelectedValue="{Binding MyRecipe.R_Category}"
                           Style="{StaticResource ComboBoxHoverableStyle}"/>
 
                 <Label Content="Description:" Grid.Column="0" Grid.Row="2"/>
@@ -75,12 +78,12 @@
                 <Label Content="Prep Time:" Grid.Column="0" Grid.Row="3"/>
                 <ctrls:DurationEntryBox x:Name="PrepTimeInput" Grid.Column="1" Grid.Row="3"
                                         MinuteValue="{Binding MyRecipe.R_PrepTime}"
-                                        InvalidColor="Red"/>
+                                        Style="{StaticResource DurationEntryStyle}"/>
 
                 <Label Content="Cook Time:" Grid.Column="0" Grid.Row="4"/>
                 <ctrls:DurationEntryBox x:Name="CookTimeInput" Grid.Column="1" Grid.Row="4"
                                         MinuteValue="{Binding MyRecipe.R_CookTime}"
-                                        InvalidColor="Red"/>
+                                        Style="{StaticResource DurationEntryStyle}"/>
             </Grid>
 
             <Grid Grid.Column="1" Margin="6,0,0,6">
@@ -106,16 +109,16 @@
                     <DataGridComboBoxColumn
                         Header="Unit" Width="2*"
                         SelectedValueBinding="{Binding IE_Unit}"
-                        DisplayMemberPath="U_Name" SelectedValuePath="U_ID">
+                        DisplayMemberPath="Value.U_Name" SelectedValuePath="Key">
                         <DataGridComboBoxColumn.ElementStyle>
                             <Style TargetType="ComboBox">
-                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.UnitList.Values}"/>
+                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.Items}"/>
                                 <Setter Property="IsReadOnly" Value="True"/>
                             </Style>
                         </DataGridComboBoxColumn.ElementStyle>
                         <DataGridComboBoxColumn.EditingElementStyle>
                             <Style TargetType="ComboBox">
-                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.UnitList.Values}"/>
+                                <Setter Property="ItemsSource" Value="{Binding ElementName=window, Path=DataContext.UnitManager.Items}"/>
                             </Style>
                         </DataGridComboBoxColumn.EditingElementStyle>
                     </DataGridComboBoxColumn>

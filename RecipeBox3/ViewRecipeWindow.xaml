@@ -21,6 +21,7 @@
         <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{StaticResource ControlTextBrush}"/>
         </Style>
     </Window.Resources>
 

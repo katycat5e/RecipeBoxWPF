@@ -162,5 +162,15 @@ namespace RecipeBox3
         {
             if (IMG_Preview != null) IMG_Preview.Visibility = Visibility.Collapsed;
         }
+
+        private void SubmitSearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.FilterRecipes();
+        }
+
+        private void ClearSearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.ClearSearch();
+        }
     }
 }

@@ -33,6 +33,9 @@ namespace RecipeBox3.SQLiteModel.Adapters
         /// <summary>Command to select ingredients based on recipe id</summary>
         protected SQLiteCommand SelectByRecipeCommand;
 
+        /// <summary>Command to select ingredients by matching part of the name</summary>
+        protected SQLiteCommand SelectByNameCommand;
+
         /// <inheritdoc/>
         protected override SQLiteConnection Connection
         {
@@ -43,6 +46,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 else
                 {
                     if (SelectByRecipeCommand != null) SelectByRecipeCommand.Connection = value;
+                    if (SelectByNameCommand != null) SelectByNameCommand.Connection = value;
                     base.Connection = value;
                 }
             }
@@ -71,6 +75,17 @@ namespace RecipeBox3.SQLiteModel.Adapters
             {
                 SelectByRecipeCommand.Parameters.Add(recipeParameter);
             }
+
+            string nameParam = TableColumnExtensions.GetParameterName("IE_Name");
+
+            SelectByNameCommand = new SQLiteCommand(
+                String.Format(
+                    "SELECT {0}, {1} FROM {2} WHERE IE_Name LIKE '%' || {3} || '%'",
+                    IDColumnName, String.Join(", ", DataColumnNames), TableName, nameParam),
+                Connection);
+
+            if (DataParameters.TryGetValue("IE_Name", out SQLiteParameter nameParameter))
+                SelectByNameCommand.Parameters.Add(nameParameter);
         }
 
         /// <summary>Retrieve all ingredients for a recipe</summary>
@@ -86,6 +101,36 @@ namespace RecipeBox3.SQLiteModel.Adapters
                 List<U> results = new List<U>();
 
                 using (var reader = ExecuteCommandReader(SelectByRecipeCommand))
+                {
+                    if (reader.HasRows)
+                    {
+                        U nextRow;
+
+                        while (reader.Read())
+                        {
+                            nextRow = GetRowFromReader(reader);
+                            if (nextRow != null) results.Add(nextRow);
+                        }
+                    }
+                }
+
+                return results;
+            }
+        }
+
+        /// <summary>Retrieve all ingredients with a name containing the input</summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public virtual IEnumerable<U> SelectAllByName(string name)
+        {
+            if (SelectByNameCommand?.Connection == null) return null;
+            else
+            {
+                TrySetParameterValue("IE_Name", name);
+
+                List<U> results = new List<U>();
+
+                using (var reader = ExecuteCommandReader(SelectByNameCommand))
                 {
                     if (reader.HasRows)
                     {
@@ -122,7 +167,7 @@ namespace RecipeBox3.SQLiteModel.Adapters
                     ingredient.IE_Name = reader.GetString(1);
                     ingredient.IE_Amount = Fraction.Parse(reader.GetString(2));
                     ingredient.IE_Unit = reader.GetInt32(3);
-                    ingredient.IE_RecipeID = reader.GetValue(4) as int?;
+                    ingredient.IE_RecipeID = reader.GetNullableInt(4);
                     ingredient.Status = RowStatus.Unchanged;
 
                     return ingredient;
