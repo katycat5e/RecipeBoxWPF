@@ -1,14 +1,14 @@
-﻿<Window x:Name="window" x:Class="RecipeBox3.EditRecipeDialog"
+﻿<Window x:Name="window" x:Class="RecipeBox3.Windows.EditRecipeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RecipeBox3"
+        xmlns:local="clr-namespace:RecipeBox3.Windows"
         xmlns:ctrls="clr-namespace:RecipeBox3.Controls"
         mc:Ignorable="d"
         Title="Editing Recipe" Height="600" Width="1000"
         Style="{StaticResource DefaultWindowStyle}"
-        d:DataContext="{d:DesignData Source=./DesignData/EditRecipeWindowData.xaml, IsDesignTimeCreatable=True}">
+        d:DataContext="{d:DesignData Source=/DesignData/EditRecipeWindowData.xaml, IsDesignTimeCreatable=True}">
 
     <Window.Resources>
         <local:FractionStringConverter x:Key="FractionStringConverter"/>

@@ -5,12 +5,12 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>
     /// Interaction logic for ChooseImageDialog.xaml
     /// </summary>
-    public partial class ChooseImageDialog : Window
+    public partial class ChooseImageWindow : Window
     {
         private bool MouseLeftButtonDownInCanvas = false;
         private Bitmap baseBitmap = null;
@@ -25,14 +25,14 @@ namespace RecipeBox3
         }
 
         /// <summary>Create a new instance of the class</summary>
-        public ChooseImageDialog()
+        public ChooseImageWindow()
         {
             InitializeComponent();
         }
 
         /// <summary>Create a new instance with the specified image data</summary>
         /// <param name="imgData"></param>
-        public ChooseImageDialog(byte[] imgData) : this()
+        public ChooseImageWindow(byte[] imgData) : this()
         {
             ViewModel.PreviewImage = ByteImageConverter.ConvertBytesToBitmapImage(imgData);
             baseBitmap = ByteImageConverter.ConvertBytesToBitmap(imgData);

@@ -4,7 +4,7 @@ using System.Windows;
 using RecipeBox3.SQLiteModel.Adapters;
 using RecipeBox3.SQLiteModel.Data;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>Search properties for the <see cref="RecipeListWindow"/></summary>
     public class SearchItems : DependencyObject

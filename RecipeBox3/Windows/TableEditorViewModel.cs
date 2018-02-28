@@ -6,7 +6,7 @@ using RecipeBox3.SQLiteModel.Data;
 using RecipeBox3.SQLiteModel.Adapters;
 using System.Collections.Specialized;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>Generic view model for direct table editing</summary>
     /// <typeparam name="T">Type of rows in the table</typeparam>

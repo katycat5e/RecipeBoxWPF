@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using RecipeBox3.SQLiteModel.Data;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>
     /// Interaction logic for RecipeListWindow.xaml
@@ -38,7 +38,7 @@ namespace RecipeBox3
 
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var settingsDialog = new EditSettingsDialog { Owner = this };
+            var settingsDialog = new EditSettingsWindow { Owner = this };
             settingsDialog.ShowDialog();
         }
 
@@ -71,14 +71,14 @@ namespace RecipeBox3
 
         private void CreateNewRecipe()
         {
-            var recipeEditor = new EditRecipeDialog();
+            var recipeEditor = new EditRecipeWindow();
             bool? result = recipeEditor.ShowDialog();
             if (result == true) ReloadTable(this, new RoutedEventArgs());
         }
 
         private void OpenRecipeForEdit(int recipeID)
         {
-            var recipeEditor = new EditRecipeDialog(recipeID);
+            var recipeEditor = new EditRecipeWindow(recipeID);
             bool? result = recipeEditor.ShowDialog();
             if (result == true) ReloadTable(this, new RoutedEventArgs());
         }
@@ -133,7 +133,7 @@ namespace RecipeBox3
 
         private void EditCategoriesMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var categoryEditor = new CategoriesEditorView
+            var categoryEditor = new EditCategoriesWindow
             {
                 Owner = this,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -144,7 +144,7 @@ namespace RecipeBox3
 
         private void EditUnitsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var unitEditor = new UnitEditorView
+            var unitEditor = new EditUnitsWindow
             {
                 Owner = this,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

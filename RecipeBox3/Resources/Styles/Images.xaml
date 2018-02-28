@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:RecipeBox3.Resources">
+                    xmlns:local="clr-namespace:RecipeBox3.Resources.Styles">
 
-    <BitmapImage x:Key="FoxIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/fox.ico"/>
-    <BitmapImage x:Key="RefreshIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/refresh_16xLG.png"/>
+    <BitmapImage x:Key="FoxIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/Images/fox.ico"/>
+    <BitmapImage x:Key="RefreshIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/Images/refresh_16xLG.png"/>
 
-    <BitmapImage x:Key="BoldIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/bold_16x.png"/>
-    <BitmapImage x:Key="ItalicIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/italic_16x.png"/>
-    <BitmapImage x:Key="UnderlineIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/underline_16x.png"/>
+    <BitmapImage x:Key="BoldIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/Images/bold_16x.png"/>
+    <BitmapImage x:Key="ItalicIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/Images/italic_16x.png"/>
+    <BitmapImage x:Key="UnderlineIcon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://application:,,,/Resources/Images/underline_16x.png"/>
 
 </ResourceDictionary>

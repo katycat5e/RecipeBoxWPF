@@ -18,6 +18,7 @@
 
     <Color x:Key="ControlLightColor" A="#FF" R="#B4" G="#CF" B="#FF"/>
     <SolidColorBrush x:Key="ControlMenuBrush" Color="{StaticResource ControlLightColor}"/>
-    <SolidColorBrush x:Key="ControlMenuHoverBrush" Color="#A2BAE6"/>
-    <SolidColorBrush x:Key="ControlMenuHoverBrush2" Color="#90A6CC"/>
+
+    <Color x:Key="ControlTextHighlightColor" A="#FF" R="#32" G="#58" B="#9A"/>
+    <SolidColorBrush x:Key="ControlMenuHoverBrush" Color="LightGray"/>
 </ResourceDictionary>

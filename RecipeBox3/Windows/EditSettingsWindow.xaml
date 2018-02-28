@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RecipeBox3"
+        xmlns:local="clr-namespace:RecipeBox3.Windows"
         xmlns:core="clr-namespace:System;assembly=mscorlib"
         xmlns:Properties="clr-namespace:RecipeBox3.Properties"
-        x:Class="RecipeBox3.EditSettingsDialog"
+        x:Class="RecipeBox3.Windows.EditSettingsWindow"
         mc:Ignorable="d"
         Title="EditSettingsDialog" Height="300" Width="300" WindowStartupLocation="CenterOwner"
         Style="{StaticResource DefaultWindowStyle}">
@@ -57,7 +57,7 @@
             <Label Grid.Column="0" Grid.Row="1" Content="Unit System"/>
             <ComboBox Grid.Column="1" Grid.Row="1" IsEditable="False"
                       Style="{StaticResource ComboBoxHoverableStyle}"
-                      ItemsSource="{x:Static local:EditSettingsDialog.UnitSystemDict}"
+                      ItemsSource="{x:Static local:EditSettingsWindow.UnitSystemDict}"
                       DisplayMemberPath="Value"
                       SelectedValue="{Binding SelectedUnitSystem, Mode=TwoWay}"
                       SelectedValuePath="Key"/>

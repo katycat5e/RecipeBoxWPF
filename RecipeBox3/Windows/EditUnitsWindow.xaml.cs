@@ -6,12 +6,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>
     /// Interaction logic for UnitEditorView.xaml
     /// </summary>
-    public partial class UnitEditorView : Window
+    public partial class EditUnitsWindow : Window
     {
         private UnitEditorViewModel ViewModel
         {
@@ -33,7 +33,7 @@ namespace RecipeBox3
 
 
         /// <summary>Create a new instance of the editor</summary>
-        public UnitEditorView()
+        public EditUnitsWindow()
         {
             InitializeComponent();
         }

@@ -1,13 +1,13 @@
-﻿<Window x:Class="RecipeBox3.UnitEditorView"
+﻿<Window x:Class="RecipeBox3.Windows.EditUnitsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RecipeBox3"
+        xmlns:local="clr-namespace:RecipeBox3.Windows"
         mc:Ignorable="d"
         Title="Units" Height="300" Width="600"
         Style="{StaticResource DefaultWindowStyle}"
-        d:DataContext="{d:DesignData Source=./DesignData/UnitEditorData.xaml, IsDesignTimeCreatable=True}">
+        d:DataContext="{d:DesignData Source=/DesignData/UnitEditorData.xaml, IsDesignTimeCreatable=True}">
     <Window.DataContext>
         <local:UnitEditorViewModel/>
     </Window.DataContext>
@@ -42,7 +42,7 @@
             <DataGrid.Columns>
                 <DataGridComboBoxColumn
                     Header="Type" Width="1*"
-                    ItemsSource="{x:Static local:UnitEditorView.UnitTypeDict}"
+                    ItemsSource="{x:Static local:EditUnitsWindow.UnitTypeDict}"
                     SelectedValuePath="Key" DisplayMemberPath="Value"
                     SelectedValueBinding="{Binding U_TypeCode}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding U_Name}" Width="1*" />
@@ -51,7 +51,7 @@
                 <DataGridTextColumn Header="Ratio" Binding="{Binding U_Ratio}" Width="1*"/>
                 <DataGridComboBoxColumn
                     Header="System" Width="1*"
-                    ItemsSource="{x:Static local:UnitEditorView.UnitSystemDict}"
+                    ItemsSource="{x:Static local:EditUnitsWindow.UnitSystemDict}"
                     SelectedValuePath="Key" DisplayMemberPath="Value"
                     SelectedValueBinding="{Binding U_System}"/>
             </DataGrid.Columns>

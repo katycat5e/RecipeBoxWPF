@@ -3,12 +3,12 @@ using RecipeBox3.SQLiteModel.Data;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>
     /// Interaction logic for DBTableEditorView.xaml
     /// </summary>
-    public partial class CategoriesEditorView : Window
+    public partial class EditCategoriesWindow : Window
     {
         private CategoriesViewModel ViewModel
         {
@@ -17,7 +17,7 @@ namespace RecipeBox3
         }
 
         /// <summary>Create a new category editor</summary>
-        public CategoriesEditorView()
+        public EditCategoriesWindow()
         {
             InitializeComponent();
         }

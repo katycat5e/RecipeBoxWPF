@@ -4,12 +4,12 @@ using System.Linq;
 using System.Windows;
 using RecipeBox3.SQLiteModel.Data;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>
     /// Interaction logic for EditSettingsDialog.xaml
     /// </summary>
-    public partial class EditSettingsDialog : Window
+    public partial class EditSettingsWindow : Window
     {
         /// <summary>Dictionary of values for unit system selector</summary>
         public static Dictionary<Unit.System, string> UnitSystemDict =
@@ -24,7 +24,7 @@ namespace RecipeBox3
         }
 
         /// <summary>Create a new instance of the class</summary>
-        public EditSettingsDialog()
+        public EditSettingsWindow()
         {
             InitializeComponent();
         }

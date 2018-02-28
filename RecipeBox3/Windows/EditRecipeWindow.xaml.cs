@@ -7,12 +7,12 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>
     /// Interaction logic for EditRecipeDialog.xaml
     /// </summary>
-    public partial class EditRecipeDialog : Window
+    public partial class EditRecipeWindow : Window
     {
         private EditRecipeViewModel ViewModel
         {
@@ -26,7 +26,7 @@ namespace RecipeBox3
         private FontSizeConverter fontSizeConverter = new FontSizeConverter();
 
         /// <summary>Create a new instance of the class</summary>
-        public EditRecipeDialog()
+        public EditRecipeWindow()
         {
             InitializeComponent();
             InitEditor();
@@ -46,7 +46,7 @@ namespace RecipeBox3
         /// Create a new instance of the recipe editor for the specified recipe.
         /// A null argument creates a new recipe
         /// </summary>
-        public EditRecipeDialog(int? recipeID)
+        public EditRecipeWindow(int? recipeID)
         {
             InitializeComponent();
             InitEditor();
@@ -72,7 +72,7 @@ namespace RecipeBox3
 
         private void ChooseImageButton_Click(object sender, RoutedEventArgs e)
         {
-            var imagePicker = new ChooseImageDialog();
+            var imagePicker = new ChooseImageWindow();
             Cursor = Cursors.Wait;
             bool? result = imagePicker.ShowDialog();
 
