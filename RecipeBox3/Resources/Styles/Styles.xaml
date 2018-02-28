@@ -3,12 +3,12 @@
                     xmlns:local="clr-namespace:RecipeBox3.Resources.Styles"
                     xmlns:ctrls="clr-namespace:RecipeBox3.Controls">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Resources/Styles/Colors.xaml"/>
-        <ResourceDictionary Source="Resources/Styles/Images.xaml"/>
-        <ResourceDictionary Source="Resources/Styles/FlatComboBoxDictionary.xaml"/>
-        <ResourceDictionary Source="Resources/Styles/FlatButtonDictionary.xaml"/>
-        <ResourceDictionary Source="Resources/Styles/FlatMenuItemDictionary.xaml"/>
-        <ResourceDictionary Source="Resources/Styles/FlatContextMenuDictionary.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/Colors.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/Images.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/FlatComboBoxDictionary.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/FlatButtonDictionary.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/FlatMenuItemDictionary.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/FlatContextMenuDictionary.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <!-- Base Hover responsive styles -->
@@ -48,9 +48,9 @@
     </Style>
 
     <Style x:Key="MenuItemHoverableStyle" TargetType="{x:Type ctrls:ExtendedMenuItem}">
-        <Setter Property="Background" Value="{StaticResource ControlMenuBrush}"/>
+        <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
         <Setter Property="Foreground" Value="{StaticResource ControlTextBrush}"/>
-        <Setter Property="SubMenuBrush" Value="{StaticResource ControlMenuBrush}"/>
+        <Setter Property="SubMenuBrush" Value="{StaticResource WindowBackgroundBrush}"/>
         <Setter Property="Padding" Value="10,3"/>
 
         <Style.Triggers>
@@ -68,7 +68,7 @@
             </Trigger>
 
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource ControlMenuHoverBrush2}"/>
+                <Setter Property="Background" Value="{StaticResource ControlMenuHoverBrush}"/>
             </Trigger>
             <Trigger Property="IsMouseOverSubMenu" Value="True">
                 <Setter Property="Background" Value="{StaticResource ControlMenuHoverBrush}"/>

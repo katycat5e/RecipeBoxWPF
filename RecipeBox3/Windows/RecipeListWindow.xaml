@@ -37,7 +37,7 @@
         <DockPanel LastChildFill="True">
             <Menu DockPanel.Dock="Top" BorderThickness="0"
                   FontSize="{Binding ElementName=RecipeListView, Path=FontSize, Mode=OneWay}"
-                  Background="{StaticResource ControlMenuBrush}">
+                  Background="{StaticResource WindowBackgroundBrush}">
                 <ctrls:ExtendedMenuItem x:Name="RBItem" Header="_RecipeBox">
                     <ctrls:ExtendedMenuItem x:Name="QuitMenuItem" Header="_Quit" Click="QuitMenuItem_Click"/>
                 </ctrls:ExtendedMenuItem>
