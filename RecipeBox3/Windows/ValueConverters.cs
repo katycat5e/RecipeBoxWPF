@@ -7,7 +7,7 @@ using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using RecipeBox3.SQLiteModel.Data;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>Class for converting between byte arrays and Image objects</summary>
     public class ByteImageConverter : IValueConverter

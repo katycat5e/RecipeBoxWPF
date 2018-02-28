@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
 using RecipeBox3.SQLiteModel.Data;
+using RecipeBox3.Windows;
 
 namespace RecipeBox3
 {
@@ -15,7 +15,7 @@ namespace RecipeBox3
         /// <summary>Main window for the application</summary>
         public static RecipeListWindow RecipeListView;
 
-        private static SplashDialog SplashPage;
+        private static SplashWindow SplashPage;
 
         /// <inheritdoc/>
         public event PropertyChangedEventHandler PropertyChanged;
@@ -59,7 +59,7 @@ namespace RecipeBox3
 
         private void Program_Startup(object sender, StartupEventArgs e)
         {
-            SplashPage = new SplashDialog();
+            SplashPage = new SplashWindow();
             SplashPage.Show();
 
             var dbChecker = new DBChecker(RecipeBox3.Properties.Settings.Default.SQLiteConnectionString);
@@ -99,7 +99,7 @@ namespace RecipeBox3
 
         private void Test_Startup(object sender, StartupEventArgs e)
         {
-            var window = new UnitEditorView();
+            var window = new EditUnitsWindow();
             window.ShowDialog();
             Current.Shutdown();
         }

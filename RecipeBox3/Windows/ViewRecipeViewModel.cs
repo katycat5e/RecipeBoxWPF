@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Drawing;
-using System.Windows.Media;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System.Windows;
 using RecipeBox3.SQLiteModel.Data;
 using RecipeBox3.SQLiteModel.Adapters;
 using System.Collections.ObjectModel;
 using System.Windows.Documents;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>View model for the recipe viewer</summary>
     public class ViewRecipeViewModel : DependencyObject

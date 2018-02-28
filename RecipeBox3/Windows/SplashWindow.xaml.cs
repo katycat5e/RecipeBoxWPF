@@ -1,22 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
-    public partial class SplashDialog : Window
+    public partial class SplashWindow : Window
     {
         /// <summary>Status message to be shown</summary>
         public string StatusText
@@ -27,7 +13,7 @@ namespace RecipeBox3
 
         /// <summary>Property store for <see cref='StatusText'/></summary>
         public static readonly DependencyProperty StatusTextProperty =
-            DependencyProperty.Register("StatusText", typeof(string), typeof(SplashDialog), new PropertyMetadata("Initializing..."));
+            DependencyProperty.Register("StatusText", typeof(string), typeof(SplashWindow), new PropertyMetadata("Initializing..."));
 
 
         /// <summary>Whether to show the progress bar</summary>
@@ -39,7 +25,7 @@ namespace RecipeBox3
 
         /// <summary>Property store for <see cref='ShowProgressBar'/></summary>
         public static readonly DependencyProperty ShowProgressBarProperty =
-            DependencyProperty.Register("ShowProgressBar", typeof(bool), typeof(SplashDialog), new PropertyMetadata(false));
+            DependencyProperty.Register("ShowProgressBar", typeof(bool), typeof(SplashWindow), new PropertyMetadata(false));
 
 
         /// <summary>Percent complete to show on progress bar</summary>
@@ -51,11 +37,11 @@ namespace RecipeBox3
 
         /// <summary>Property store for <see cref='ProgressPercent'/></summary>
         public static readonly DependencyProperty ProgressPercentProperty =
-            DependencyProperty.Register("ProgressPercent", typeof(int), typeof(SplashDialog), new PropertyMetadata(0));
+            DependencyProperty.Register("ProgressPercent", typeof(int), typeof(SplashWindow), new PropertyMetadata(0));
 
 
         /// <summary>Create a new instance of the class</summary>
-        public SplashDialog()
+        public SplashWindow()
         {
             InitializeComponent();
             VersionLabel.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();

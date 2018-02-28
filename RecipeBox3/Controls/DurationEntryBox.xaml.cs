@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using RecipeBox3.Windows;
 
 namespace RecipeBox3.Controls
 {

@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>View Model for the <see cref="RecipeListWindow"/></summary>
     public class RecipeListViewModel : DependencyObject

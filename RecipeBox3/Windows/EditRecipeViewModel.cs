@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>View model for recipe editor</summary>
     public class EditRecipeViewModel : ViewRecipeViewModel

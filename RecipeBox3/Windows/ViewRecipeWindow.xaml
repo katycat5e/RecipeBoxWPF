@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RecipeBox3"
-        xmlns:Data="clr-namespace:RecipeBox3.SQLiteModel.Data" x:Class="RecipeBox3.ViewRecipeWindow"
+        xmlns:local="clr-namespace:RecipeBox3.Windows"
+        xmlns:Data="clr-namespace:RecipeBox3.SQLiteModel.Data" x:Class="RecipeBox3.Windows.ViewRecipeWindow"
         mc:Ignorable="d"
         Title="{Binding MyRecipe.R_Name}" Height="600" Width="1000"
         Style="{StaticResource DefaultWindowStyle}"
-        d:DataContext="{d:DesignData Source=./DesignData/ViewRecipeWindowData.xaml}" >
+        d:DataContext="{d:DesignData Source=/DesignData/ViewRecipeWindowData.xaml}" >
     
     <Window.Resources>
         <local:TimeStringConverter x:Key="TimeStringConverter"/>

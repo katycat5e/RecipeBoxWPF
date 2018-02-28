@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace RecipeBox3
+namespace RecipeBox3.Windows
 {
     /// <summary>
     /// Interaction logic for ViewRecipeWindow.xaml
