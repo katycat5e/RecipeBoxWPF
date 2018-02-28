@@ -39,7 +39,7 @@
     <StartupObject>RecipeBox3.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\fox.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Images\fox.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -231,6 +231,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\Styles\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ChooseImageWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -297,36 +301,36 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\action_add_16xLG.png" />
+    <None Include="Resources\Images\action_add_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\action_add_16xMD.png" />
+    <None Include="Resources\Images\action_add_16xMD.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\action_Cancel_16xLG.png" />
+    <None Include="Resources\Images\action_Cancel_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\createDB.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\document_16xLG.png" />
+    <None Include="Resources\Images\document_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\fox.ico" />
+    <Resource Include="Resources\Images\fox.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\magnifier_16xLG.png" />
+    <None Include="Resources\Images\magnifier_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\pencil_005_16xLG.png" />
+    <None Include="Resources\Images\pencil_005_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\refresh_16xLG.png" />
+    <Resource Include="Resources\Images\refresh_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\bold_16x.png" />
-    <Resource Include="Resources\italic_16x.png" />
-    <Resource Include="Resources\underline_16x.png" />
+    <Resource Include="Resources\Images\bold_16x.png" />
+    <Resource Include="Resources\Images\italic_16x.png" />
+    <Resource Include="Resources\Images\underline_16x.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
