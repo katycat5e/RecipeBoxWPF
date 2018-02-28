@@ -310,9 +310,6 @@
     <None Include="Resources\Images\action_Cancel_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\createDB.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Images\document_16xLG.png" />
   </ItemGroup>
   <ItemGroup>

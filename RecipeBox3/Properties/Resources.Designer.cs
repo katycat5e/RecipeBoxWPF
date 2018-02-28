@@ -59,26 +59,5 @@ namespace RecipeBox3.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to USE [master]
-        ///GO
-        /// /****** Object:  Database [Cookbook]    Script Date: 6/12/2017 9:30:21 AM ******/
-        ///CREATE DATABASE [Cookbook]
-        /// CONTAINMENT = NONE
-        /// ON  PRIMARY 
-        ///( NAME = N&apos;Cookbook&apos;, FILENAME = N&apos;C:\RecipeBox\Cookbook.mdf&apos; , SIZE = 4096KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
-        /// LOG ON 
-        ///( NAME = N&apos;Cookbook_log&apos;, FILENAME = N&apos;C:\RecipeBox\Cookbook_log.ldf&apos; , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
-        ///GO
-        ///ALTER DATABASE [Cookbook] SET COMPATIBILITY_LEVEL = 120
-        ///GO
-        ///IF (1 = FULLTEXTSERVI [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string DBCreateScript {
-            get {
-                return ResourceManager.GetString("DBCreateScript", resourceCulture);
-            }
-        }
     }
 }
