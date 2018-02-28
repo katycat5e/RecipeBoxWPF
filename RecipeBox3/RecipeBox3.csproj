@@ -135,17 +135,6 @@
     <Compile Include="SQLiteModel\Adapters\TableColumn.cs" />
     <Compile Include="SQLiteModel\Data\PropertyRow.cs" />
     <Compile Include="StaticTableManager.cs" />
-    <Compile Include="TableEditorViewModel.cs" />
-    <Compile Include="UnitEditorView.xaml.cs">
-      <DependentUpon>UnitEditorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ChooseImageDialog.xaml.cs">
-      <DependentUpon>ChooseImageDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditRecipeDialog.xaml.cs">
-      <DependentUpon>EditRecipeDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="EditRecipeViewModel.cs" />
     <Compile Include="SQLiteModel\Adapters\DetailIngredientsAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\IngredientsAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\UnitsAdapter.cs" />
@@ -154,15 +143,6 @@
     <Compile Include="SQLiteModel\Data\Unit.cs" />
     <Compile Include="ValueConverters.cs" />
     <Compile Include="DBChecker.cs" />
-    <Compile Include="CategoriesEditorView.xaml.cs">
-      <DependentUpon>CategoriesEditorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="RecipeListViewModel.cs" />
-    <Compile Include="ViewRecipeViewModel.cs" />
-    <Compile Include="SearchItems.cs" />
-    <Compile Include="SplashDialog.xaml.cs">
-      <DependentUpon>SplashDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SQLiteModel\Adapters\CategoriesAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\DetailRecipesAdapter.cs" />
     <Compile Include="SQLiteModel\Adapters\ImagesAdapter.cs" />
@@ -174,7 +154,33 @@
     <Compile Include="SQLiteModel\Data\ImageRow.cs" />
     <Compile Include="SQLiteModel\Data\Recipe.cs" />
     <Compile Include="UnitManager.cs" />
-    <Compile Include="ViewRecipeWindow.xaml.cs">
+    <Compile Include="Windows\ChooseImageWindow.xaml.cs">
+      <DependentUpon>ChooseImageWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\EditCategoriesWindow.xaml.cs">
+      <DependentUpon>EditCategoriesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\EditRecipeViewModel.cs" />
+    <Compile Include="Windows\EditRecipeWindow.xaml.cs">
+      <DependentUpon>EditRecipeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\EditSettingsWindow.xaml.cs">
+      <DependentUpon>EditSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\EditUnitsWindow.xaml.cs">
+      <DependentUpon>EditUnitsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RecipeListViewModel.cs" />
+    <Compile Include="Windows\RecipeListWindow.xaml.cs">
+      <DependentUpon>RecipeListWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SearchItems.cs" />
+    <Compile Include="Windows\SplashWindow.xaml.cs">
+      <DependentUpon>SplashWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\TableEditorViewModel.cs" />
+    <Compile Include="Windows\ViewRecipeViewModel.cs" />
+    <Compile Include="Windows\ViewRecipeWindow.xaml.cs">
       <DependentUpon>ViewRecipeWindow.xaml</DependentUpon>
     </Compile>
     <DesignData Include="DesignData\UnitEditorData.xaml">
@@ -209,18 +215,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UnitEditorView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CategoriesEditorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ChooseImageDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <DesignData Include="DesignData\ImageEditorData.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -233,36 +227,41 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </DesignData>
-    <Page Include="EditRecipeDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="EditSettingsDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="RecipeListWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EditSettingsDialog.xaml.cs">
-      <DependentUpon>EditSettingsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="RecipeListWindow.xaml.cs">
-      <DependentUpon>RecipeListWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="SplashDialog.xaml">
+    <Page Include="Windows\ChooseImageWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ViewRecipeWindow.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Windows\EditCategoriesWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\EditRecipeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\EditSettingsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\EditUnitsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\RecipeListWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\SplashWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ViewRecipeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -329,6 +328,7 @@
     <Resource Include="Resources\italic_16x.png" />
     <Resource Include="Resources\underline_16x.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.107.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.107.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
